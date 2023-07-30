@@ -1,0 +1,15 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: boat-race-note
+    src: ./
+    engine: nodejs16
+    include:
+    #  - app
+      - dist
+    run: node dist/main.js
+    commands: 
+      - npm run build
+    dev: npm run start:dev
+    primary: true
+    public: true
