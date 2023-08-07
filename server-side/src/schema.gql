@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type RacersModel {
+  key: ID!
+  name_kanji: String!
+  name_kana: String!
+  branch: String!
+  class: String!
+  gender: Int!
+  age: Int!
+  weight: Int!
+  win_rate: Float!
+  win_rate2: Float!
+  training_term: Int!
+  birth_place: String!
+  course_datas: [CourseData!]!
+}
+
+type CourseData {
+  approch_count: Int!
+  win_rate2: Float!
+  st: Float!
+  st_rank: Float!
+  place1_count: Int!
+  place2_count: Int!
+  place3_count: Int!
+  place4_count: Int!
+  place5_count: Int!
+  place6_count: Int!
+}
+
+type Query {
+  racer(key: String!): RacersModel!
+}
