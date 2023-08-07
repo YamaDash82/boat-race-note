@@ -10,6 +10,6 @@ export class ConfigurationController {
 
   @Get('read-fan-note/:fileName')
   async readFanNote(@Param('fileName') fileName: string) {
-    return this.fanNote.readFile();
+    return this.fanNote.readFile(fileName);
   }
 }

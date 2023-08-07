@@ -1,0 +1,1 @@
+export type BaseNames = "m_racers" | "b" | "c";
