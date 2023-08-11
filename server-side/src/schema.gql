@@ -31,6 +31,19 @@ type CourseData {
   place6_count: Int!
 }
 
+type UsersModel {
+  key: ID!
+  username: String!
+  registered_at: DateTime!
+  last_login_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   racer(key: String!): RacersModel!
+  user(username: String!): UsersModel!
 }
