@@ -43,7 +43,28 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type RacePredictionmModel {
+  key: ID
+  user_key: String!
+  race_date: String!
+  race_place_cd: Int!
+  race_grade_cd: Int!
+  racers: JSON!
+  start_exhibition: JSON
+  exhibition_times: JSON!
+  approach_predictions: JSON
+  deproyment_predictions: [String!]
+  race_result: JSON
+  is_won: Boolean
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
 type Query {
   racer(key: String!): RacersModel!
   user(username: String!): UsersModel!
+  racePrediction(key: String!): RacePredictionmModel!
 }

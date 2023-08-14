@@ -1,3 +1,5 @@
+const path = require("path");
+
 const { NODE_ENV = 'production' } = process.env;
 module.exports = {
   target: 'node',

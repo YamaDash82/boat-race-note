@@ -9,6 +9,7 @@ export class DetaBaseService {
   private bases = {
     m_racers: this.deta.Base("m_racers"), 
     m_users: this.deta.Base("m_users"), 
+    r_race_predictions: this.deta.Base("r_race_predictions"), 
   }
 
   getBase(baseName: BaseNames): Base {

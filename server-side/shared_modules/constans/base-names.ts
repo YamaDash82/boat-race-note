@@ -1,5 +1,5 @@
 export type BaseNames = 
   "m_racers" 
   | "m_users" 
-  | "c"
+  | "r_race_predictions"
   ;
