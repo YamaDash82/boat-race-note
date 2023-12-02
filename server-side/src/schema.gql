@@ -43,28 +43,61 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type RacePredictionmModel {
+type StartingBoat {
+  boat_no: Int!
+  st: Float!
+}
+
+type StartingFormation {
+  course1: StartingBoat!
+  course2: StartingBoat!
+  course3: StartingBoat!
+  course4: StartingBoat!
+  course5: StartingBoat!
+  course6: StartingBoat!
+}
+
+type Racers {
+  racer1: Int!
+  racer2: Int!
+  racer3: Int!
+  racer4: Int!
+  racer5: Int!
+  racer6: Int!
+}
+
+type ExhibitionTimes {
+  boat1: Float
+  boat2: Float
+  boat3: Float
+  boat4: Float
+  boat5: Float
+  boat6: Float
+}
+
+type RaceResult {
+  first_place: Int
+  second_place: Int
+  third_place: Int
+}
+
+type RacePredictionModel {
   key: ID
   user_key: String!
   race_date: String!
   race_place_cd: Int!
   race_grade_cd: Int!
-  racers: JSON!
-  start_exhibition: JSON
-  exhibition_times: JSON!
-  approach_predictions: JSON
+  racers: Racers!
+  start_exhibition: StartingFormation
+  exhibition_times: ExhibitionTimes!
+  approach_predictions: [StartingFormation!]
   deproyment_predictions: [String!]
-  race_result: JSON
+  race_result: RaceResult
   is_won: Boolean
 }
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
 
 type Query {
   racer(key: String!): RacersModel!
   user(username: String!): UsersModel!
-  racePrediction(key: String!): RacePredictionmModel!
+  racePrediction(key: String!): RacePredictionModel!
 }

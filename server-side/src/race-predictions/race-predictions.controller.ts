@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { RacePredictionmModel } from 'src/models/race_predictions.model';
+import { RacePredictionModel } from 'src/models/race_predictions.model';
 import { RacePredictionsService } from './race-predictions.service';
 
 //ガードの設定が必要
@@ -11,7 +11,7 @@ export class RacePredictionsController {
   ) { }
 
   @Post('save')
-  async saveRacePrediction(@Body() body: RacePredictionmModel): Promise<{ key: string, last_modified_at: Date }> {
+  async saveRacePrediction(@Body() body: RacePredictionModel): Promise<{ key: string, last_modified_at: Date }> {
     return this.racePredictionSvc.saveRacePrediction(body);
   }
 }

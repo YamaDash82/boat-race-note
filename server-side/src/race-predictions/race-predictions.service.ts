@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DetaBaseService } from 'src/deta/deta-base.service';
-import { RacePredictionmModel } from 'src/models/race_predictions.model';
+import { RacePredictionModel } from 'src/models/race_predictions.model';
 
 @Injectable()
 export class RacePredictionsService {
@@ -10,7 +10,7 @@ export class RacePredictionsService {
     private detaBaseSvc: DetaBaseService, 
   ) { }
 
-  async saveRacePrediction(body: RacePredictionmModel): Promise<{ key: string, last_modified_at: Date }> {
+  async saveRacePrediction(body: RacePredictionModel): Promise<{ key: string, last_modified_at: Date }> {
     const { key, ...detail } = body;
 
     const res = key ?
@@ -21,7 +21,7 @@ export class RacePredictionsService {
     return { key: res.key as string, last_modified_at: new Date() };
   }
 
-  async findOne(key: string): Promise<RacePredictionmModel> {
+  async findOne(key: string): Promise<RacePredictionModel> {
     const found = await this.racePredictionsBase.get(key);
 
     return found as any;
