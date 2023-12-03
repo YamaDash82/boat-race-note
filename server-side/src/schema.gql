@@ -4,10 +4,11 @@
 
 type RacersModel {
   key: ID!
+  racer_no: Int!
   name_kanji: String!
   name_kana: String!
   branch: String!
-  class: String!
+  rank: String!
   gender: Int!
   age: Int!
   weight: Int!
@@ -97,7 +98,7 @@ type RacePredictionModel {
 }
 
 type Query {
-  racer(key: String!): RacersModel!
+  racer(key: String!): RacersModel
   user(username: String!): UsersModel!
   racePrediction(key: String!): RacePredictionModel!
 }

@@ -6,6 +6,9 @@ export class RacersModel {
   @Field(() => ID)
   key: string;
   
+  @Field(() => Int)
+  racer_no: number;
+
   @Field()
   name_kanji: string;
 
@@ -16,8 +19,9 @@ export class RacersModel {
   @Field()
   branch: string;
 
+  //級別
   @Field()
-  class: string;
+  rank: string;
 
   @Field(() => Int)
   gender: number;

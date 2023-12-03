@@ -8,7 +8,7 @@ export class RacersResolver {
     private racersSvc: RacersService, 
   ) { }
 
-  @Query(() => RacersModel)
+  @Query(() => RacersModel, { nullable: true })
   async racer(@Args('key') key: string) {
     return this.racersSvc.findOne(key);
   }
