@@ -44,7 +44,7 @@ export type ExhibitionTimes = {
 export type Query = {
   __typename?: 'Query';
   racePrediction: RacePredictionModel;
-  racer: RacersModel;
+  racer?: Maybe<RacersModel>;
   user: UsersModel;
 };
 
@@ -101,12 +101,13 @@ export type RacersModel = {
   age: Scalars['Int']['output'];
   birth_place: Scalars['String']['output'];
   branch: Scalars['String']['output'];
-  class: Scalars['String']['output'];
   course_datas: Array<CourseData>;
   gender: Scalars['Int']['output'];
   key: Scalars['ID']['output'];
   name_kana: Scalars['String']['output'];
   name_kanji: Scalars['String']['output'];
+  racer_no: Scalars['Int']['output'];
+  rank: Scalars['String']['output'];
   training_term: Scalars['Int']['output'];
   weight: Scalars['Int']['output'];
   win_rate: Scalars['Float']['output'];

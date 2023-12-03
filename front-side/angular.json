@@ -98,7 +98,8 @@
             "styles": [
               "projects/main/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "karmaConfig": "projects/main/karma.conf.js"
           }
         }
       }

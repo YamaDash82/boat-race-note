@@ -9,17 +9,50 @@ import {
   ExhibitionTimes, 
   RaceResult, 
 } from '../../generated/graphql';
-
+import { ExDateFormControl } from '../common/ex-date-form-control';
+import { Apollo } from 'apollo-angular';
+import { gql } from 'graphql-tag';
 import { ToDto } from '../common/to-dto';
+
+const GET_RACER = gql`
+  query GetRacer($key: String!) {
+    racer(key: $key) {
+      racer_no
+      name_kanji
+      name_kana
+      branch
+      rank
+      win_rate
+      win_rate2
+      training_term
+      birth_place
+      course_datas {
+        approch_count
+        win_rate2 
+        st
+        st_rank
+        place1_count
+        place2_count
+        place3_count
+        place4_count
+        place5_count
+        place6_count
+      }
+    }
+  }
+`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class PredictionFormService extends FormGroup implements ToDto<RacePredictionModel> {
+  private currentApproachPredictionIndex: number | null = null;
 
-  constructor() { 
+  constructor(
+    private apollo: Apollo, 
+  ) { 
     super({
-      raceDate: new FormControl<string | null>(null, Validators.required), 
+      raceDate: new ExDateFormControl(null, Validators.required), 
       racePlaceCd: new FormControl<number | null>(null, Validators.required), 
       raceGradeCd: new FormControl<number | null>(null, Validators.required), 
       racers: new RacersFormGroup(), 
@@ -32,7 +65,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     });
   }
 
-  get raceDate(): FormControl<string | null> { return this.controls['raceDate'] as FormControl<string | null>; }
+  get raceDate(): ExDateFormControl { return this.controls['raceDate'] as ExDateFormControl; }
   get racePlaceCd(): FormControl<number | null> { return this.controls['racePlaceCd'] as FormControl<number | null>; }
   get raceGradeCd(): FormControl<number | null> { return this.controls['raceGradeCd'] as FormControl<number | null>; }
   get racers(): RacersFormGroup { return this.controls['racers'] as RacersFormGroup; }
@@ -43,11 +76,88 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get raceResult(): RaceResultFormGroup { return this.controls['raceResult'] as RaceResultFormGroup; }
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
 
+  /**
+   * レーサー情報設定処理
+   * @param boatNo 
+   * @param racerNo 
+   */
+  async setRacer(boatNo: number, racerNo: number) {
+    //開催日が未入力の場合、例外をスローする。  
+    if (!this.raceDate.value) throw new Error(`開催日が未設定です。`);
+
+    //開催日、登録番号より参照するキーを生成する。
+    //キーの形式 YYYY-[1|2]-登録番号
+    //例)
+    //開催日が2023/01/01～2023/06/30の場合参照するキー 2023-1-登録番号
+    //開催日が2023/07/01～2023/12/31の場合参照するキー 2023-2-登録番号
+    const raceYear = this.raceDate.date?.getFullYear();
+    const term = (this.raceDate.date?.getMonth() as number) <= 6 ? 1 : 2;
+    const key = `${raceYear}-${term}-${racerNo}`;
+    console.log(`key:${key}`);
+
+    //GraphQLサーバーに接続してデータを取得する。
+    const racerInfo = await new Promise<RacersModel>((resolve, reject) => {
+      this.apollo.watchQuery<{
+        racer: RacersModel
+      }>({
+        query: GET_RACER, 
+        variables: { key }
+      }).valueChanges.subscribe(res => {
+        if (res.errors) return reject(res.errors[0]);
+
+        return resolve(res.data.racer);
+      });
+    });
+
+    //コントロールにレーサー情報をセットする。
+    this.racers.setRacerInfo(boatNo, racerInfo);
+  }
+
+  /**
+   * 展示タイム設定処理
+   * @param boatNo 
+   * @param exhibitionTime 
+   */
+  setExhibitionTime(boatNo: number, exhibitionTime: number) {
+    this.exhibitionTimes.setExhibitionTime(boatNo, exhibitionTime);
+  }
+
+  /**
+   * 進入予想追加処理
+   */
+  appendApproachPrediction() {
+    this.approachPredictions.push(new StartingFormationFormGroup());
+    this.currentApproachPredictionIndex = this.addAsyncValidators.length - 1;
+  }
+
+  /**
+   * 進入予想設定処理
+   * コース、艇番、スタートタイミングを入力する。
+   * @param courseNo 
+   * @param boatNo 
+   * @param st 
+   */
+  setApproach(courseNo: number, boatNo: number, st: number) {
+    if (this.currentApproachPredictionIndex===null) throw new Error('設定対象の進入予想フォームグループが選択されていません。');
+
+    const targetFg = this.approachPredictions.controls[this.currentApproachPredictionIndex];
+
+    targetFg.setSt(courseNo, boatNo, st);
+  }
+
+  /**
+   * 進入予想削除処理
+   * @param index 
+   */
+  deleteApproachPrediction(index: number) {
+    this.approachPredictions.removeAt(index);
+  }
+
   toDto(userKey: string): RacePredictionModel {
     return {
       key: '', 
       user_key: userKey, 
-      race_date: this.raceDate.value as string, 
+      race_date: this.raceDate.dateStrValue as string, 
       race_place_cd: this.racePlaceCd.value as number, 
       race_grade_cd: this.raceGradeCd.value as number, 
       racers: this.racers.toDto(), 
@@ -57,11 +167,13 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       deproyment_predictions: this.deploymentPredictoins.controls.map(ctr => ctr.value as string), 
       race_result: this.raceResult.toDto(), 
       is_won: this.isWon.value, 
-    }
-    
+    };
   }
 }
 
+/**
+ * 出走レーサーフォームグループ
+ */
 export class RacersFormGroup extends FormGroup implements ToDto<Racers> {
   constructor() {
     super({
@@ -81,6 +193,17 @@ export class RacersFormGroup extends FormGroup implements ToDto<Racers> {
   get racer5(): RacerFormControl { return this.controls['racer5'] as RacerFormControl; }
   get racer6(): RacerFormControl { return this.controls['racer6'] as RacerFormControl; }
   
+  /**
+   * レーサー情報設定処理
+   * @param boatNo 艇番
+   * @param racerInfo レーサー情報
+   */
+  setRacerInfo(boatNo: number, racerInfo: RacersModel | null) {
+    if (boatNo < 1 || 6 < boatNo) throw new Error(`引数boatNoには1～6までの値を指定してください。${boatNo}は不正な値です。`);
+    
+    (this.controls[`racer${boatNo}`] as RacerFormControl).setRacerInfo(racerInfo);
+  }
+
   toDto() {
     return {
       racer1: this.racer1.value as number, 
@@ -93,6 +216,10 @@ export class RacersFormGroup extends FormGroup implements ToDto<Racers> {
   }
 }
 
+/**
+ * 出走レーサーフォームグループ
+ * レーサー登録番号を値として保持し、付随してレーサー情報を保持する。
+ */
 export class RacerFormControl extends FormControl<number | null> {
   private _racerInfo: RacersModel | null = null;
 
@@ -100,10 +227,23 @@ export class RacerFormControl extends FormControl<number | null> {
     super(null);
   }
 
+  /**
+   * レーサー情報設定処理
+   * レーサー情報設定時、当フォームコントロールが保持する値、レーサー登録番号を設定する。
+   * @param value 
+   */
   setRacerInfo(value: RacersModel | null) {
+    if (value) {
+      this.setValue(value.racer_no);
+    } else {
+      this.reset();
+    }
     this._racerInfo = value;
   }
 
+  /**
+   * レーサー情報
+   */
   get racerInfo(): RacersModel | null {
     return this._racerInfo;
   }
@@ -118,6 +258,16 @@ export class StartingBoatFormControl extends FormControl<number | null> implemen
 
   constructor() {
     super(null);
+  }
+
+  /**
+   * スタートタイミング設定処理
+   * @param boatNo 
+   * @param st 
+   */
+  setSt(boatNo: number, st: number | null) {
+    this._boatNo = boatNo;
+    this.setValue(st);
   }
 
   get boatNo(): number { return this._boatNo; }
@@ -155,6 +305,18 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
   get course5(): StartingBoatFormControl { return this.controls['course5'] as StartingBoatFormControl; }
   get course6(): StartingBoatFormControl { return this.controls['course6'] as StartingBoatFormControl; }
 
+  /**
+   * スタートタイミング設定処理
+   * @param courseNo 
+   * @param boatNo 
+   * @param st 
+   */
+  setSt(courseNo: number, boatNo: number, st: number | null) {
+    //1～6以外の値がcourseNoに指定されたとき例外をスローする。
+    
+    (this.controls[`course${courseNo}`] as StartingBoatFormControl).setSt(boatNo, st);
+  }
+
   toDto() {
     return {
       course1: this.course1.toDto(), 
@@ -167,6 +329,9 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
   }
 }
 
+/**
+ * 展示航走フォームグループ
+ */
 export class ExhibitionTimesFormGroup extends FormGroup implements ToDto<ExhibitionTimes> {
   constructor() {
     super({
@@ -186,6 +351,15 @@ export class ExhibitionTimesFormGroup extends FormGroup implements ToDto<Exhibit
   get boat5(): FormControl<number | null> { return this.controls['boat5'] as FormControl<number | null>; }
   get boat6(): FormControl<number | null> { return this.controls['boat6'] as FormControl<number | null>; }
  
+  /**
+   * 展示タイム設定処理
+   * @param boatNo 
+   * @param time 
+   */
+  setExhibitionTime(boatNo: number, time: number | null) {
+    (this.controls[`boat${boatNo}`] as FormControl<number | null>).setValue(time);
+  }
+
   toDto(): ExhibitionTimes {
     return {
       boat1: this.boat1.value,
