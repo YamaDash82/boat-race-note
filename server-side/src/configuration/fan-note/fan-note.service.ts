@@ -19,9 +19,12 @@ export class FanNoteService {
     private detaDrive: DetaDriveService, 
   ) { }
 
-  //ファン手帳読み取り処理
-  //configuration/read-fan-note/<ファイル名>で読み取り処理を実行する。
-  //ConfigurationController#readFanNoteメソッドも合わせて見ること。
+  /** 
+   * ファン手帳読み取り処理
+   * configuration/read-fan-note/<ファイル名>で読み取り処理を実行する。
+   * shit-jis形式のファイルをUTF-8に変換して読み取る。
+   * ConfigurationController#readFanNoteメソッドも合わせて見ること。
+  */
   async readFile(fileName: string): Promise<boolean> {
     const readData = await new Promise<string[]>((resolve, reject) => {
       fs.readFile(join(process.cwd(), 'fan-notes', fileName), (err, data) => {
@@ -70,6 +73,33 @@ export class FanNoteService {
       }
     }
     return true;
+  }
+  
+  /**
+   * 誤って作成されたデータの調整(削除)用
+   * 不要になれば削除する。
+  */
+  async adjust() {
+    const base = this.detaBase.getBase('m_racers');
+    const result = await base.fetch({ age: null, gender: null});
+    console.log(`取得件数:${result.count}`);
+
+    let tryCount = 0;
+
+    for (const item of result.items) {
+      const key = (item as any).key;
+      console.log(`削除キー:${key}`);
+      
+      let delSucceed = false;
+      do {
+        try {
+          await base.delete(key);
+          delSucceed = true;
+        } catch(err) {
+          console.log(`リトライ:${++tryCount}`);
+        }
+      } while(!delSucceed)
+    }
   }
 }
 

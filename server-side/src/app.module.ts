@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-//import { ConfigurationModule } from './configuration/configuration.module';
+import { ConfigurationModule } from './configuration/configuration.module';
 import { DetaModule } from './deta/deta.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -19,6 +19,7 @@ import { RacePredictionsModule } from './race-predictions/race-predictions.modul
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'), 
     }), 
     ConfigModule.forRoot(), 
+    ConfigurationModule, 
     DetaModule, 
     RacersModule, 
     AuthModule, 
