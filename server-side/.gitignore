@@ -37,3 +37,6 @@ lerna-debug.log*
 
 # 環境変数ファイルを除外する。
 .env
+
+# ファン手帳情報を除外する。
+/fan-notes
