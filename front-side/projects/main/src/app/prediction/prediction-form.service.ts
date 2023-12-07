@@ -10,37 +10,9 @@ import {
   RaceResult, 
 } from '../../generated/graphql';
 import { ExDateFormControl } from '../common/ex-date-form-control';
-import { Apollo } from 'apollo-angular';
-import { gql } from 'graphql-tag';
 import { ToDto } from '../common/to-dto';
-
-const GET_RACER = gql`
-  query GetRacer($key: String!) {
-    racer(key: $key) {
-      racer_no
-      name_kanji
-      name_kana
-      branch
-      rank
-      win_rate
-      win_rate2
-      training_term
-      birth_place
-      course_datas {
-        approch_count
-        win_rate2 
-        st
-        st_rank
-        place1_count
-        place2_count
-        place3_count
-        place4_count
-        place5_count
-        place6_count
-      }
-    }
-  }
-`;
+import { PredictionViewModelService } from './prediction-view-model.service';
+import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 
 @Injectable({
   providedIn: 'root'
@@ -49,9 +21,10 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   private currentApproachPredictionIndex: number | null = null;
 
   constructor(
-    private apollo: Apollo, 
+    private viewModel: PredictionViewModelService, 
   ) { 
     super({
+      key: new FormControl<string | null>(null), 
       raceDate: new ExDateFormControl(null, Validators.required), 
       racePlaceCd: new FormControl<number | null>(null, Validators.required), 
       raceGradeCd: new FormControl<number | null>(null, Validators.required), 
@@ -65,6 +38,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     });
   }
 
+  get key(): FormControl<string | null> { return this.controls['key'] as FormControl<string | null>; }
   get raceDate(): ExDateFormControl { return this.controls['raceDate'] as ExDateFormControl; }
   get racePlaceCd(): FormControl<number | null> { return this.controls['racePlaceCd'] as FormControl<number | null>; }
   get raceGradeCd(): FormControl<number | null> { return this.controls['raceGradeCd'] as FormControl<number | null>; }
@@ -85,6 +59,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     //開催日が未入力の場合、例外をスローする。  
     if (!this.raceDate.value) throw new Error(`開催日が未設定です。`);
 
+    /*
     //開催日、登録番号より参照するキーを生成する。
     //キーの形式 YYYY-[1|2]-登録番号
     //例)
@@ -92,8 +67,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     //開催日が2023/07/01～2023/12/31の場合参照するキー 2023-2-登録番号
     const raceYear = this.raceDate.date?.getFullYear();
     const term = (this.raceDate.date?.getMonth() as number) <= 6 ? 1 : 2;
-    const key = `${raceYear}-${term}-${racerNo}`;
-    console.log(`key:${key}`);
+    const racerKey = `${raceYear}-${term}-${racerNo}`;
 
     //GraphQLサーバーに接続してデータを取得する。
     const racerInfo = await new Promise<RacersModel>((resolve, reject) => {
@@ -101,13 +75,17 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
         racer: RacersModel
       }>({
         query: GET_RACER, 
-        variables: { key }
+        variables: { key: racerKey }
       }).valueChanges.subscribe(res => {
         if (res.errors) return reject(res.errors[0]);
 
         return resolve(res.data.racer);
       });
     });
+    */
+    //レーサー情報を取得する。
+    const raceDate = new ExDate(this.raceDate.dateStrValue as string);
+    const racerInfo = await this.viewModel.fetchRacer(raceDate, racerNo);
 
     //コントロールにレーサー情報をセットする。
     this.racers.setRacerInfo(boatNo, racerInfo);
@@ -153,9 +131,15 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     this.approachPredictions.removeAt(index);
   }
 
+  /**
+   * 登録用転送データ取得処理
+   * @param key 
+   * @param userKey 
+   * @returns 
+   */
   toDto(userKey: string): RacePredictionModel {
     return {
-      key: '', 
+      key: this.key.value, 
       user_key: userKey, 
       race_date: this.raceDate.dateStrValue as string, 
       race_place_cd: this.racePlaceCd.value as number, 

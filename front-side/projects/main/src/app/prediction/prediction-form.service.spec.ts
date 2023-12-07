@@ -5,6 +5,7 @@ import { PredictionFormService } from './prediction-form.service';
 import { mockRacers } from './mocks/mock-datas';
 import { RacersModel } from '../../generated/graphql';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
+import { PredictionViewModelService } from './prediction-view-model.service';
 
 describe('PredictionFormService', () => {
   let fg: PredictionFormService;
@@ -15,6 +16,9 @@ describe('PredictionFormService', () => {
       imports: [
         GraphQLModule, 
         HttpClientModule, 
+      ], 
+      providers: [
+        PredictionViewModelService, 
       ]
     });
     jasmine.DEFAULT_TIMEOUT_INTERVAL=100000;
@@ -35,7 +39,8 @@ describe('PredictionFormService', () => {
     expect(fg).toBeTruthy();
   });
 
-  /* WEBAPIを伴うテストはイレギュラーにエラーが発生するのでコメントアウト。
+  /*
+  //WEBAPIを伴うテストはイレギュラーにエラーが発生するのでコメントアウト。
   it('出走レーサーの指定 1号艇', async () => {
     const raceDate = new ExDate(2023, 11, 1);
     fg.raceDate.setValue(raceDate);

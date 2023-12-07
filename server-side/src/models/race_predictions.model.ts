@@ -162,6 +162,12 @@ export class RacePredictionModel {
   //的中フラグ
   @Field(() => Boolean, { nullable: true })
   is_won: boolean;
+
+  //最終更新日時
+  //日付数値(Date.prototype.getTime()で取得される値)
+  //桁数がGraphQLで扱える桁数を超えているので、数値を文字列として扱う。
+  @Field(() => String, { nullable: true })
+  last_modified_at: string;
 }
 
 /*

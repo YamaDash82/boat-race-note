@@ -95,6 +95,7 @@ type RacePredictionModel {
   deproyment_predictions: [String!]
   race_result: RaceResult
   is_won: Boolean
+  last_modified_at: String
 }
 
 type Query {
