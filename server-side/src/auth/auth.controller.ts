@@ -5,6 +5,8 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { Request as ExpressRequest } from 'express';
 import { UsersService } from 'src/users/users.service';
 import { AppendNewUserPipe } from './append-new-user.pipe';
+import { UserDto } from 'shared_modules/data-transfer/user';
+import { UserPayload } from 'declarations/models/users.model';
 
 @Controller('auth')
 export class AuthController {
@@ -15,14 +17,15 @@ export class AuthController {
 
   @Post('append-user')
   @UsePipes(AppendNewUserPipe)
-  async appendUser(@Body() body: { username: string, password: string }) {
-    return this.usersSvc.appendNewUser(body.username, body.password);
+  async appendUser(@Body() body: UserDto.Request.AppendUser) {
+    return this.usersSvc.appendNewUser(body.key, body.password);
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: ExpressRequest) {
-    return this.authSvc.login(req.user);
+    console.log(`reqUser:${JSON.stringify(req.user, null, 2)}`);
+    return this.authSvc.login(req.user as UserPayload);
   }
 
   @UseGuards(JwtAuthGuard)

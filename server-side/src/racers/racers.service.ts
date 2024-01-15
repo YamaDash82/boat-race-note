@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DetaBaseService } from 'src/deta/deta-base.service';
 import Base from 'deta/dist/types/base';
-import { RacersModel } from 'src/models/racers.model';
+import { RacersModel } from 'declarations/models/racers.model';
 
 @Injectable()
 export class RacersService {

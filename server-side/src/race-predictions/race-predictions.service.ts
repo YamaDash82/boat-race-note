@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DetaBaseService } from 'src/deta/deta-base.service';
-import { RacePredictionModel } from 'src/models/race_predictions.model';
+import { RacePredictionModel } from 'declarations/models/race_predictions.model';
 import { RacePredictionDto } from 'shared_modules/data-transfer/race-prediction';
 
 @Injectable()

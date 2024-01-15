@@ -9,7 +9,7 @@ export class UsersResolver {
   ) { }
 
   @Query(() => UsersModel)
-  async user(@Args('username') username: string) {
+  async user(@Args('key') username: string) {
     return this.usersSvc.findOne(username);
   }
 }

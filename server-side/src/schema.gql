@@ -34,7 +34,6 @@ type CourseData {
 
 type UsersModel {
   key: ID!
-  username: String!
   registered_at: DateTime!
   last_login_at: DateTime!
 }
@@ -100,6 +99,6 @@ type RacePredictionModel {
 
 type Query {
   racer(key: String!): RacersModel
-  user(username: String!): UsersModel!
+  user(key: String!): UsersModel!
   racePrediction(key: String!): RacePredictionModel!
 }

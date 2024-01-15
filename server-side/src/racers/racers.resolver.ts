@@ -1,5 +1,5 @@
 import { Query, Args, Resolver } from '@nestjs/graphql';
-import { RacersModel } from 'src/models/racers.model';
+import { RacersModel } from 'declarations/models/racers.model';
 import { RacersService } from './racers.service';
 
 @Resolver(of => RacersModel)

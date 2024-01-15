@@ -5,7 +5,7 @@ export class AppendNewUserPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === "body") {
       const paramNames = [
-        "username", 
+        "key", 
         "password"
       ];
 

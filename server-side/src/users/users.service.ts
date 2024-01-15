@@ -1,55 +1,60 @@
 import { Injectable, ForbiddenException, BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { UsersModel } from 'declarations/models/users.model';
+import { UsersModel, UserPayload } from 'declarations/models/users.model';
 import { DetaBaseService } from 'src/deta/deta-base.service';
+import { passwordConfig } from 'shared_modules/utilities/password';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  private readonly users: UsersModel[] = [
-    { key: 'hoge01', username: 'hoge', password: 'hogehoge', registered_at: new Date(2023, 0, 15, 9, 15), last_login_at: new Date() }, 
-    { key: 'bar02', username: 'bar', password: 'barbar', registered_at: new Date(2023, 4, 6, 18, 30), last_login_at: new Date() }, 
-  ];
-
   //ユーザー情報コレクション
   private usersBase = this.detaBaseSvc.getBase("m_users");
 
+  //暗号化強度
+  private saltRounds = process.env.SALT_ROUNDS ? parseInt(process.env.SALT_ROUNDS) : 10;
+  
   constructor (
     private detaBaseSvc: DetaBaseService, 
   ) { }
   /**
    * ユーザー情報検索処理
-   * @param username 検索するユーザー名
+   * @param key 検索するユーザーキー
    * @returns ユーザー情報
    */
-  async findOne(username: string): Promise<UsersModel | undefined> {
-    const res = await this.usersBase.fetch({username: username});
-    console.log(`findOne:${JSON.stringify(res.items[0])}`);
+  async findOne(key: string): Promise<UsersModel | undefined> {
+    const res = await this.usersBase.fetch({ key });
+    
     return res.items[0] as any;
   }
 
   /**
    * 新規ユーザー登録処理
-   * @param username ユーザー名
+   * @param key ユーザーキー
    * @param pass パスワード
    * 新規ユーザー登録処理。
    * すでに存在するユーザー名でリクエストがあった時、ForbiddenExceptionをスローする。
    * いずれ文字数何文字以上、半角英数字のみ等の制約を設ける。
    */
-  async appendNewUser(username: string, pass: string) {
+  async appendNewUser(key: string, pass: string): Promise<UserPayload> { 
     //ユーザー名の重複チェックを行う。
-    if (await this.findOne(username)) throw new ForbiddenException('指定されたユーザー名はすでに使用されています。');
+    if (await this.findOne(key)) throw new ForbiddenException('指定されたユーザー名はすでに使用されています。');
 
     //パスワードの制約チェックを行う。※現在未実装。  
-
+    if (!passwordConfig.pattern.test(pass)) throw new ForbiddenException(passwordConfig.errorMessage);
+    
     const createdAt = new Date();
 
+    //パスワードをハッシュ化する。
+    const hashedPass = await bcrypt.hash(pass, this.saltRounds);
+
     const newUser: UsersModel = {
-      username: username, 
-      password: pass, 
+      key, 
+      //パスワードはハッシュ化して保存する。
+      password: hashedPass, 
       registered_at: createdAt, 
       last_login_at: createdAt, 
     };
 
-    const result = await this.usersBase.put(newUser as any);
+    const result = await this.usersBase.put(newUser as any) as any as UsersModel;
 
     const { password, ...userInfo } = result;
 

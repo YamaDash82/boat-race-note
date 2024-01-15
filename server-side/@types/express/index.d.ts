@@ -1,7 +1,11 @@
-import { UsersModel } from "declarations/models/users.model"
+import { UserPayload } from "declarations/models/users.model"
 
 declare namespace Express {
   export interface Request {
-    user: UsersModel
+    user: {
+      user: UserPayload, 
+      iat: number, 
+      exp: number, 
+    } | UserPayload
   }
 }

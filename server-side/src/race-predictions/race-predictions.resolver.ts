@@ -1,4 +1,4 @@
-import { RacePredictionModel } from "src/models/race_predictions.model";
+import { RacePredictionModel } from "declarations/models/race_predictions.model";
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { RacePredictionsService } from "./race-predictions.service";
 
