@@ -60,7 +60,7 @@ export type QueryRacerArgs = {
 
 
 export type QueryUserArgs = {
-  username: Scalars['String']['input'];
+  key: Scalars['String']['input'];
 };
 
 export type RacePredictionModel = {
@@ -70,6 +70,7 @@ export type RacePredictionModel = {
   exhibition_times: ExhibitionTimes;
   is_won?: Maybe<Scalars['Boolean']['output']>;
   key?: Maybe<Scalars['ID']['output']>;
+  last_modified_at?: Maybe<Scalars['String']['output']>;
   race_date: Scalars['String']['output'];
   race_grade_cd: Scalars['Int']['output'];
   race_place_cd: Scalars['Int']['output'];
@@ -135,5 +136,4 @@ export type UsersModel = {
   key: Scalars['ID']['output'];
   last_login_at: Scalars['DateTime']['output'];
   registered_at: Scalars['DateTime']['output'];
-  username: Scalars['String']['output'];
 };
