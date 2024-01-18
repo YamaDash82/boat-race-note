@@ -28,9 +28,17 @@ export class AuthController {
     return this.authSvc.login(req.user as UserPayload);
   }
 
+  //テスト用 後に削除する。
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req: ExpressRequest) {
     return req.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('check-login')
+  async checkLogin(@Request() req: ExpressRequest) {
+    console.log(`ログインチェック:${JSON.stringify(req.user, null, 2)}`);
+    return this.authSvc.login(req.user as UserPayload);
   }
 }
