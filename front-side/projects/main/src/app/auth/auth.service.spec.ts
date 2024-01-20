@@ -4,8 +4,6 @@ import { AuthService } from './auth.service';
 import { AppModule } from '../app.module';
 
 describe('AuthService', () => {
-  let service: AuthService;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ 
@@ -13,10 +11,11 @@ describe('AuthService', () => {
         AppModule,
       ], 
     });
-    service = TestBed.inject(AuthService);
   });
 
   it('ログイン(成功)', async () => {
+    const service = TestBed.inject(AuthService);
+
     let succeed = false;
     try {
       await service.login('hogehoge', 'abc123');
@@ -30,13 +29,33 @@ describe('AuthService', () => {
   });
  
   it('ログイン(失敗)', async () => {
+    const service = TestBed.inject(AuthService);
+
     await expectAsync(service.login('hogehoge', 'fugafuga')).toBeRejected();;
   });
   
   it('ログイン成功後、ログインチェック', async() => {
+    const service = TestBed.inject(AuthService);
+
     //このログインは成功する。
     await service.login('hogehoge', 'abc123');
 
     expect(await service.checkAuthenticated()).toBeTrue;
   });
+
+  it ('ログインチェック(失敗)', async () => {
+    const service = TestBed.inject(AuthService);
+
+    service.logout();
+
+    let succeed = false;
+
+    try {
+      succeed = await service.checkAuthenticated();
+    } catch(err) {
+      succeed = false;
+    }
+
+    expect(succeed).toBeFalse();
+  })
 });

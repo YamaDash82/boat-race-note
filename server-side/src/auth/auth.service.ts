@@ -35,8 +35,13 @@ export class AuthService {
     return userInfo;
   }
 
+  /**
+   * ログイン処理
+   * このメソッドの戻り値がJWTとしてフロントサイドに渡される。
+   * @param user 
+   * @returns 
+   */
   async login(user: UserPayload) {
-    console.log(`login:${JSON.stringify(user, null, 2)}`);
     return {
       access_token: this.jwtSvc.sign({user})
     };

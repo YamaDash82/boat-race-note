@@ -32,8 +32,7 @@ export class AuthService {
     const token = await new Promise<string>((resolve, reject) => {
       this.http.post<{ access_token: string }>('http://localhost:3000/auth/login', { key, password }).pipe(
         catchError((err: HttpErrorResponse) => {
-          const errorMessage = err.message ?? err.error.message;
-          return throwError(() => new Error(errorMessage));
+          return throwError(() => new Error(err.error.message));
         }), 
         map(token => token.access_token), 
       ).subscribe({
@@ -68,23 +67,28 @@ export class AuthService {
       return false;
     }
     
-    const token = await new Promise<string>((resolve, reject) => {
-      this.http.get<{ access_token: string}>('http://localhost:3000/auth/check-login').pipe(
-        catchError((err) => {
-          const errorMessage = err.message ?? err.error.message;
+    try {
+      const token = await new Promise<string>((resolve, reject) => {
+        this.http.get<{ access_token: string }>('http://localhost:3000/auth/check-login').pipe(
+          catchError((err) => {
+            const errorMessage = err.message ?? err.error.message;
 
-          return throwError(() => new Error(errorMessage))
-        }), 
-        map(token => token.access_token)
-      ).subscribe({
-        next: token => resolve(token),
-        error: err => reject(err)
+            return throwError(() => new Error(errorMessage))
+          }), 
+          map(token => token.access_token)
+        ).subscribe({
+          next: token => resolve(token),
+          error: err => reject(err)
+        });
       });
-    });
-
-    this.saveToken(token);
+      //有効期限を延長した新しいトークンを保存し、trueを返す。
+      this.saveToken(token);
     
-    return true;
+      return true;
+    } catch(err) {
+      //未認証状態なのでfalseを返す。
+      return false;
+    }
   }
   
   get loginUser(): UsersModel | null {

@@ -25,7 +25,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       //validateUserメソッドで、認証が通らなかった場合、UnauthorizedExceptionがスローされる。
       const user = await this.authSvc.validateUser(key, password);
 
-      return  { user };
+      //ここで返却する値がRequest#userに格納される。
+      return user;
     } catch(err) {
       throw err;
     }

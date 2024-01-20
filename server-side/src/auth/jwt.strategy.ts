@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
      * }
      * 上記からユーザー場を抽出する。
      */
-    const { user } = payload.user;
+    const { user } = payload;
     
     //このメソッドの戻り値がExpressRequest#userに格納される。  
     //この内容がフロントに返されるわけではない。

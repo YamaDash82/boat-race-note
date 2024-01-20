@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
+import { AuthModule } from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { JwtModule } from '@auth0/angular-jwt';
         },
         allowedDomains: [ 'localhost:3000' ]
       }
-    })
+    }),
+    //AuthModule, 
   ],
   providers: [],
   bootstrap: [AppComponent]

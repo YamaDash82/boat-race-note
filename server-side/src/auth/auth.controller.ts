@@ -24,7 +24,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: ExpressRequest) {
-    console.log(`reqUser:${JSON.stringify(req.user, null, 2)}`);
     return this.authSvc.login(req.user as UserPayload);
   }
 
@@ -38,7 +37,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('check-login')
   async checkLogin(@Request() req: ExpressRequest) {
-    console.log(`ログインチェック:${JSON.stringify(req.user, null, 2)}`);
     return this.authSvc.login(req.user as UserPayload);
   }
 }
