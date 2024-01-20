@@ -8,6 +8,7 @@ import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -27,9 +28,11 @@ import { AuthModule } from './auth/auth.module';
         allowedDomains: [ 'localhost:3000' ]
       }
     }),
-    //AuthModule, 
+    AuthModule, 
   ],
-  providers: [],
+  providers: [
+    AuthService, 
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

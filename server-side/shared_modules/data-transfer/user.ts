@@ -10,8 +10,8 @@ export namespace UserDto {
      * ユーザー情報登録DTO
      */
     export class AppendUser {
-      key: string;
-      password: string;
+      key!: string;
+      password!: string;
     }
   }
 }

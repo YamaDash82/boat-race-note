@@ -18,7 +18,10 @@ export class AuthController {
   @Post('append-user')
   @UsePipes(AppendNewUserPipe)
   async appendUser(@Body() body: UserDto.Request.AppendUser) {
-    return this.usersSvc.appendNewUser(body.key, body.password);
+    //ユーザー情報を登録する。
+    const user = await this.usersSvc.appendNewUser(body.key, body.password);
+    //登録したユーザー情報のJWTをフロントに返す。
+    return this.authSvc.login(user);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -37,6 +40,14 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('check-login')
   async checkLogin(@Request() req: ExpressRequest) {
+    //対象ユーザーがdbに存在するかをチェックする。
+    try {
+      this.usersSvc.findOne((req.user as UserPayload).key);
+    } catch(err) {
+      //最終ログインの後、db上からそのユーザー情報が削除された場合にエラーをスローする。
+      throw err;
+    }
+
     return this.authSvc.login(req.user as UserPayload);
   }
 }

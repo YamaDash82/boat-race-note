@@ -25,7 +25,7 @@
     ],
     "paths": {
       "@common_modules/*": [
-        "/app/common_modules/*"
+        "/app/server-side/shared_modules/*"
       ]
     },
     "allowSyntheticDefaultImports": true

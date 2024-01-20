@@ -15,6 +15,7 @@ export class UsersService {
   constructor (
     private detaBaseSvc: DetaBaseService, 
   ) { }
+
   /**
    * ユーザー情報検索処理
    * @param key 検索するユーザーキー
@@ -38,7 +39,7 @@ export class UsersService {
     //ユーザー名の重複チェックを行う。
     if (await this.findOne(key)) throw new ForbiddenException('指定されたユーザー名はすでに使用されています。');
 
-    //パスワードの制約チェックを行う。※現在未実装。  
+    //パスワードの制約チェックを行う。 
     if (!passwordConfig.pattern.test(pass)) throw new ForbiddenException(passwordConfig.errorMessage);
     
     const createdAt = new Date();
@@ -59,5 +60,19 @@ export class UsersService {
     const { password, ...userInfo } = result;
 
     return userInfo;
+  }
+
+  /**
+   * 最終更新日時更新処理
+   * @param userKey 更新対象ユーザー
+   * @returns Promise<Date>
+   */
+  async updateLastLoginAt(userKey: string): Promise<Date> {
+    //最終ログイン日時
+    const lastLoginAt = new Date();
+    
+    await this.usersBase.update({ last_login_at: lastLoginAt } as any, userKey);
+
+    return lastLoginAt;
   }
 }

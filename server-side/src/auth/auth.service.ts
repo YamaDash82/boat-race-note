@@ -32,6 +32,12 @@ export class AuthService {
     //ユーザー情報からパスワードを除外して返す。
     const { password, ...userInfo } = user;
 
+    //最終更新日時を更新する。
+    const lastLoginAt = await this.usersSvc.updateLastLoginAt(key);
+    
+    //フロントに返す情報の最終ログイン日時を更新する。
+    userInfo.last_login_at = lastLoginAt;
+
     return userInfo;
   }
 

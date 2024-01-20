@@ -3,6 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { throwError, map, catchError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UsersModel } from '../../generated/graphql';
+import { environment } from '../../environments/environment';
+import { UserDto } from '@common_modules/data-transfer/user';
+import { Subject } from 'rxjs';
 
 const jwt = new JwtHelperService();
 
@@ -28,9 +31,14 @@ export class AuthService {
       new DecodedToken();
   }
 
+  /**
+   * ログイン認証処理
+   * @param key 
+   * @param password 
+   */
   async login(key: string, password: string): Promise<void> {
     const token = await new Promise<string>((resolve, reject) => {
-      this.http.post<{ access_token: string }>('http://localhost:3000/auth/login', { key, password }).pipe(
+      this.http.post<{ access_token: string }>(`${environment.rootUrl}/auth/login`, { key, password }).pipe(
         catchError((err: HttpErrorResponse) => {
           return throwError(() => new Error(err.error.message));
         }), 
@@ -44,6 +52,10 @@ export class AuthService {
     this.saveToken(token);
   }
 
+  /**
+   * トークン保存処理
+   * @param token 
+   */
   private saveToken(token: string) {
     this.decodedToken =jwt.decodeToken(token);
 
@@ -54,9 +66,20 @@ export class AuthService {
     const { user } = userProp;
 
     this._loginUser = user;
+
+    //ログイン状態の変更をストリームに流す。
+    this.loginStateChange.next(this._loginUser);
   }
 
+  /**
+   * 認証チェック処理
+   * 認証済の場合、有効期限を延長した新しいトークンを取得する。
+   * @returns 
+   */
   async checkAuthenticated(): Promise<boolean> {
+    //ログイン情報を保持していれば認証済である。
+    if (this.loginUser) return true;
+
     //トークンが保持されていなければ未認証状態である。
     if (!this.decodedToken) return false;
 
@@ -69,7 +92,7 @@ export class AuthService {
     
     try {
       const token = await new Promise<string>((resolve, reject) => {
-        this.http.get<{ access_token: string }>('http://localhost:3000/auth/check-login').pipe(
+        this.http.get<{ access_token: string }>(`${environment.rootUrl}/auth/check-login`).pipe(
           catchError((err) => {
             const errorMessage = err.message ?? err.error.message;
 
@@ -91,12 +114,59 @@ export class AuthService {
     }
   }
   
+  /**
+   * 新規ユーザー登録処理
+   * 登録成功時、JWTを取得し保存する。
+   * @param dto 
+   * @returns
+   */
+  async registerNewUser(dto: UserDto.Request.AppendUser): Promise<boolean> {
+    try {
+      const token = await new Promise<string>((resolve, reject) => {
+        this.http.post<{ access_token: string }>(
+          `${environment.rootUrl}/auth/append-user`, 
+          dto, 
+          {
+            responseType: 'json',
+          }, 
+        ).pipe(
+          catchError((err) => throwError(() => new Error(err.error.message))), 
+          map(token => token.access_token),
+        ).subscribe({
+          next: data => resolve(data),
+          error: err => reject(err),
+        })
+      });
+
+      this.saveToken(token);
+      
+      return true;
+    } catch(err) {
+      throw err;
+    }
+  }
+
+  /**
+   * ログインユーザー
+   * プロパティ
+   */
   get loginUser(): UsersModel | null {
     return this._loginUser;
   }
 
+  /**
+   * ログアウト処理
+   * 保持しているトークン、ログインユーザー情報を破棄する。
+   */
   logout() {
     this.decodedToken = null;
     this._loginUser = null;
+
+    //ログイン状態の変更をストリームに流す。
+    this.loginStateChange.next(this._loginUser);
   }
+
+  //ログイン状態変更検知
+  private loginStateChange = new Subject<UsersModel | null>();
+  loginStateChange$ = this.loginStateChange.asObservable();
 }

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { predictionRoutes } from './prediction/prediction.routes';
 import { LoginComponent } from './auth/login/login.component';
 import { authGuard } from './guards/auth.guard';
+import { AppendUserComponent } from './auth/append-user/append-user.component';
 
 const routes: Routes = [
   { 
@@ -10,7 +11,13 @@ const routes: Routes = [
     children: predictionRoutes, 
     canActivate: [ authGuard ],
   }, 
-  { path: 'login', component: LoginComponent }, 
+  { 
+    path: 'auth', 
+    children: [
+     { path: 'login', component: LoginComponent }, 
+     { path: 'append-user', component: AppendUserComponent }, 
+    ], 
+  }, 
   { path: '', redirectTo: 'prediction', pathMatch: 'full' }
 ];
 

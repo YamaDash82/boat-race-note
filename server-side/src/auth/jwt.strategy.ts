@@ -1,7 +1,6 @@
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
-import { UserPayload } from "declarations/models/users.model";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -17,11 +16,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     /**
      * payloadの内容
      * {
-     *   user: { key: string, last_login_at: number, registered_at: number };
+     *   user: { key: string, last_login_at: Date, registered_at: Date };
      *   iat: number; 
      *   exp: number;
      * }
-     * 上記からユーザー場を抽出する。
+     * 上記からユーザー情報を抽出する。
      */
     const { user } = payload;
     
