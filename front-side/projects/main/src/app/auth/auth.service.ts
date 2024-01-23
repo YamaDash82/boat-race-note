@@ -162,6 +162,9 @@ export class AuthService {
     this.decodedToken = null;
     this._loginUser = null;
 
+    localStorage.removeItem('auth_tkn');
+    localStorage.removeItem('auth_meta');
+
     //ログイン状態の変更をストリームに流す。
     this.loginStateChange.next(this._loginUser);
   }
