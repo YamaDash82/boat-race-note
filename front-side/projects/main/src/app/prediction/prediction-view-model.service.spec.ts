@@ -91,38 +91,30 @@ const testData: RacePredictionModel = {
 };
 
 describe('PredictionViewModelService', () => {
-  let service: PredictionViewModelService;
-
-  beforeAll(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         GraphQLModule, 
         HttpClientModule, 
       ]
     });
-    service = TestBed.inject(PredictionViewModelService);
 
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('レーサー情報の取得', async () => {
+    const service = TestBed.inject(PredictionViewModelService);
     const raceDate = new ExDate(2023, 11, 2);
-    console.log(`開催日:${raceDate.getYYYYMMDD()}`);
 
     const racer = await service.fetchRacer(raceDate, 4150);
 
-    console.log(`レーサー情報:${JSON.stringify(racer, null, 2)}`);
     expect(racer?.racer_no).toEqual(4150);
   });
 
   it('レース予想情報登録APIのテスト', async () => {
+    const service = TestBed.inject(PredictionViewModelService);
     const apiResult = await service.saveRacePrediction(testData);
 
-    console.log(`登録処理結果:${JSON.stringify(apiResult, null, 2)}`);
     expect(apiResult).toBeTruthy();
   });
 });
