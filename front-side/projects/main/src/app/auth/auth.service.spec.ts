@@ -22,7 +22,7 @@ describe('AuthService', () => {
 
       succeed = true;
     } catch(err) {
-      //なにもしない。
+      fail('失敗');
     }
 
     expect(succeed).toBeTrue()
@@ -57,5 +57,5 @@ describe('AuthService', () => {
     }
 
     expect(succeed).toBeFalse();
-  })
+  });
 });

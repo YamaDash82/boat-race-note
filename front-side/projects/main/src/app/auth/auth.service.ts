@@ -38,8 +38,10 @@ export class AuthService {
    */
   async login(key: string, password: string): Promise<void> {
     const token = await new Promise<string>((resolve, reject) => {
+      console.log(`rootUrl:${environment.rootUrl}`);
       this.http.post<{ access_token: string }>(`${environment.rootUrl}/auth/login`, { key, password }).pipe(
         catchError((err: HttpErrorResponse) => {
+          console.log(`サービス${err.error.message}`);
           return throwError(() => new Error(err.error.message));
         }), 
         map(token => token.access_token), 
