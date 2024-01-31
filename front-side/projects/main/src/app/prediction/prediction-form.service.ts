@@ -25,8 +25,9 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   ) { 
     super({
       key: new FormControl<string | null>(null), 
-      raceDate: new ExDateFormControl(null, Validators.required), 
+      raceDate: new ExDateFormControl(new ExDate(), Validators.required), 
       racePlaceCd: new FormControl<number | null>(null, Validators.required), 
+      raceNo: new FormControl<number | null>(null, Validators.required), 
       raceGradeCd: new FormControl<number | null>(null, Validators.required), 
       racers: new RacersFormGroup(), 
       startExhibition: new StartingFormationFormGroup(), 
@@ -41,6 +42,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get key(): FormControl<string | null> { return this.controls['key'] as FormControl<string | null>; }
   get raceDate(): ExDateFormControl { return this.controls['raceDate'] as ExDateFormControl; }
   get racePlaceCd(): FormControl<number | null> { return this.controls['racePlaceCd'] as FormControl<number | null>; }
+  get raceNo(): FormControl<number | null> { return this.controls['raceNo'] as FormControl<number | null>; }
   get raceGradeCd(): FormControl<number | null> { return this.controls['raceGradeCd'] as FormControl<number | null>; }
   get racers(): RacersFormGroup { return this.controls['racers'] as RacersFormGroup; }
   get startExhibition(): StartingFormationFormGroup { return this.controls['startExhibition'] as StartingFormationFormGroup; }
