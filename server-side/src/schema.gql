@@ -14,6 +14,7 @@ type RacersModel {
   weight: Int!
   win_rate: Float!
   win_rate2: Float!
+  st: Float!
   training_term: Int!
   birth_place: String!
   course_datas: [CourseData!]!
