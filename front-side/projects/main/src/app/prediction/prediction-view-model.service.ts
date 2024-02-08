@@ -17,8 +17,10 @@ const GET_RACER = gql`
       racer_no
       name_kanji
       name_kana
+      age
       branch
       rank
+      st
       win_rate
       win_rate2
       training_term
@@ -85,7 +87,7 @@ export class PredictionViewModelService {
   async saveRacePrediction(racePredicion: RacePredictionModel): Promise<RacePredictionDto.Response.Save> {
     return new Promise<RacePredictionDto.Response.Save>((resolve, reject) => {
       const url = `${environment.rootUrl}/race-predictions/save`
-      console.log(`URL確認:${url}`);
+
       this.http.post<RacePredictionDto.Response.Save>(
         url, 
         racePredicion, 

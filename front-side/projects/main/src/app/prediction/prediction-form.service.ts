@@ -25,7 +25,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   ) { 
     super({
       key: new FormControl<string | null>(null), 
-      raceDate: new ExDateFormControl(new ExDate(), Validators.required), 
+      raceDate: new ExDateFormControl(null, Validators.required), 
       racePlaceCd: new FormControl<number | null>(null, Validators.required), 
       raceNo: new FormControl<number | null>(null, Validators.required), 
       raceGradeCd: new FormControl<number | null>(null, Validators.required), 
@@ -179,6 +179,16 @@ export class RacersFormGroup extends FormGroup implements ToDto<Racers> {
   get racer5(): RacerFormControl { return this.controls['racer5'] as RacerFormControl; }
   get racer6(): RacerFormControl { return this.controls['racer6'] as RacerFormControl; }
   
+  /**
+   * RacerFormControl群取得処理
+   * RacerFormControlを配列で取得する。
+   */
+  get items(): RacerFormControl[] {
+    return [
+      this.racer1, this.racer2, this.racer3, this.racer4, this.racer5, this.racer6
+    ];
+  }
+
   /**
    * レーサー情報設定処理
    * @param boatNo 艇番

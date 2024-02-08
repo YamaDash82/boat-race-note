@@ -11,11 +11,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE, DateAdapter } from '@angular/material/core';
 import { JPDateAdapter } from '../common/jp-date-adapter';
 import { MatButtonModule } from '@angular/material/button';
+import { RacerPeriodResultComponent } from './racer-period-result/racer-period-result.component';
 
 @NgModule({
   declarations: [
     RaceTableComponent,
-    RaceIndexComponent
+    RaceIndexComponent,
+    RacerPeriodResultComponent
   ],
   imports: [
     CommonModule, 

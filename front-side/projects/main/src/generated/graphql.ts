@@ -109,6 +109,7 @@ export type RacersModel = {
   name_kanji: Scalars['String']['output'];
   racer_no: Scalars['Int']['output'];
   rank: Scalars['String']['output'];
+  st: Scalars['Float']['output'];
   training_term: Scalars['Int']['output'];
   weight: Scalars['Int']['output'];
   win_rate: Scalars['Float']['output'];
