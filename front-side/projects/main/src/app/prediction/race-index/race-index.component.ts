@@ -55,6 +55,13 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
       <div>
         {{ fg.value | json }}
       </div>
+      <div class="mt-auto">
+        <a 
+          mat-raised-button  
+          class="ml-auto"
+          routerLink="/prediction/contents/exhibition"
+        >確定</a>
+      </div>
     </form>
   `,
   styles: [`
@@ -82,6 +89,9 @@ export class RaceIndexComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.fg.raceDate.setValue(new ExDate())
     //テストデータの表示
+    //レース場
+    this.fg.racePlaceCd.setValue(10);
+    this.fg.raceNo.setValue(7);
     this.fg.setRacer(1, 4505);
     this.fg.setRacer(2, 4150);
     this.fg.setRacer(3, 3445);

@@ -12,15 +12,20 @@ import { MatNativeDateModule, MAT_DATE_LOCALE, DateAdapter } from '@angular/mate
 import { JPDateAdapter } from '../common/jp-date-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { RacerPeriodResultComponent } from './racer-period-result/racer-period-result.component';
+import { ContentsComponent } from './contents/contents.component';
+import { AppRoutingModule } from '../app-routing.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
     RaceTableComponent,
     RaceIndexComponent,
-    RacerPeriodResultComponent
+    RacerPeriodResultComponent,
+    ContentsComponent
   ],
   imports: [
     CommonModule, 
+    AppRoutingModule, 
     ReactiveFormsModule, 
     HttpClientModule, 
     MatInputModule, 
@@ -28,9 +33,10 @@ import { RacerPeriodResultComponent } from './racer-period-result/racer-period-r
     MatDatepickerModule, 
     MatNativeDateModule, 
     MatButtonModule, 
+    MatIconModule, 
   ], 
   providers: [ 
-    PredictionFormService, 
+    //PredictionFormService, 
     { provide: MAT_DATE_LOCALE, useValue: 'ja-JP' }, 
     { provide: DateAdapter, useClass: JPDateAdapter }
   ]
