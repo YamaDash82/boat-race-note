@@ -35,6 +35,19 @@ import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
           <div>{{racer?.racerInfo?.name_kanji}}</div>
         </div>
       </div>
+      <!--サブヘッダー-->
+      <div class="h-[5vh] bg-red-300 flex items-center">
+        <!--遷移ボタン-->
+        <!--展示-->
+        <a href="#" mat-flat-button class="block ml-2">展示</a>
+        <!--進入予想-->
+        <a href="#" mat-flat-button class="block ml-2">進入予想</a>
+        <!--展開予想-->
+        <a href="#" mat-flat-button class="block ml-2">展開予想</a>
+        <!--結果-->
+        <a href="#" mat-flat-button class="block ml-2">結果</a>
+
+      </div>
       {{ fg.value | json }}
       <router-outlet></router-outlet>
     </div>
