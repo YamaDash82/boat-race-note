@@ -37,18 +37,13 @@ import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
       </div>
       <!--サブヘッダー-->
       <div class="h-[5vh] bg-red-300 flex items-center">
-        <!--遷移ボタン-->
-        <!--展示-->
-        <a href="#" mat-flat-button class="block ml-2">展示</a>
-        <!--進入予想-->
-        <a href="#" mat-flat-button class="block ml-2">進入予想</a>
-        <!--展開予想-->
-        <a href="#" mat-flat-button class="block ml-2">展開予想</a>
-        <!--結果-->
-        <a href="#" mat-flat-button class="block ml-2">結果</a>
-
+        <a 
+          *ngFor="let linkButton of linkButtons" 
+          mat-flat-button class="block ml-2"
+          [routerLink]="linkButton.endPoint"
+         >{{linkButton.caption}}</a>
+         <button type="button" mat-raised-button class="ml-auto mr-2" color="primary">保存</button>
       </div>
-      {{ fg.value | json }}
       <router-outlet></router-outlet>
     </div>
   `,
@@ -57,6 +52,13 @@ import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 })
 export class ContentsComponent {
   racePlaces = RacePlaces;
+
+  linkButtons: { caption: string, endPoint: string }[] = [
+    { caption: "展示", endPoint: "exhibition" }, 
+    { caption: "進入予想", endPoint: "approach-prediction" }, 
+    { caption: "展開予想", endPoint: "deployment-prediction" }, 
+    { caption: "結果", endPoint: "race-result" }, 
+  ];
 
   constructor(
     public fg: PredictionFormService, 

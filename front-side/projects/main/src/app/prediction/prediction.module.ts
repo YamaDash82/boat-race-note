@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RaceTableComponent } from './race-table/race-table.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PredictionFormService } from './prediction-form.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,13 +14,24 @@ import { RacerPeriodResultComponent } from './racer-period-result/racer-period-r
 import { ContentsComponent } from './contents/contents.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { MatIconModule } from '@angular/material/icon';
+import { StartExhibitionComponent } from './start-exhibition/start-exhibition.component';
+import { SailingExhibitionComponent } from './sailing-exhibition/sailing-exhibition.component';
+import { ExhibitionComponent } from './exhibition/exhibition.component';
+import { ApproachPredictionComponent } from './approach-prediction/approach-prediction.component';
+import { DeploymentPredictionComponent } from './deployment-prediction/deployment-prediction.component';
+import { RaceResultComponent } from './race-result/race-result.component';
 
 @NgModule({
   declarations: [
-    RaceTableComponent,
     RaceIndexComponent,
     RacerPeriodResultComponent,
-    ContentsComponent
+    ContentsComponent,
+    StartExhibitionComponent,
+    SailingExhibitionComponent,
+    ExhibitionComponent,
+    ApproachPredictionComponent,
+    DeploymentPredictionComponent,
+    RaceResultComponent
   ],
   imports: [
     CommonModule, 

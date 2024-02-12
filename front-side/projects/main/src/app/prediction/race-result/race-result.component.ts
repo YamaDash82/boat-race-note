@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-race-table',
+  selector: 'app-race-result',
   template: `
     <p>
-      race-table works!
+      race-result works!
     </p>
   `,
   styles: [
   ]
 })
-export class RaceTableComponent {
+export class RaceResultComponent {
 
 }
