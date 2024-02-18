@@ -53,6 +53,14 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
 
   /**
+   * 初期化処理
+   */
+  initialize() {
+    //スタート展示を初期化する。
+    this.startExhibition.initialize();
+  }
+
+  /**
    * レーサー情報設定処理
    * @param boatNo 
    * @param racerNo 
@@ -91,6 +99,13 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
 
     //コントロールにレーサー情報をセットする。
     this.racers.setRacerInfo(boatNo, racerInfo);
+  }
+
+  /**
+   * スタート展示タイム設定処理
+   */
+  setStartExhibitionSt(courseNo: number, boatNo: number, st: number) {
+    this.startExhibition.setSt(courseNo, boatNo, st);
   }
 
   /**
@@ -281,25 +296,47 @@ export class StartingBoatFormControl extends FormControl<number | null> implemen
 
 /**
  * 進入予想フォームグループ
+ * 保存形式は { course1: { boatNo: nunber, st: numnber}, course2: { ... }, ... }とする。
+ * Formで扱うときは、StartingBoatFormControlの配列として扱う。
  */
 export class StartingFormationFormGroup extends FormGroup implements ToDto<StartingFormation> {
   constructor() {
     super({
+      /*
       course1: new StartingBoatFormControl(), 
       course2: new StartingBoatFormControl(), 
       course3: new StartingBoatFormControl(), 
       course4: new StartingBoatFormControl(), 
       course5: new StartingBoatFormControl(), 
       course6: new StartingBoatFormControl(), 
+      */
+      boats: new FormArray<StartingBoatFormControl>([
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+      ])
     });
+
+    //開発中、挙動が固まったら以下は削除することになると思う。
+    this.initialize();
   }
 
+  /*
   get course1(): StartingBoatFormControl { return this.controls['course1'] as StartingBoatFormControl; }
   get course2(): StartingBoatFormControl { return this.controls['course2'] as StartingBoatFormControl; }
   get course3(): StartingBoatFormControl { return this.controls['course3'] as StartingBoatFormControl; }
   get course4(): StartingBoatFormControl { return this.controls['course4'] as StartingBoatFormControl; }
   get course5(): StartingBoatFormControl { return this.controls['course5'] as StartingBoatFormControl; }
   get course6(): StartingBoatFormControl { return this.controls['course6'] as StartingBoatFormControl; }
+  get courses(): StartingBoatFormControl[] {
+    return [ this.course1, this.course2, this.course3, this.course4, this.course5, this.course6 ];
+  }
+  */
+  get boatsArray(): FormArray<StartingBoatFormControl> { return this.controls['boats'] as FormArray<StartingBoatFormControl>; }
+  get boats(): StartingBoatFormControl[] { return this.boatsArray.controls; }
 
   /**
    * スタートタイミング設定処理
@@ -310,17 +347,29 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
   setSt(courseNo: number, boatNo: number, st: number | null) {
     //1～6以外の値がcourseNoに指定されたとき例外をスローする。
     
-    (this.controls[`course${courseNo}`] as StartingBoatFormControl).setSt(boatNo, st);
+    //(this.controls[`course${courseNo}`] as StartingBoatFormControl).setSt(boatNo, st);
+    this.boatsArray.controls[courseNo - 1].setSt(boatNo, st);
+  }
+
+  /**
+   * 初期化処理 
+   * 枠なり、stはnullで初期化する。
+   */
+  initialize() {
+    //bi:boatIndex
+    for (let bi = 1; bi <= 6; bi++) {
+      this.setSt(bi, bi, null);
+    }
   }
 
   toDto() {
     return {
-      course1: this.course1.toDto(), 
-      course2: this.course2.toDto(), 
-      course3: this.course3.toDto(), 
-      course4: this.course4.toDto(), 
-      course5: this.course5.toDto(), 
-      course6: this.course6.toDto()
+      course1: this.boatsArray.controls[0].toDto(), 
+      course2: this.boatsArray.controls[1].toDto(), 
+      course3: this.boatsArray.controls[2].toDto(), 
+      course4: this.boatsArray.controls[3].toDto(),
+      course5: this.boatsArray.controls[4].toDto(), 
+      course6: this.boatsArray.controls[5].toDto(), 
     }    
   }
 }

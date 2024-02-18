@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PredictionFormService } from '../prediction-form.service';
 import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
+import { getBoatColorClass } from '../../common/utilities';
 
 @Component({
   selector: 'app-contents',
@@ -53,6 +54,9 @@ import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 export class ContentsComponent {
   racePlaces = RacePlaces;
 
+  //艇番表示色取得クラス
+  getBoatColorClass = getBoatColorClass;
+
   linkButtons: { caption: string, endPoint: string }[] = [
     { caption: "展示", endPoint: "exhibition" }, 
     { caption: "進入予想", endPoint: "approach-prediction" }, 
@@ -73,16 +77,5 @@ export class ContentsComponent {
     if (!racePlaceCd) return null;
 
     return this.racePlaces.find(rp => rp.code === racePlaceCd) as RacePlace;
-  }
-
-  getBoatColorClass(boatNo: number): any {
-    return {
-      "boat-color1": boatNo === 1,
-      "boat-color2": boatNo === 2, 
-      "boat-color3": boatNo === 3,
-      "boat-color4": boatNo === 4,
-      "boat-color5": boatNo === 5,
-      "boat-color6": boatNo === 6
-    }
   }
 }

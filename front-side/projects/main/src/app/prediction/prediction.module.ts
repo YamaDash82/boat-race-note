@@ -20,6 +20,7 @@ import { ExhibitionComponent } from './exhibition/exhibition.component';
 import { ApproachPredictionComponent } from './approach-prediction/approach-prediction.component';
 import { DeploymentPredictionComponent } from './deployment-prediction/deployment-prediction.component';
 import { RaceResultComponent } from './race-result/race-result.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { RaceResultComponent } from './race-result/race-result.component';
     MatNativeDateModule, 
     MatButtonModule, 
     MatIconModule, 
+    DragDropModule, 
   ], 
   providers: [ 
     //PredictionFormService, 
