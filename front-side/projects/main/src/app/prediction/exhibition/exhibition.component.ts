@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-exhibition',
   template: `
     <div class="h-[80vh] w-full flex">
-      <app-start-exhibition class="w-[50%]"></app-start-exhibition>
-      <app-sailing-exhibition class="w-[50%]"></app-sailing-exhibition>
+      <app-start-exhibition class="w-[70%]"></app-start-exhibition>
+      <app-sailing-exhibition class="w-[30%]"></app-sailing-exhibition>
     </div>
   `,
   styles: [

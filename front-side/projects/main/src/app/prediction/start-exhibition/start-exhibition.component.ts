@@ -21,7 +21,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
           cdkDrag
         >
           <!--艇番の表示-->
-          <div class="h-10 w-20 text-center pt-2" [ngClass]="getBoatColorClass(course.boatNo)">{{course.boatNo}}</div>
+          <div class="h-10 w-16 text-center pt-2" [ngClass]="getBoatColorClass(course.boatNo)">{{course.boatNo}}</div>
           <!--ボートのイメージ-->
           <div class="ml-10 mr-10 border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
             <img 

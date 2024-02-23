@@ -396,6 +396,12 @@ export class ExhibitionTimesFormGroup extends FormGroup implements ToDto<Exhibit
   get boat5(): FormControl<number | null> { return this.controls['boat5'] as FormControl<number | null>; }
   get boat6(): FormControl<number | null> { return this.controls['boat6'] as FormControl<number | null>; }
  
+  get boats(): FormControl[] { 
+    return [
+      this.boat1, this.boat2, this.boat3, this.boat4, this.boat5, this.boat6  
+    ];
+  }
+
   /**
    * 展示タイム設定処理
    * @param boatNo 
