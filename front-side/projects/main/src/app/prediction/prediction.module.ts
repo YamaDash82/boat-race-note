@@ -14,20 +14,21 @@ import { RacerPeriodResultComponent } from './racer-period-result/racer-period-r
 import { ContentsComponent } from './contents/contents.component';
 import { AppRoutingModule } from '../app-routing.module';
 import { MatIconModule } from '@angular/material/icon';
-import { StartExhibitionComponent } from './start-exhibition/start-exhibition.component';
+import { ApproachFormationComponent } from './approach-formation/approach-formation.component';
 import { SailingExhibitionComponent } from './sailing-exhibition/sailing-exhibition.component';
 import { ExhibitionComponent } from './exhibition/exhibition.component';
 import { ApproachPredictionComponent } from './approach-prediction/approach-prediction.component';
 import { DeploymentPredictionComponent } from './deployment-prediction/deployment-prediction.component';
 import { RaceResultComponent } from './race-result/race-result.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { GeneralModule } from '../general/general.module';
 
 @NgModule({
   declarations: [
     RaceIndexComponent,
     RacerPeriodResultComponent,
     ContentsComponent,
-    StartExhibitionComponent,
+    ApproachFormationComponent,
     SailingExhibitionComponent,
     ExhibitionComponent,
     ApproachPredictionComponent,
@@ -39,6 +40,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AppRoutingModule, 
     ReactiveFormsModule, 
     HttpClientModule, 
+    GeneralModule, 
     MatInputModule, 
     MatFormFieldModule, 
     MatDatepickerModule, 

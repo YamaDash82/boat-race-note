@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { PredictionFormService, StartingBoatFormControl } from '../prediction-form.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { PredictionFormService, StartingBoatFormControl, StartingFormationFormGroup } from '../prediction-form.service';
 import { getBoatColorClass } from '../../common/utilities';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-start-exhibition',
+  selector: 'app-approach-formation',
   template: `
-    <form [formGroup]="fg.startExhibition" class="h-full w-full flex flex-col p-2">
+    <form [formGroup]="startFormationFg" class="h-full w-full flex flex-col p-2">
       <!--画面タイトル-->
       <div>スタート展示</div>
       <!--メインコンテンツ-->
@@ -16,7 +16,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
         (cdkDropListDropped)="drop($event)"
       >
         <div 
-          *ngFor="let course of fg.startExhibition.boatsArray.controls" 
+          *ngFor="let course of startFormationFg.boats" 
           class="grow flex items-center border-b  border-r border-slate-500 starting-boat"
           cdkDrag
         >
@@ -57,30 +57,32 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
     }
   `]
 })
-export class StartExhibitionComponent implements OnInit {
+export class ApproachFormationComponent implements OnInit {
+  @Input() startFormationFg!: StartingFormationFormGroup;
+
   //艇番表示色取得クラス
   getBoatColorClass = getBoatColorClass;
 
   constructor(
-    public fg: PredictionFormService, 
+    //public fg: PredictionFormService, 
   ) { }
 
   ngOnInit(): void {
     //開発用、処理が固まったら以下は削除。
     //this.fg.startExhibition.initialize();
-    if (!this.fg.startExhibition.boats[0].value) {
-      this.fg.setStartExhibitionSt(1, 1, 0.2);
-      this.fg.setStartExhibitionSt(2, 2, 0.13);
-      this.fg.setStartExhibitionSt(3, 3, -0.05);
-      this.fg.setStartExhibitionSt(4, 4, 0.19);
-      this.fg.setStartExhibitionSt(5, 5, 0.04);
-      this.fg.setStartExhibitionSt(6, 6, 0.09);
+    if (!this.startFormationFg.boats[0].value) {
+      this.startFormationFg.setSt(1, 1, 0.2);
+      this.startFormationFg.setSt(2, 2, 0.13);
+      this.startFormationFg.setSt(3, 3, -0.05);
+      this.startFormationFg.setSt(4, 4, 0.19);
+      this.startFormationFg.setSt(5, 5, 0.04);
+      this.startFormationFg.setSt(6, 6, 0.09);
     }
   }
 
   drop(event: CdkDragDrop<StartingBoatFormControl[]>) {
     moveItemInArray(
-      this.fg.startExhibition.boatsArray.controls, 
+      this.startFormationFg.boatsArray.controls, 
       event.previousIndex, 
       event.currentIndex, 
     )
