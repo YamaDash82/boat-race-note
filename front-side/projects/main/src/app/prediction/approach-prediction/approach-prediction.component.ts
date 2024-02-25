@@ -23,6 +23,21 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
           class="my-2"
         ></app-paginator>
       </div>
+      <!--参考データ選択部(スタート展示/平均ST/コース別平均ST)-->
+      <div class="flex">
+        <!--スタート展示タイム設定処理-->
+        <button type="button" mat-stroked-button class="mr-2"
+          (click)="setStartExhibitionTime()"
+        >スタート展示</button>
+        <!--平均ST設定処理-->
+        <button type="button" mat-stroked-button class="mr-2"
+          (click)="setAvgTime()"
+        >平均ST</button>
+        <!--コース別平均ST設定処理-->
+        <button type="button" mat-stroked-button class="mr-2"
+          (click)="setCourseAvgTime()"
+        >コース別平均ST</button>
+      </div>
       <div class="grow flex">
         <!--進入予想部分-->
         <app-approach-formation 
@@ -35,7 +50,6 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
           *ngIf="currentApproachPrediction"
           class="flex flex-col"
         >
-          <!--<div>データ</div>-->
           <!--データ表示部-->
           <!--ヘッダー-->
           <div class="flex">
@@ -126,5 +140,54 @@ export class ApproachPredictionComponent implements OnInit {
     this.fg.appendApproachPrediction();
     //ページ末尾の追加した進入予想を取得する。
     this.paginator.moveLast();
+  }
+
+  /**
+   * スタート展示タイム設定処理
+   * (注意)タイムをセットする。セット前に進入コースが変更されている場合、対象の艇にタイムをセットする。
+   */
+  setStartExhibitionTime() {
+    if (!this.currentApproachPrediction) return;
+
+    //入力されたスタート展示情報を艇ごとに巡回する。
+    this.fg.startExhibition.boats.forEach(startingBoat => {
+      //進入予想情報の、値をセットする対象となる艇を検索する。
+      const targetBoat = this.currentApproachPrediction?.boats.find(boat => boat.boatNo === startingBoat.boatNo);
+
+      //スタートタイムをセットする。
+      targetBoat?.setSt(startingBoat.boatNo, startingBoat.value);
+    });
+  }
+
+  /**
+   * 平均ST設定処理
+   */
+  setAvgTime() {
+    if (!this.currentApproachPrediction) return;
+
+    //艇を巡回する。
+    this.currentApproachPrediction.boats.forEach(boat => {
+      //対象データを検索する。
+      const targetRacer = this.getRacerInfo(boat.boatNo);
+
+      //平均STをセットする。
+      boat.setSt(boat.boatNo, targetRacer.st);
+    });
+  }
+
+  /**
+   * コース別平均ST設定処理
+   */
+  setCourseAvgTime() {
+    if (!this.currentApproachPrediction) return;
+
+    //艇を巡回する。
+    this.currentApproachPrediction.boats.forEach((boat, index) => {
+      //対象データを検索する。
+      const targetRacer = this.getRacerInfo(boat.boatNo);
+
+      //コース別平均STをセットする。
+      boat.setSt(boat.boatNo, targetRacer.course_datas[index].st);
+    });
   }
 }
