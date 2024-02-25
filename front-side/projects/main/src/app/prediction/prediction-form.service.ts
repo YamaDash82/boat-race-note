@@ -53,6 +53,20 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
 
   /**
+   * カレント進入予想インデックスゲッター
+   */
+  get approachPredictionIndex(): number | null {
+    return this.currentApproachPredictionIndex;
+  }
+
+  /**
+   * カレント進入予想インデックスセッター
+   */
+  set approachPredictionIndex(index: number) {
+    this.currentApproachPredictionIndex = index;
+  }
+
+  /**
    * 初期化処理
    */
   initialize() {
@@ -122,7 +136,23 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
    */
   appendApproachPrediction() {
     this.approachPredictions.push(new StartingFormationFormGroup());
-    this.currentApproachPredictionIndex = this.addAsyncValidators.length - 1;
+    this.currentApproachPredictionIndex = this.approachPredictions.length - 1;
+  }
+
+  /**
+   * 進入予想取得処理
+   * 指定したインデックスの進入湯尾想を取得する。値取得時、保持するカレント進入予想インデックスを更新する。
+   * @param index 
+   * @returns 
+   */
+  approachPredictionAt(index: number): StartingFormationFormGroup {
+    if (index < 0 || index > (this.approachPredictions.length - 1)) {
+      throw new Error('該当する進入予想が存在しません。インデックスの指定が不正です。');
+    }
+
+    //インデックスを更新する。
+    this.currentApproachPredictionIndex = index;
+    return this.approachPredictions.controls[this.currentApproachPredictionIndex];
   }
 
   /**
