@@ -59,20 +59,20 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
       <!--平均ST-->
       <div class="w-[4rem] h-20 flex items-center justify-center border-b border-r border-slate-500">
         <div>
-          {{racer?.st}}
+          {{racer?.st | number: '1.2' }}
         </div>
       </div>
       <!--勝率/二連対率-->
       <div class="w-[4rem] h-20 flex flex-col justify-around items-center border-b border-r border-slate-500">
-        <div>{{racer?.win_rate}}</div>
-        <div>{{racer?.win_rate2}}</div>
+        <div>{{racer?.win_rate  | number: '1.2' }}</div>
+        <div>{{racer?.win_rate2 | number: '1.1' }}</div>
       </div>
       <!--コース別情報-->
       <div *ngFor="let c of courseDataIndexes" class="w-[6rem] h-20 flex flex-col justify-around items-center border-b border-r border-slate-500">
         <!--コース別平均ST-->
-        <div>{{racer?.course_datas?.[c]?.st}}</div>
+        <div>{{racer?.course_datas?.[c]?.st | number: '1.2' }}</div>
         <!--コース別二連対率-->
-        <div>{{racer?.course_datas?.[c]?.win_rate2}}</div>
+        <div>{{racer?.course_datas?.[c]?.win_rate2 | number: '1.1' }}</div>
       </div>
     </div>
   `,
