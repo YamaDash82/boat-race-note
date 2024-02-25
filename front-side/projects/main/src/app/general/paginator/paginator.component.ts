@@ -47,7 +47,7 @@ export class PaginatorComponent {
   /**
    * 移動後イベント
    */
-  @Output() moved = new EventEmitter<any>();
+  @Output() moved = new EventEmitter<{ index: number; data: any }>();
 
   /**
    * 前データ有無
@@ -77,7 +77,14 @@ export class PaginatorComponent {
     //集合体に要素がないとき処理を中断する。
     if (!this.items.length) return;
 
-    this.moved.emit(this.items[--this.currentIndex])
+    //インデックスを移動する。
+    this.currentIndex--;
+
+    //移動先の要素を返す。
+    this.moved.emit({ 
+      index: this.currentIndex, 
+      data: this.items[this.currentIndex]
+    });
   }
 
   /**
@@ -88,7 +95,30 @@ export class PaginatorComponent {
     //集合体に要素がないとき処理を中断する。
     if (!this.items.length) return;
 
-    this.moved.emit(this.items[++this.currentIndex]);
+    //インデックスを移動する。
+    this.currentIndex++;
+
+    //移動先の要素を返す。
+    this.moved.emit({
+      index: this.currentIndex, 
+      data: this.items[this.currentIndex]
+    });
+  }
+
+  /**
+   * 指定位置移動処理
+   * @param index 
+   */
+  moveAt(index: number) {
+    if (index < 0 || index > (this.items.length - 1)) throw new Error('インデックスの指定が不正です。');
+
+    //インデックスを更新する。
+    this.currentIndex = index;
+    //該当する要素を返す。
+    this.moved.emit({ 
+      index: this.currentIndex, 
+      data: this.items[this.currentIndex]
+    });
   }
 
   /**
@@ -101,6 +131,9 @@ export class PaginatorComponent {
 
     this.currentIndex = this.items.length - 1;
 
-    this.moved.emit(this.items[this.currentIndex]);
+    this.moved.emit({
+      index: this.currentIndex, 
+      data: this.items[this.currentIndex]
+    });
   }
 }
