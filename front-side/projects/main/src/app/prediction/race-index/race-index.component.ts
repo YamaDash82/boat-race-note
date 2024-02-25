@@ -87,17 +87,6 @@ export class RaceIndexComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.fg.raceDate.setValue(new ExDate())
-    //テストデータの表示
-    //レース場
-    this.fg.racePlaceCd.setValue(10);
-    this.fg.raceNo.setValue(7);
-    this.fg.setRacer(1, 4505);
-    this.fg.setRacer(2, 4150);
-    this.fg.setRacer(3, 3445);
-    this.fg.setRacer(4, 4826);
-    this.fg.setRacer(5, 4640);
-    this.fg.setRacer(6, 4488);
   }
 
   /**

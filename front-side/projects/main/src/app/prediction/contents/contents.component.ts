@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PredictionFormService } from '../prediction-form.service';
 import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
+import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 
 @Component({
   selector: 'app-contents',
@@ -51,7 +52,7 @@ import { getBoatColorClass } from '../../common/utilities';
   styles: [
   ]
 })
-export class ContentsComponent {
+export class ContentsComponent implements OnInit {
   racePlaces = RacePlaces;
 
   //艇番表示色取得クラス
@@ -67,6 +68,30 @@ export class ContentsComponent {
   constructor(
     public fg: PredictionFormService, 
   ) { }
+
+  async ngOnInit(): Promise<void> {
+    //開発時、テストデータのセットをここに集約する。
+    this.fg.raceDate.setValue(new ExDate())
+    //テストデータの表示
+    //レース場
+    this.fg.racePlaceCd.setValue(10);
+    this.fg.raceNo.setValue(7);
+    this.fg.setRacer(1, 4505);
+    this.fg.setRacer(2, 4150);
+    this.fg.setRacer(3, 3445);
+    this.fg.setRacer(4, 4826);
+    this.fg.setRacer(5, 4640);
+    this.fg.setRacer(6, 4488);
+    //this.fg.startExhibition.initialize();
+    if (!this.fg.startExhibition.boats[0].value) {
+      this.fg.setStartExhibitionSt(1, 1, 0.2);
+      this.fg.setStartExhibitionSt(2, 2, 0.13);
+      this.fg.setStartExhibitionSt(3, 3, -0.05);
+      this.fg.setStartExhibitionSt(4, 4, 0.19);
+      this.fg.setStartExhibitionSt(5, 5, 0.04);
+      this.fg.setStartExhibitionSt(6, 6, 0.09);
+    }
+  }
 
   /**
    * レース場検索

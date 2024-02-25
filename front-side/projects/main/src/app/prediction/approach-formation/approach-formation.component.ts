@@ -69,15 +69,6 @@ export class ApproachFormationComponent implements OnInit {
 
   ngOnInit(): void {
     //開発用、処理が固まったら以下は削除。
-    //this.fg.startExhibition.initialize();
-    if (!this.startFormationFg.boats[0].value) {
-      this.startFormationFg.setSt(1, 1, 0.2);
-      this.startFormationFg.setSt(2, 2, 0.13);
-      this.startFormationFg.setSt(3, 3, -0.05);
-      this.startFormationFg.setSt(4, 4, 0.19);
-      this.startFormationFg.setSt(5, 5, 0.04);
-      this.startFormationFg.setSt(6, 6, 0.09);
-    }
   }
 
   drop(event: CdkDragDrop<StartingBoatFormControl[]>) {
