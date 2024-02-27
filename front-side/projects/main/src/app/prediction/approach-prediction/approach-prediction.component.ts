@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { PaginatorComponent } from '../../general/paginator/paginator.component';
-import { PredictionFormService, StartingFormationFormGroup, } from '../prediction-form.service';
+import { ApproachPredictionFormGroup, PredictionFormService, StartingFormationFormGroup, } from '../prediction-form.service';
 import { getBoatColorClass } from '../../common/utilities';
 import { RacersModel } from 'projects/main/src/generated/graphql';
 
@@ -26,16 +26,19 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
       <!--参考データ選択部(スタート展示/平均ST/コース別平均ST)-->
       <div class="flex">
         <!--スタート展示タイム設定処理-->
-        <button type="button" mat-stroked-button class="mr-2"
+        <button type="button" mat-flat-button class="mr-2"
           (click)="setStartExhibitionTime()"
+          [color]="currentApproachPrediction?.stType===1 ? 'primary' : ''"
         >スタート展示</button>
         <!--平均ST設定処理-->
-        <button type="button" mat-stroked-button class="mr-2"
+        <button type="button" mat-flat-button class="mr-2"
           (click)="setAvgTime()"
+          [color]="currentApproachPrediction?.stType===2 ? 'primary' : ''"
         >平均ST</button>
         <!--コース別平均ST設定処理-->
-        <button type="button" mat-stroked-button class="mr-2"
+        <button type="button" mat-flat-button class="mr-2"
           (click)="setCourseAvgTime()"
+          [color]="currentApproachPrediction?.stType===3 ? 'primary' : ''"
         >コース別平均ST</button>
       </div>
       <div class="grow flex">
@@ -44,6 +47,7 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
           *ngIf="currentApproachPrediction"
           [startFormationFg]="currentApproachPrediction"
           class="w-2/3"
+          (formationChanged)="formationChanged()"
         ></app-approach-formation>
         <!--コース別データ-->
         <div 
@@ -97,7 +101,7 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
 })
 export class ApproachPredictionComponent implements OnInit {
   @ViewChild(PaginatorComponent) paginator!: PaginatorComponent;
-  currentApproachPrediction: StartingFormationFormGroup | null = null;
+  currentApproachPrediction: ApproachPredictionFormGroup | null = null;
 
   getBoatColoarClass = getBoatColorClass;
 
@@ -127,7 +131,7 @@ export class ApproachPredictionComponent implements OnInit {
    * ページ移動後ページネーターから移動後の値(進入予想)を返されるのでそれをカレントにセットする。
    * @param movedValue 
    */
-  pageMoved(movedValue: { index:  number, data: StartingFormationFormGroup }) {
+  pageMoved(movedValue: { index:  number, data: ApproachPredictionFormGroup }) {
     this.currentApproachPrediction = movedValue.data;
     this.fg.approachPredictionIndex = movedValue.index;
   }
@@ -149,6 +153,9 @@ export class ApproachPredictionComponent implements OnInit {
   setStartExhibitionTime() {
     if (!this.currentApproachPrediction) return;
 
+    //設定スタートタイミング区分をセットする。
+    this.currentApproachPrediction.stType = 1;
+
     //入力されたスタート展示情報を艇ごとに巡回する。
     this.fg.startExhibition.boats.forEach(startingBoat => {
       //進入予想情報の、値をセットする対象となる艇を検索する。
@@ -164,6 +171,9 @@ export class ApproachPredictionComponent implements OnInit {
    */
   setAvgTime() {
     if (!this.currentApproachPrediction) return;
+
+    //設定スタートタイミング区分をセットする。
+    this.currentApproachPrediction.stType = 2;
 
     //艇を巡回する。
     this.currentApproachPrediction.boats.forEach(boat => {
@@ -181,6 +191,9 @@ export class ApproachPredictionComponent implements OnInit {
   setCourseAvgTime() {
     if (!this.currentApproachPrediction) return;
 
+    //設定スタートタイミング区分をセットする。
+    this.currentApproachPrediction.stType = 3;
+
     //艇を巡回する。
     this.currentApproachPrediction.boats.forEach((boat, index) => {
       //対象データを検索する。
@@ -189,5 +202,24 @@ export class ApproachPredictionComponent implements OnInit {
       //コース別平均STをセットする。
       boat.setSt(boat.boatNo, targetRacer.course_datas[index].st);
     });
+  }
+
+  /**
+   * 進入体系更新後処理
+   */
+  formationChanged() {
+    switch(this.currentApproachPrediction?.stType) {
+      case 1: //スタート展示タイム
+        this.setStartExhibitionTime();
+        break;
+      case 2: //平均ST
+        this.setAvgTime();
+        break;
+      case 3: //コース別平均ST
+        this.setCourseAvgTime();
+        break;
+      default:
+        //何もしない
+    }
   }
 }

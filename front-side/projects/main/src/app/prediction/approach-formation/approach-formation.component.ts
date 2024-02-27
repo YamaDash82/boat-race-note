@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PredictionFormService, StartingBoatFormControl, StartingFormationFormGroup } from '../prediction-form.service';
 import { getBoatColorClass } from '../../common/utilities';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -60,6 +60,8 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 export class ApproachFormationComponent implements OnInit {
   @Input() startFormationFg!: StartingFormationFormGroup;
 
+  @Output() formationChanged = new EventEmitter<void>();
+
   //艇番表示色取得クラス
   getBoatColorClass = getBoatColorClass;
 
@@ -77,6 +79,8 @@ export class ApproachFormationComponent implements OnInit {
       event.previousIndex, 
       event.currentIndex, 
     )
+
+    this.formationChanged.emit();
   }
 
   startPosition(st: number | null): string {
