@@ -32,7 +32,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       racers: new RacersFormGroup(), 
       startExhibition: new StartingFormationFormGroup(), 
       exhibitionTimes: new ExhibitionTimesFormGroup(), 
-      approachPredictions: new FormArray<StartingFormationFormGroup>([]), 
+      approachPredictions: new FormArray<ApproachPredictionFormGroup>([]), 
       deploymentPredictions: new FormArray<FormControl<string | null>>([]),
       raceResult: new RaceResultFormGroup(),
       isWon: new FormControl<null | boolean>(null)
@@ -47,7 +47,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get racers(): RacersFormGroup { return this.controls['racers'] as RacersFormGroup; }
   get startExhibition(): StartingFormationFormGroup { return this.controls['startExhibition'] as StartingFormationFormGroup; }
   get exhibitionTimes(): ExhibitionTimesFormGroup { return this.controls['exhibitionTimes'] as ExhibitionTimesFormGroup; }
-  get approachPredictions(): FormArray<StartingFormationFormGroup> { return this.controls['approachPredictions'] as FormArray<StartingFormationFormGroup>; }
+  get approachPredictions(): FormArray<ApproachPredictionFormGroup> { return this.controls['approachPredictions'] as FormArray<ApproachPredictionFormGroup>; }
   get deploymentPredictoins(): FormArray<FormControl<string | null>> { return this.controls['deploymentPredictions'] as FormArray<FormControl<string | null>>; }
   get raceResult(): RaceResultFormGroup { return this.controls['raceResult'] as RaceResultFormGroup; }
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
@@ -135,7 +135,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
    * 進入予想追加処理
    */
   appendApproachPrediction() {
-    this.approachPredictions.push(new StartingFormationFormGroup());
+    this.approachPredictions.push(new ApproachPredictionFormGroup());
     this.currentApproachPredictionIndex = this.approachPredictions.length - 1;
   }
 
@@ -402,6 +402,20 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
       course6: this.boatsArray.controls[5].toDto(), 
     }    
   }
+}
+
+/**
+ * 進入予想フォームグループ
+ */
+export class ApproachPredictionFormGroup extends StartingFormationFormGroup {
+  /** 
+   * 設定スタートタイミング区分
+   *   0: 未設定
+   *   1: スタート展示タイム
+   *   2: 平均ST
+   *   3: コース別平均ST
+  */
+  stType: number = 0;
 }
 
 /**
