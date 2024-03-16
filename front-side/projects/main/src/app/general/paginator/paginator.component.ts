@@ -50,6 +50,12 @@ export class PaginatorComponent {
   @Output() moved = new EventEmitter<{ index: number; data: any }>();
 
   /**
+   * 移動前イベント
+   * 移動ボタンクリックを検知するのに使用する。
+   */
+  @Output() beforeMove = new EventEmitter<void>();
+
+  /**
    * 前データ有無
    * @returns 
    */
@@ -77,6 +83,9 @@ export class PaginatorComponent {
     //集合体に要素がないとき処理を中断する。
     if (!this.items.length) return;
 
+    //移動前イベントを発火する。
+    this.beforeMove.emit();
+
     //インデックスを移動する。
     this.currentIndex--;
 
@@ -95,6 +104,9 @@ export class PaginatorComponent {
     //集合体に要素がないとき処理を中断する。
     if (!this.items.length) return;
 
+    //移動前イベントを発火する。
+    this.beforeMove.emit();
+
     //インデックスを移動する。
     this.currentIndex++;
 
@@ -112,6 +124,9 @@ export class PaginatorComponent {
   moveAt(index: number) {
     if (index < 0 || index > (this.items.length - 1)) throw new Error('インデックスの指定が不正です。');
 
+    //移動前イベントを発火する。
+    this.beforeMove.emit();
+
     //インデックスを更新する。
     this.currentIndex = index;
     //該当する要素を返す。
@@ -128,6 +143,9 @@ export class PaginatorComponent {
   moveLast() {
     //集合体に要素がないとき処理を中断する。
     if (this.items.length === 0) return;
+
+    //移動前イベントを発火する。
+    this.beforeMove.emit();
 
     this.currentIndex = this.items.length - 1;
 
