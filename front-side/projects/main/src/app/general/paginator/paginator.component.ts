@@ -120,20 +120,36 @@ export class PaginatorComponent {
   /**
    * 指定位置移動処理
    * @param index 
+   * @param cancel イベント発火をキャンセルするときに指定する。
    */
-  moveAt(index: number) {
+  moveAt(index: number, cancel: { cancelBeforeMove: boolean, cancelMoved: boolean }): void;
+  /**
+   * 指定位置移動処理
+   * @param index 
+   */
+  moveAt(index: number): void;
+  moveAt(index: number, cancel?: any) {
     if (index < 0 || index > (this.items.length - 1)) throw new Error('インデックスの指定が不正です。');
 
-    //移動前イベントを発火する。
-    this.beforeMove.emit();
+    if (cancel && cancel.cancelBeforeMove) { 
+      //移動前処理イベントを発火をキャンセルする。
+    } else {
+      //移動前イベントを発火する。
+      this.beforeMove.emit();
+    }
 
     //インデックスを更新する。
     this.currentIndex = index;
-    //該当する要素を返す。
-    this.moved.emit({ 
-      index: this.currentIndex, 
-      data: this.items[this.currentIndex]
-    });
+    
+    if (cancel && cancel.cancelMoved) {
+      //移動後イベント発火をキャンセルする。
+    } else {
+      //該当する要素を返す。
+      this.moved.emit({ 
+        index: this.currentIndex, 
+        data: this.items[this.currentIndex]
+      });
+    }
   }
 
   /**
