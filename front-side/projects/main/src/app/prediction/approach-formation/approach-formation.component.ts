@@ -58,8 +58,10 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   `]
 })
 export class ApproachFormationComponent implements OnInit {
+  //進入体系フォームグループ
   @Input() startFormationFg!: StartingFormationFormGroup;
 
+  //進入体系変更イベント
   @Output() formationChanged = new EventEmitter<void>();
 
   //艇番表示色取得クラス
@@ -73,6 +75,10 @@ export class ApproachFormationComponent implements OnInit {
     //開発用、処理が固まったら以下は削除。
   }
 
+  /**
+   * コースドラッグドロップイベント
+   * @param event 
+   */
   drop(event: CdkDragDrop<StartingBoatFormControl[]>) {
     moveItemInArray(
       this.startFormationFg.boatsArray.controls, 
@@ -80,9 +86,16 @@ export class ApproachFormationComponent implements OnInit {
       event.currentIndex, 
     )
 
+    //進入体系更新後処理を発火する。
     this.formationChanged.emit();
   }
 
+  /**
+   * スタート位置取得処理
+   * テンプレートから呼び出される。
+   * @param pt
+   * @returns 
+   */
   startPosition(st: number | null): string {
     if (st === null) {
       return `100%`;

@@ -19,6 +19,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 })
 export class PredictionFormService extends FormGroup implements ToDto<RacePredictionModel> {
   private currentApproachPredictionIndex: number | null = null;
+  private currentDeploymentPredictionIndex: number | null = null;
 
   constructor(
     private viewModel: PredictionViewModelService, 
@@ -48,7 +49,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get startExhibition(): StartingFormationFormGroup { return this.controls['startExhibition'] as StartingFormationFormGroup; }
   get exhibitionTimes(): ExhibitionTimesFormGroup { return this.controls['exhibitionTimes'] as ExhibitionTimesFormGroup; }
   get approachPredictions(): FormArray<ApproachPredictionFormGroup> { return this.controls['approachPredictions'] as FormArray<ApproachPredictionFormGroup>; }
-  get deploymentPredictoins(): FormArray<FormControl<string | null>> { return this.controls['deploymentPredictions'] as FormArray<FormControl<string | null>>; }
+  get deploymentPredictions(): FormArray<FormControl<string | null>> { return this.controls['deploymentPredictions'] as FormArray<FormControl<string | null>>; }
   get raceResult(): RaceResultFormGroup { return this.controls['raceResult'] as RaceResultFormGroup; }
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
 
@@ -64,6 +65,20 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
    */
   set approachPredictionIndex(index: number) {
     this.currentApproachPredictionIndex = index;
+  }
+
+  /**
+   * カレント展開予想インデックスゲッター
+   */
+  get deploymentPredictionIndex(): number | null {
+    return this.currentDeploymentPredictionIndex;
+  }
+
+  /**
+   * カレント展開予想インデックスセッター
+   */
+  set deploymentPredictionIndex(value: number | null) {
+    this.currentDeploymentPredictionIndex = value;
   }
 
   /**
@@ -195,7 +210,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       start_exhibition: this.startExhibition.toDto(), 
       exhibition_times: this.exhibitionTimes.toDto(), 
       approach_predictions: this.approachPredictions.controls.map(ctr => ctr.toDto()), 
-      deproyment_predictions: this.deploymentPredictoins.controls.map(ctr => ctr.value as string), 
+      deproyment_predictions: this.deploymentPredictions.controls.map(ctr => ctr.value as string), 
       race_result: this.raceResult.toDto(), 
       is_won: this.isWon.value, 
     };
