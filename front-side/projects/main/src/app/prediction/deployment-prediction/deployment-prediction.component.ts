@@ -1,16 +1,14 @@
-import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewChecked, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewChecked, AfterViewInit, NgZone } from '@angular/core';
 import { fabric } from 'fabric';
 import { PredictionFormService } from '../prediction-form.service';
 import { FormControl, NonNullableFormBuilder } from '@angular/forms';
 import { PaginatorComponent } from '../../general/paginator/paginator.component';
+import { BoatColor, BoatColors } from 'projects/main/src/app/common/utilities';
 import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-deployment-prediction',
   template: `
-    <!--
-    <canvas id="canvas" width="600" height="600"></canvas>
-    -->
     <div class="w-full h-[80vh] flex flex-col">
       <!--ページネーター-->
       <div class="flex items-center">
@@ -28,8 +26,11 @@ import { Subject } from 'rxjs';
         ></app-paginator>
       </div>
       <!--内容-->
-      <div #parentDeploymentPredictionCanvas class="grow">
-        <canvas id="deploymentPrediction" #deploymentPredictionCanvas></canvas>
+      <div #parentDeploymentPredictionCanvas class="grow bg-blue-400">
+        <canvas 
+          id="deploymentPrediction" 
+          #deploymentPredictionCanvas
+        ></canvas>
       </div>
     </div>
   `,
@@ -39,32 +40,24 @@ import { Subject } from 'rxjs';
 export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, AfterViewInit, OnDestroy {
   //ページャー
   @ViewChild(PaginatorComponent) paginator!: PaginatorComponent;
-  //展開予想キャンバスの親
+  //展開予想キャンバスの親要素
   @ViewChild('parentDeploymentPredictionCanvas') parentDeploymentPredictionCanvas!: ElementRef;
-  //展開予想キャンバス
-  @ViewChild('deploymentPredictionCanvas') deploymentPredictionCanvas!: ElementRef;
-  private canvas!: fabric.Canvas;
+  //展開予想キャンバス要素
+  @ViewChild('deploymentPredictionCanvas') deploymentPredictionCanvasEmt!: ElementRef;
+  //private canvas!: fabric.Canvas;
+  private deploymentPredictionCanvas!: DeploymentPredictionCanvas;
 
   //サイズ変更検知用Subject
   private sizeChanged = new Subject<{ height: number, width: number}>();
   private sizeChanged$ = this.sizeChanged.asObservable();
 
   constructor(
+    private zone: NgZone, 
     public fg: PredictionFormService, 
   ) { }
 
   ngOnInit(): void {
-    this.canvas = new fabric.Canvas('deploymentPrediction', {
-      isDrawingMode: true, 
-      selection: true, 
-      stateful: true
-    });
-  
-    this.canvas.freeDrawingBrush = new fabric.PencilBrush(this.canvas);
-    this.canvas.freeDrawingBrush.color = 'red';
-    this.canvas.freeDrawingBrush.width = 5;
-    this.canvas.hoverCursor = 'move';
-  
+    //展開予想図が入力されていればそれを描画する。
     setTimeout(() => {
       if (this.fg.deploymentPredictionIndex !== null) {
         this.paginator.moveAt(this.fg.deploymentPredictionIndex, { cancelBeforeMove: true, cancelMoved: false });
@@ -73,21 +66,23 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   }
 
   ngAfterViewInit(): void {
+    //サイズ変更検知時の処理を登録する。展開予想キャンバスのサイズを設定する。
     this.sizeChanged$.subscribe(size => {
-      //キャンバスのサイズを設定する。
-      this.canvas.setDimensions({
-        width: size.width,
-        height: size.height
-      });
+        this.zone.runOutsideAngular(() => {
+          this.deploymentPredictionCanvas.drawInitialRacingPool(size.width, size.height);
+        });
     });
+
+    //展開予想キャンバスを初期化する。
+    this.deploymentPredictionCanvas = new DeploymentPredictionCanvas(this.deploymentPredictionCanvasEmt);
   }
 
   ngAfterViewChecked(): void {
     //画面のサイズ変更を検知したとき、変更後のサイズをストリームに流す。
     if (
-      this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight !== this.deploymentPredictionCanvas.nativeElement.offsetHeight
+      this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight !== this.deploymentPredictionCanvasEmt.nativeElement.offsetHeight
       ||
-      this.parentDeploymentPredictionCanvas.nativeElement.offsetWidth !== this.deploymentPredictionCanvas.nativeElement.offsetWidth
+      this.parentDeploymentPredictionCanvas.nativeElement.offsetWidth !== this.deploymentPredictionCanvasEmt.nativeElement.offsetWidth
     ) {
       this.sizeChanged.next({
         height: this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight, 
@@ -95,6 +90,7 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
       });
     }
   }
+
   /**
    * 予想追加処理
    */
@@ -103,6 +99,10 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     this.fg.deploymentPredictions.push(new FormControl<string | null>(null));
     //ページ末尾に移動する。※追加した予想をカレントにする。
     this.paginator.moveLast();
+
+
+    //テスト
+    this.setWaitPlacementBoat(6);
   }
 
   /**
@@ -113,7 +113,7 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     if (this.fg.deploymentPredictionIndex === null) return;
 
     //現在編集中の展開予想を保存する。
-    this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex as number].setValue(JSON.stringify(this.canvas.toJSON()));
+    this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex as number].setValue(JSON.stringify(this.deploymentPredictionCanvas.toJSON()));
   }
 
   /**
@@ -124,8 +124,25 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   pageMoved(movedValue: { index: number, data: FormControl<string | null> }) {
     this.fg.deploymentPredictionIndex = movedValue.index;
 
-    this.canvas.clear();
-    this.canvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value, () => {});
+    //一旦キャンバスをクリアする。
+    this.deploymentPredictionCanvas.clear();
+    //ロードする。
+    this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {
+      /*
+      console.log(`競争水面描画`);
+      //初期競争水面を描画する。
+      this.deploymentPredictionCanvas.drawInitialRacingPool();
+      */
+    });
+    this.deploymentPredictionCanvas.drawInitialRacingPool();
+  }
+
+  /**
+   * 配置待ちボート設定処理
+   * @param boatNo  艇番
+   */
+  setWaitPlacementBoat(boatNo: number) {
+    this.deploymentPredictionCanvas.setWaitPlacementBoat(boatNo);
   }
 
   ngOnDestroy(): void {
@@ -134,7 +151,6 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   }
 }
 
-/*
 //展開予想図キャンバス
 export class DeploymentPredictionCanvas extends fabric.Canvas {
   //センターラインを描画する際の、始点、終点の位置情報
@@ -182,7 +198,7 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
 
   //イベント登録処理
   //コンストラクタから一度だけ呼び出される。
-  atacheEvents() {
+  private atacheEvents() {
     //マウスダウンイベント
     this.on('mouse:down', option => {
       if (this.waitPlacementBoat===null) {
@@ -293,4 +309,3 @@ class Boat extends fabric.Triangle {
     });
   }
 }
-*/
