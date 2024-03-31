@@ -56,11 +56,11 @@ import { StartingFormation } from 'projects/main/src/generated/graphql';
             <!--配置待ちボート選択ボタン-->
             <div *ngFor="let boatButton of boatButtons">
               <button type="button" 
-                mat-flat-button
-                [color]="waitPlacementBoatNo===boatButton.boatNo ? 'primary' : ''"
+                class="w-full p-2 text-center flex justify-center rounded-lg"
                 (click)="setWaitPlacementBoat(boatButton.boatNo, $event)"
+                [class.selected-place-wait-boat]="waitPlacementBoatNo===boatButton.boatNo"
               >
-                {{boatButton.caption}}
+                <img [src]="boatButton.src" class="h-20 w-auto">
               </button>
             </div>
             <!--ボート削除ボタン-->
@@ -76,8 +76,12 @@ import { StartingFormation } from 'projects/main/src/generated/graphql';
       </div>
     </div>
   `,
-  styles: [
-  ]
+  styles: [`
+    .selected-place-wait-boat {
+      background-color: gray;
+      opacity: .5;
+    }
+  `]
 })
 export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, AfterViewInit, OnDestroy {
   //ページャー
@@ -92,13 +96,13 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   private canvasSize: { height: number, width: number } = { height: 0, width: 0 };
   //ボートボタンコンテナー可視
   buttonCotainerVisilbe = true;
-  boatButtons: { boatNo: number, caption: string }[] = [
-    { boatNo: 1, caption: "1号艇" }, 
-    { boatNo: 2, caption: "2号艇" }, 
-    { boatNo: 3, caption: "3号艇" }, 
-    { boatNo: 4, caption: "4号艇" }, 
-    { boatNo: 5, caption: "5号艇" }, 
-    { boatNo: 6, caption: "6号艇" }, 
+  boatButtons: { boatNo: number, caption: string, src: string }[] = [
+    { boatNo: 1, caption: "1号艇", src: "/assets/images/boat1.svg" }, 
+    { boatNo: 2, caption: "2号艇", src: "/assets/images/boat2.svg" }, 
+    { boatNo: 3, caption: "3号艇", src: "/assets/images/boat3.svg" }, 
+    { boatNo: 4, caption: "4号艇", src: "/assets/images/boat4.svg" }, 
+    { boatNo: 5, caption: "5号艇", src: "/assets/images/boat5.svg" }, 
+    { boatNo: 6, caption: "6号艇", src: "/assets/images/boat6.svg" }, 
   ];
   //配置待ち艇番
   waitPlacementBoatNo: number | null = null;

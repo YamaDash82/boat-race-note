@@ -1,0 +1,31 @@
+<mxfile host="65bd71144e">
+    <diagram id="Cn8XWGds1wUuWcc1IZfI" name="ページ1">
+        <mxGraphModel dx="1042" dy="568" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="700" pageHeight="730" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="15" value="" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;size=0.23;arcSize=10;flipV=1;labelPosition=center;align=center;strokeColor=#000000;fillColor=#666666;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="41.25" y="207.75" width="45" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="shape=or;whiteSpace=wrap;html=1;rotation=-90;fillColor=#FFFF00;strokeWidth=3;strokeColor=#1A1A1A;" parent="1" vertex="1">
+                    <mxGeometry x="-44.75" y="47.75" width="211" height="117.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="shape=or;whiteSpace=wrap;html=1;rotation=-90;strokeColor=#000000;fillColor=#FFFFFF;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="-17.80000000000001" y="99.19999999999999" width="158.15" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="rounded=1;whiteSpace=wrap;html=1;rotation=-90;fillColor=#808080;" parent="1" vertex="1">
+                    <mxGeometry x="2.579999999999984" y="130.88" width="117.79" height="48.75" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFF00;strokeColor=#36393d;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="56.75" y="9.75" width="10" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFF00;strokeColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="47.360000000000014" y="137.25" width="30" height="58" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#000000;fillColor=#FFFF00;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="45.75" y="106.75" width="32.5" height="32.5" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
