@@ -35,7 +35,6 @@ import { StartingFormation } from 'projects/main/src/generated/graphql';
       </div>
       <!--内容-->
       <div #parentDeploymentPredictionCanvas class="grow bg-blue-400 relative"
-        (click)="deploymentPredictionCanvasClick()"
       >
         <canvas 
           id="deploymentPrediction" 
@@ -135,7 +134,7 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     });
 
     //展開予想キャンバスを初期化する。
-    this.deploymentPredictionCanvas = new DeploymentPredictionCanvas(this.deploymentPredictionCanvasEmt);
+    this.deploymentPredictionCanvas = new DeploymentPredictionCanvas(this.deploymentPredictionCanvasEmt, () => { this.waitPlacementBoatNo = null;});
   }
 
   ngAfterViewChecked(): void {
@@ -229,14 +228,6 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     }
   }
 
-  /**
-   * 展開予想キャンバスクリック時処理
-   */
-  deploymentPredictionCanvasClick() {
-    this.waitPlacementBoatNo = null;
-    console.log(`キャンバスクリック`);
-  }
-
   ngOnDestroy(): void {
     //コンポーネント破棄時に編集中の展開予想図を保存できると思われる。
     this.saveCurrentPrediction();
@@ -252,16 +243,32 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
   //キャンバスの左端から1/4の位置で上端から1/3の位置から垂直に下端まで
   static startLineLocationRatio = [1/4, 1/3, 1/4, 1];
 
-
   //キャンバスのサイズ
   private canvasHeight = 0;
   private canvasWidth = 0;
 
+  /**
+   * ボート配置後処理
+   */
+  private _afterDrawBoatFunc: null | (() => void) = null;
+
   //描画追加待ちボート
   private waitPlacementBoat: number | null = null;
 
+  /**
+   * コンストラクタ
+   * @param canvasElement 
+   */
+  constructor(canvasElement: ElementRef);
+  /**
+   * コンストラクタ
+   * @param canvasElement 
+   * @param afterDrawBoatFunc ボート描画後処理
+   */
+  constructor(canvasElement: ElementRef, afterDrawBoatFunc: () => void);
   constructor (
-    canvasElement: ElementRef
+    canvasElement: ElementRef, 
+    afterDrawBoatFunc?: any
   ) {
     super(canvasElement.nativeElement, {
       selection: true,
@@ -270,6 +277,10 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
 
     //イベント登録処理を行う。
     this.atacheEvents();
+
+    if (afterDrawBoatFunc) {
+      this._afterDrawBoatFunc = afterDrawBoatFunc;
+    }
   }
 
   //配置待ちボート設定処理
@@ -315,6 +326,9 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
 
       //描画追加待ちをオフにする。
       this.waitPlacementBoat = null;
+
+      //ボート配置後処理が設定されていれば、実行する。
+      if (this._afterDrawBoatFunc) this._afterDrawBoatFunc();
     });
   }
 
@@ -322,14 +336,6 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
   drawInitialRacingPool(): void;
   drawInitialRacingPool(width: number, height: number): void;
   drawInitialRacingPool(width?: number, height?: number) {
-    //センターラインを描画する際の、始点、終点の位置情報
-    //キャンバスの上から1/3の位置で左端から水平に右に2/3の位置まで
-    //const centerLineLocationRatio = [0, 1/3, 2/3, 1/3];
-
-    //スタートラインを描画する際の、始点、終点の位置情報
-    //キャンバスの左端から1/4の位置で上端から1/3の位置から垂直に下端まで
-    //const startLineLocationRatio = [1/4, 1/3, 1/4, 1];
-
     //サイズ更新
     if (width && height) {
       this.canvasHeight = height;
