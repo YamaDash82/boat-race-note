@@ -4,7 +4,7 @@ import { PredictionFormService } from '../prediction-form.service';
 import { FormControl, NonNullableFormBuilder } from '@angular/forms';
 import { PaginatorComponent } from '../../general/paginator/paginator.component';
 import { BoatColor, BoatColors } from 'projects/main/src/app/common/utilities';
-import { Subject } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { StartingFormation } from 'projects/main/src/generated/graphql';
 
 @Component({
@@ -105,7 +105,14 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
 
   //サイズ変更検知用Subject
   private sizeChanged = new Subject<{ height: number, width: number}>();
-  private sizeChanged$ = this.sizeChanged.asObservable();
+  private sizeChanged$ = this.sizeChanged.asObservable().pipe(
+    //最後のサイズ変更から500ms後に通知を発行する。
+    debounceTime(500), 
+    //変更があった場合のみ、通知を発行する。
+    distinctUntilChanged((previous, current) => {
+      return previous.height === current.height && previous.width === current.width
+    })
+  );
 
   constructor(
     private zone: NgZone, 
@@ -124,12 +131,22 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   ngAfterViewInit(): void {
     //サイズ変更検知時の処理を登録する。展開予想キャンバスのサイズを設定する。
     this.sizeChanged$.subscribe(size => {
-        //キャンバスのサイズを保持する。
-        this.canvasSize = size;
         //入力中の展開予想があればそれを再描画する。
         this.zone.runOutsideAngular(() => {
-          //入力中の展開予想があれば、それを再描画すべき個所
-          //this.deploymentPredictionCanvas.drawInitialRacingPool(size.width, size.height);
+          //入力中の展開予想図が鳴ければ処理を終了する。
+          if (this.fg.deploymentPredictionIndex === null) return;
+
+          //入力中の展開予想があれば、再描画する。
+          //一旦入力中の状態を保存する。
+          this.saveCurrentPrediction();
+          //展開予想をクリアする。
+          this.deploymentPredictionCanvas.clear();
+
+          //保存した内容をロードする。
+          //配置位置の再計算処理を行う必要がある。今はまだ実装しない。
+          this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {});
+          //初期競争水面を描画する。
+          this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
         });
     });
 
@@ -140,13 +157,18 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   ngAfterViewChecked(): void {
     //画面のサイズ変更を検知したとき、変更後のサイズをストリームに流す。
     if (
-      this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight !== this.deploymentPredictionCanvasEmt.nativeElement.offsetHeight
+      this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight !== this.canvasSize.height
       ||
-      this.parentDeploymentPredictionCanvas.nativeElement.offsetWidth !== this.deploymentPredictionCanvasEmt.nativeElement.offsetWidth
+      this.parentDeploymentPredictionCanvas.nativeElement.offsetWidth !== this.canvasSize.width
     ) {
+      //保持しているサイズ値を更新する。
+      this.canvasSize.height = this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight;
+      this.canvasSize.width = this.parentDeploymentPredictionCanvas.nativeElement.offsetWidth;
+      
+      //ストリームに値をプッシュする。
       this.sizeChanged.next({
-        height: this.parentDeploymentPredictionCanvas.nativeElement.offsetHeight, 
-        width: this.parentDeploymentPredictionCanvas.nativeElement.offsetWidth,
+        height: this.canvasSize.height, 
+        width: this.canvasSize.width,
       });
     }
   }
