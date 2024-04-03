@@ -329,7 +329,7 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
   //コンストラクタから一度だけ呼び出される。
   private atacheEvents() {
     //マウスダウンイベント
-    this.on('mouse:down', option => {
+    this.on('mouse:down', async option => {
       if (this.waitPlacementBoat===null) {
         //追加まちボートが選択されていなければ抜ける。
         return;
@@ -347,8 +347,31 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
         boatWidth,
         boatHeight
       );
+      
+      const boatImg = await new Promise<fabric.Image>(resolve => { 
+        fabric.Image.fromURL(`/assets/images/boat${this.waitPlacementBoat}.svg`, img => {
+          //サイズ指定をここで行う。画像のサイズを指定したサイズに拡大縮小する。
+          img.scaleToWidth(boatWidth);
+          //90℃傾ける。
+          img.angle = 90;
 
-      this.add(boat);
+          resolve(img);
+        }, {
+          top: option?.pointer?.y || 0, 
+          left: option?.pointer?.x || 0, 
+          //サイズ指定はここではなく、コールバックで行う。
+          //width: boatWidth, 
+          //height: boatHeight, 
+          //angle: 90, 
+          stroke: 'brack',
+          fill: boat.backgroundColor,
+          lockScalingX: true,
+          lockScalingY: true,
+          selectable: true,
+          cornerColor: 'black' //選択されたときの色
+        });
+      });
+      this.add(boatImg);
 
       //描画追加待ちをオフにする。
       this.waitPlacementBoat = null;
@@ -484,3 +507,7 @@ class Boat extends fabric.Triangle {
     });
   }
 }
+
+const genBoatImage = async(): Promise<fabric.Image> => {
+  return fabric.Image.fromURL('', undefined);
+};
