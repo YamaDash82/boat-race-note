@@ -148,9 +148,10 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
 
           //保存した内容をロードする。
           //配置位置の再計算処理を行う必要がある。今はまだ実装しない。
-          this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {});
-          //初期競争水面を描画する。
-          this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
+          this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {
+            //初期競争水面を描画する。
+            this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
+          });
         });
     });
 
@@ -210,13 +211,10 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     this.deploymentPredictionCanvas.clear();
     //ロードする。
     this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {
-      /*
-      console.log(`競争水面描画`);
       //初期競争水面を描画する。
-      this.deploymentPredictionCanvas.drawInitialRacingPool();
-      */
+      this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
+
     });
-    this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
   }
 
   /**
@@ -340,37 +338,14 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
       //ボートの規格より 幅133.6cm、全長289.5cmから2.17を算出。
       const boatHeight = Math.floor(boatWidth * 2.17);
 
-      const boat = new Boat(
-        this.waitPlacementBoat,
+      //ボートを表す図形を取得する。
+      const boatImg = await this.genBoatImage(
+        this.waitPlacementBoat, 
         option?.pointer?.y || 0,
-        option?.pointer?.x || 0,
-        boatWidth,
-        boatHeight
+        option?.pointer?.x || 0 ,
+        boatWidth, boatHeight
       );
-      
-      const boatImg = await new Promise<fabric.Image>(resolve => { 
-        fabric.Image.fromURL(`/assets/images/boat${this.waitPlacementBoat}.svg`, img => {
-          //サイズ指定をここで行う。画像のサイズを指定したサイズに拡大縮小する。
-          img.scaleToWidth(boatWidth);
-          //90℃傾ける。
-          img.angle = 90;
 
-          resolve(img);
-        }, {
-          top: option?.pointer?.y || 0, 
-          left: option?.pointer?.x || 0, 
-          //サイズ指定はここではなく、コールバックで行う。
-          //width: boatWidth, 
-          //height: boatHeight, 
-          //angle: 90, 
-          stroke: 'brack',
-          fill: boat.backgroundColor,
-          lockScalingX: true,
-          lockScalingY: true,
-          selectable: true,
-          cornerColor: 'black' //選択されたときの色
-        });
-      });
       this.add(boatImg);
 
       //描画追加待ちをオフにする。
@@ -440,11 +415,6 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
   
   //進入体系描画処理
   drawStartigBoats(approachPrediction: StartingFormation): void {
-    /*
-    approachPrediction.boats.forEach(boat => {
-
-    });
-    */
     //ボートを配置する縦位置の基準
     const verticalBase = Math.ceil(this.canvasHeight * DeploymentPredictionCanvas.centerLineLocationRatio[1]);
     //コースごとに増す高さ
@@ -472,42 +442,54 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
       approachPrediction.course6, 
     ];
 
-    startingBoatas.forEach(boat => {
+    startingBoatas.forEach(async boat => {
       //スタート位置
       const startPosition = startLine - (baseStartWidth * (boat.st || 1));
 
-      const dBoat = new Boat(
-        boat.boat_no,
-        verticalBase + verticalCoefficient * boat.boat_no, //ボートを描画する縦位置
-        startPosition,
-        boatWidth,
-        boatHeight
-      );
+      //ボートを表す図形を取得する。
+      const boatImg = await this.genBoatImage(boat.boat_no, verticalBase + verticalCoefficient * boat.boat_no, startPosition, boatWidth, boatHeight);
 
-      this.add(dBoat);
+      //キャンバスに配置する。
+      this.add(boatImg);
+    });
+  }
+
+  /**
+   * ボート画像生成ヘルパーメソッド
+   * 指定した艇番のボート画像を指定した位置、サイズで行場する。
+   * @param boatNo 
+   * @param top 
+   * @param left 
+   * @param width 
+   * @param height 
+   * @returns 
+   */
+  private async genBoatImage(
+    boatNo: number, 
+    top: number, left: number, width: number, height: number, 
+  ): Promise<fabric.Image> {
+    return new Promise<fabric.Image>((resolve, reject) => {
+      try {
+
+        fabric.Image.fromURL(`/assets/images/boat${boatNo}.svg`, img => {
+          //サイズ指定をここで行う。画像のサイズを指定したサイズに拡大縮小する。
+          img.scaleToWidth(width);
+          img.scaleToHeight(height);
+          //90°傾ける。
+          img.angle = 90;
+
+          return resolve(img)
+        }, {
+          top, 
+          left, 
+          stroke: 'black', 
+          lockScalingX: true, 
+          lockScalingY: true, 
+          cornerColor: 'black'
+        });
+      } catch(err) {
+        return reject(err);
+      }
     });
   }
 }
-
-//ボート
-//ボートを表す三角形
-class Boat extends fabric.Triangle {
-  constructor(boatNo: number, top: number, left: number, width: number, height: number) {
-    const boat = BoatColors.find(boat => boat.boatNo === boatNo) as BoatColor
-    ;
-    super({
-      top, left, width, height,
-      angle: 90,
-      stroke: 'brack',
-      fill: boat.backgroundColor,
-      lockScalingX: true,
-      lockScalingY: true,
-      selectable: true,
-      cornerColor: 'black' //選択されたときの色
-    });
-  }
-}
-
-const genBoatImage = async(): Promise<fabric.Image> => {
-  return fabric.Image.fromURL('', undefined);
-};
