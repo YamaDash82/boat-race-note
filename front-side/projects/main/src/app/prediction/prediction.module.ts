@@ -22,6 +22,8 @@ import { DeploymentPredictionComponent } from './deployment-prediction/deploymen
 import { RaceResultComponent } from './race-result/race-result.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { GeneralModule } from '../general/general.module';
+import { SelectApproachFormationComponent } from './deployment-prediction/select-approach-formation.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { GeneralModule } from '../general/general.module';
     ExhibitionComponent,
     ApproachPredictionComponent,
     DeploymentPredictionComponent,
-    RaceResultComponent
+    RaceResultComponent,
+    SelectApproachFormationComponent
   ],
   imports: [
     CommonModule, 
@@ -48,6 +51,7 @@ import { GeneralModule } from '../general/general.module';
     MatButtonModule, 
     MatIconModule, 
     DragDropModule, 
+    MatDialogModule, 
   ], 
   providers: [ 
     //PredictionFormService, 

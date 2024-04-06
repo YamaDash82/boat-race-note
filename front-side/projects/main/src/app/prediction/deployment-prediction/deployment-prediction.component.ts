@@ -1,11 +1,12 @@
 import { Component, OnInit, ElementRef, OnDestroy, ViewChild, AfterViewChecked, AfterViewInit, NgZone } from '@angular/core';
 import { fabric } from 'fabric';
 import { PredictionFormService } from '../prediction-form.service';
-import { FormControl, NonNullableFormBuilder } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { PaginatorComponent } from '../../general/paginator/paginator.component';
-import { BoatColor, BoatColors } from 'projects/main/src/app/common/utilities';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { StartingFormation } from 'projects/main/src/generated/graphql';
+import { MatDialog } from '@angular/material/dialog';
+import { SelectApproachFormationComponent } from './select-approach-formation.component';
 
 @Component({
   selector: 'app-deployment-prediction',
@@ -48,7 +49,7 @@ import { StartingFormation } from 'projects/main/src/generated/graphql';
             <div>
               <button type="button"
                 mat-flat-button
-                (click)="drawStartingBoats(0)"
+                (click)="openApproachFormationSelector()"
               >
                 ST描画
               </button>
@@ -119,6 +120,7 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   );
 
   constructor(
+    private dialog: MatDialog, 
     private zone: NgZone, 
     public fg: PredictionFormService, 
   ) { }
@@ -230,6 +232,18 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     this.deploymentPredictionCanvas.setWaitPlacementBoat(boatNo);
   }
 
+  /**
+   * 進入体系選択ダイアログ起動処理
+   */
+  openApproachFormationSelector() {
+    const dialogRef = this.dialog.open(SelectApproachFormationComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (typeof result.data === "number") {
+        this.deploymentPredictionCanvas.drawStartigBoats(this.fg.approachPredictions.controls[result.data].toDto());
+      }
+    });
+  }
   /**
    * スタート艇描画
    * @param approachPredictionIndex 
