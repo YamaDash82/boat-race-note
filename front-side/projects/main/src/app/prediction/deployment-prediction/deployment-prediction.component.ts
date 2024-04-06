@@ -41,13 +41,15 @@ import { SelectApproachFormationComponent } from './select-approach-formation.co
           id="deploymentPrediction" 
           #deploymentPredictionCanvas
         ></canvas>
+        <!--展開予想キャンバス中のサイドメニュー-->
         <div 
-          class="absolute top-0 bg-red-500 left-[100%] translate-x-[-100%] h-full w-24"
+          class="absolute top-0 bg-red-500 left-[100%] translate-x-[-100%] h-full py-2 px-1 w-24"
           *ngIf="buttonCotainerVisilbe"
           >
             <!--スリット描画-->
             <div>
               <button type="button"
+                class="w-full mb-3"
                 mat-flat-button
                 (click)="openApproachFormationSelector()"
               >
@@ -66,7 +68,9 @@ import { SelectApproachFormationComponent } from './select-approach-formation.co
             </div>
             <!--ボート削除ボタン-->
             <div>
-              <button type="button"
+              <button 
+                class="w-full mt-3"
+                type="button"
                 mat-flat-button
                 (click)="removeBoat($event)"
               >
@@ -81,6 +85,10 @@ import { SelectApproachFormationComponent } from './select-approach-formation.co
     .selected-place-wait-boat {
       background-color: gray;
       opacity: .5;
+    }
+    /* ダイアログの背景色 */
+    ::ng-deep .mat-mdc-dialog-container {
+      --mdc-dialog-container-color: rgb(203, 213, 225);
     }
   `]
 })
@@ -236,7 +244,10 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
    * 進入体系選択ダイアログ起動処理
    */
   openApproachFormationSelector() {
-    const dialogRef = this.dialog.open(SelectApproachFormationComponent);
+    const dialogRef = this.dialog.open(
+      SelectApproachFormationComponent, 
+    );
+
 
     dialogRef.afterClosed().subscribe(result => {
       if (typeof result.data === "number") {
@@ -456,12 +467,18 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
       approachPrediction.course6, 
     ];
 
-    startingBoatas.forEach(async boat => {
+    startingBoatas.forEach(async (boat, course) => {
       //スタート位置
       const startPosition = startLine - (baseStartWidth * (boat.st || 1));
 
       //ボートを表す図形を取得する。
-      const boatImg = await this.genBoatImage(boat.boat_no, verticalBase + verticalCoefficient * boat.boat_no, startPosition, boatWidth, boatHeight);
+      const boatImg = await this.genBoatImage(
+        boat.boat_no, //艇番
+        verticalBase + verticalCoefficient * (course + 1),  //ボートの縦位置つまり、コース
+        startPosition, //スタートタイミング
+        boatWidth,     //幅
+        boatHeight     //高さ
+      );
 
       //キャンバスに配置する。
       this.add(boatImg);

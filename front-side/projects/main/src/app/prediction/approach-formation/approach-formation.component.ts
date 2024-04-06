@@ -7,11 +7,9 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   selector: 'app-approach-formation',
   template: `
     <form [formGroup]="startFormationFg" class="h-full w-full flex flex-col p-2">
-      <!--画面タイトル-->
-      <div>スタート展示</div>
       <!--メインコンテンツ-->
       <div 
-        class="grow flex flex-col justify-around starting-boats"
+        class="grow flex flex-col justify-around starting-boats bg-blue-400 pl-2"
         cdkDropList
         (cdkDropListDropped)="drop($event)"
       >
@@ -25,7 +23,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
           <!--ボートのイメージ-->
           <div class="ml-32 mr-10 border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
             <img 
-              src="/assets/images/boat.png" 
+              [src]="'/assets/images/boat.png'" 
               alt="ボート" 
               class="w-[15%] h-auto"
               [style.marginRight]="startPosition(course.value)"

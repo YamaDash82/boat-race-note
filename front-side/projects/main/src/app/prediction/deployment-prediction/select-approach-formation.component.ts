@@ -17,21 +17,33 @@ import { PaginatorComponent } from '../../general/paginator/paginator.component'
         (moved)="pageMoved($event)"
       ></app-paginator>
       <!--進入体系表示-->
+      <div class="h-[40vh]">
       <app-approach-formation
         *ngIf="currentApproachPrediction"
         [startFormationFg]="currentApproachPrediction"
       ></app-approach-formation>
     </div>
-    <div mat-dialog-actions>
+    </div>
+    <div 
+      class="flex justify-between"
+      mat-dialog-actions
+    >
       <!--進入体系選択キャンセル 何もせずダイアログを閉じる。-->
-      <button mat-button mat-dialog-close>キャンセル</button>
+      <div>
+        <button 
+          mat-button mat-dialog-close
+        >キャンセル</button>
+      </div>
       <!--選択ボタン 進入体系を選択してダイアログを閉じる。-->
-      <button 
-        mat-button 
-        mat-dialog-close 
-        cdkFocusInitial
-        (click)="selectApproachPrediction()"
-      >選択</button>
+      <div class="ml-auto">
+        <button 
+          mat-button 
+          mat-dialog-close 
+          cdkFocusInitial
+          (click)="selectApproachPrediction()"
+          color="primary"
+        >選択</button>
+      </div>
     </div>
   `,
   styles: [
