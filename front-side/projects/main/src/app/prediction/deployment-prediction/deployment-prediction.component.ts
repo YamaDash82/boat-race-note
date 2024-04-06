@@ -248,19 +248,11 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
       SelectApproachFormationComponent, 
     );
 
-
     dialogRef.afterClosed().subscribe(result => {
       if (typeof result.data === "number") {
         this.deploymentPredictionCanvas.drawStartigBoats(this.fg.approachPredictions.controls[result.data].toDto());
       }
     });
-  }
-  /**
-   * スタート艇描画
-   * @param approachPredictionIndex 
-   */
-  drawStartingBoats(approachPredictionIndex: number) {
-    this.deploymentPredictionCanvas.drawStartigBoats(this.fg.approachPredictions.controls[0].toDto());
   }
 
   /**
@@ -286,11 +278,11 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
 //展開予想図キャンバス
 export class DeploymentPredictionCanvas extends fabric.Canvas {
   //センターラインを描画する際の、始点、終点の位置情報
-  //キャンバスの上から1/3の位置で左端から水平に右に2/3の位置まで
-  static centerLineLocationRatio = [0, 1/3, 2/3, 1/3];
+  //キャンバスの上から1/3の位置で左端から水平に左から右にに7/12の位置まで
+  static centerLineLocationRatio = [0, 1/3, 7/12, 1/3];
   //スタートラインを描画する際の、始点、終点の位置情報
-  //キャンバスの左端から1/4の位置で上端から1/3の位置から垂直に下端まで
-  static startLineLocationRatio = [1/4, 1/3, 1/4, 1];
+  //キャンバスの左端から1/6の位置で上端から1/7の位置から垂直に下端まで
+  static startLineLocationRatio = [1/7, 1/3, 1/7, 1];
 
   //キャンバスのサイズ
   private canvasHeight = 0;
