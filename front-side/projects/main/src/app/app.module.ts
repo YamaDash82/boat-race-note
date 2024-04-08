@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { PredictionModule } from './prediction/prediction.module';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { AuthService } from './auth/auth.service';
       }
     }),
     AuthModule, 
+    PredictionModule, 
   ],
   providers: [
     AuthService, 

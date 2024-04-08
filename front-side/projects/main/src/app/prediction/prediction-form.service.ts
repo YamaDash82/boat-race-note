@@ -19,6 +19,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 })
 export class PredictionFormService extends FormGroup implements ToDto<RacePredictionModel> {
   private currentApproachPredictionIndex: number | null = null;
+  private currentDeploymentPredictionIndex: number | null = null;
 
   constructor(
     private viewModel: PredictionViewModelService, 
@@ -27,11 +28,12 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       key: new FormControl<string | null>(null), 
       raceDate: new ExDateFormControl(null, Validators.required), 
       racePlaceCd: new FormControl<number | null>(null, Validators.required), 
+      raceNo: new FormControl<number | null>(null, Validators.required), 
       raceGradeCd: new FormControl<number | null>(null, Validators.required), 
       racers: new RacersFormGroup(), 
       startExhibition: new StartingFormationFormGroup(), 
       exhibitionTimes: new ExhibitionTimesFormGroup(), 
-      approachPredictions: new FormArray<StartingFormationFormGroup>([]), 
+      approachPredictions: new FormArray<ApproachPredictionFormGroup>([]), 
       deploymentPredictions: new FormArray<FormControl<string | null>>([]),
       raceResult: new RaceResultFormGroup(),
       isWon: new FormControl<null | boolean>(null)
@@ -41,14 +43,51 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get key(): FormControl<string | null> { return this.controls['key'] as FormControl<string | null>; }
   get raceDate(): ExDateFormControl { return this.controls['raceDate'] as ExDateFormControl; }
   get racePlaceCd(): FormControl<number | null> { return this.controls['racePlaceCd'] as FormControl<number | null>; }
+  get raceNo(): FormControl<number | null> { return this.controls['raceNo'] as FormControl<number | null>; }
   get raceGradeCd(): FormControl<number | null> { return this.controls['raceGradeCd'] as FormControl<number | null>; }
   get racers(): RacersFormGroup { return this.controls['racers'] as RacersFormGroup; }
   get startExhibition(): StartingFormationFormGroup { return this.controls['startExhibition'] as StartingFormationFormGroup; }
   get exhibitionTimes(): ExhibitionTimesFormGroup { return this.controls['exhibitionTimes'] as ExhibitionTimesFormGroup; }
-  get approachPredictions(): FormArray<StartingFormationFormGroup> { return this.controls['approachPredictions'] as FormArray<StartingFormationFormGroup>; }
-  get deploymentPredictoins(): FormArray<FormControl<string | null>> { return this.controls['deploymentPredictions'] as FormArray<FormControl<string | null>>; }
+  get approachPredictions(): FormArray<ApproachPredictionFormGroup> { return this.controls['approachPredictions'] as FormArray<ApproachPredictionFormGroup>; }
+  get deploymentPredictions(): FormArray<FormControl<string | null>> { return this.controls['deploymentPredictions'] as FormArray<FormControl<string | null>>; }
   get raceResult(): RaceResultFormGroup { return this.controls['raceResult'] as RaceResultFormGroup; }
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
+
+  /**
+   * カレント進入予想インデックスゲッター
+   */
+  get approachPredictionIndex(): number | null {
+    return this.currentApproachPredictionIndex;
+  }
+
+  /**
+   * カレント進入予想インデックスセッター
+   */
+  set approachPredictionIndex(index: number) {
+    this.currentApproachPredictionIndex = index;
+  }
+
+  /**
+   * カレント展開予想インデックスゲッター
+   */
+  get deploymentPredictionIndex(): number | null {
+    return this.currentDeploymentPredictionIndex;
+  }
+
+  /**
+   * カレント展開予想インデックスセッター
+   */
+  set deploymentPredictionIndex(value: number | null) {
+    this.currentDeploymentPredictionIndex = value;
+  }
+
+  /**
+   * 初期化処理
+   */
+  initialize() {
+    //スタート展示を初期化する。
+    this.startExhibition.initialize();
+  }
 
   /**
    * レーサー情報設定処理
@@ -92,6 +131,13 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   }
 
   /**
+   * スタート展示タイム設定処理
+   */
+  setStartExhibitionSt(courseNo: number, boatNo: number, st: number) {
+    this.startExhibition.setSt(courseNo, boatNo, st);
+  }
+
+  /**
    * 展示タイム設定処理
    * @param boatNo 
    * @param exhibitionTime 
@@ -104,8 +150,24 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
    * 進入予想追加処理
    */
   appendApproachPrediction() {
-    this.approachPredictions.push(new StartingFormationFormGroup());
-    this.currentApproachPredictionIndex = this.addAsyncValidators.length - 1;
+    this.approachPredictions.push(new ApproachPredictionFormGroup());
+    this.currentApproachPredictionIndex = this.approachPredictions.length - 1;
+  }
+
+  /**
+   * 進入予想取得処理
+   * 指定したインデックスの進入湯尾想を取得する。値取得時、保持するカレント進入予想インデックスを更新する。
+   * @param index 
+   * @returns 
+   */
+  approachPredictionAt(index: number): StartingFormationFormGroup {
+    if (index < 0 || index > (this.approachPredictions.length - 1)) {
+      throw new Error('該当する進入予想が存在しません。インデックスの指定が不正です。');
+    }
+
+    //インデックスを更新する。
+    this.currentApproachPredictionIndex = index;
+    return this.approachPredictions.controls[this.currentApproachPredictionIndex];
   }
 
   /**
@@ -148,7 +210,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       start_exhibition: this.startExhibition.toDto(), 
       exhibition_times: this.exhibitionTimes.toDto(), 
       approach_predictions: this.approachPredictions.controls.map(ctr => ctr.toDto()), 
-      deproyment_predictions: this.deploymentPredictoins.controls.map(ctr => ctr.value as string), 
+      deproyment_predictions: this.deploymentPredictions.controls.map(ctr => ctr.value as string), 
       race_result: this.raceResult.toDto(), 
       is_won: this.isWon.value, 
     };
@@ -177,6 +239,16 @@ export class RacersFormGroup extends FormGroup implements ToDto<Racers> {
   get racer5(): RacerFormControl { return this.controls['racer5'] as RacerFormControl; }
   get racer6(): RacerFormControl { return this.controls['racer6'] as RacerFormControl; }
   
+  /**
+   * RacerFormControl群取得処理
+   * RacerFormControlを配列で取得する。
+   */
+  get items(): RacerFormControl[] {
+    return [
+      this.racer1, this.racer2, this.racer3, this.racer4, this.racer5, this.racer6
+    ];
+  }
+
   /**
    * レーサー情報設定処理
    * @param boatNo 艇番
@@ -269,25 +341,47 @@ export class StartingBoatFormControl extends FormControl<number | null> implemen
 
 /**
  * 進入予想フォームグループ
+ * 保存形式は { course1: { boatNo: nunber, st: numnber}, course2: { ... }, ... }とする。
+ * Formで扱うときは、StartingBoatFormControlの配列として扱う。
  */
 export class StartingFormationFormGroup extends FormGroup implements ToDto<StartingFormation> {
   constructor() {
     super({
+      /*
       course1: new StartingBoatFormControl(), 
       course2: new StartingBoatFormControl(), 
       course3: new StartingBoatFormControl(), 
       course4: new StartingBoatFormControl(), 
       course5: new StartingBoatFormControl(), 
       course6: new StartingBoatFormControl(), 
+      */
+      boats: new FormArray<StartingBoatFormControl>([
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+        new StartingBoatFormControl(), 
+      ])
     });
+
+    //開発中、挙動が固まったら以下は削除することになると思う。
+    this.initialize();
   }
 
+  /*
   get course1(): StartingBoatFormControl { return this.controls['course1'] as StartingBoatFormControl; }
   get course2(): StartingBoatFormControl { return this.controls['course2'] as StartingBoatFormControl; }
   get course3(): StartingBoatFormControl { return this.controls['course3'] as StartingBoatFormControl; }
   get course4(): StartingBoatFormControl { return this.controls['course4'] as StartingBoatFormControl; }
   get course5(): StartingBoatFormControl { return this.controls['course5'] as StartingBoatFormControl; }
   get course6(): StartingBoatFormControl { return this.controls['course6'] as StartingBoatFormControl; }
+  get courses(): StartingBoatFormControl[] {
+    return [ this.course1, this.course2, this.course3, this.course4, this.course5, this.course6 ];
+  }
+  */
+  get boatsArray(): FormArray<StartingBoatFormControl> { return this.controls['boats'] as FormArray<StartingBoatFormControl>; }
+  get boats(): StartingBoatFormControl[] { return this.boatsArray.controls; }
 
   /**
    * スタートタイミング設定処理
@@ -298,19 +392,45 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
   setSt(courseNo: number, boatNo: number, st: number | null) {
     //1～6以外の値がcourseNoに指定されたとき例外をスローする。
     
-    (this.controls[`course${courseNo}`] as StartingBoatFormControl).setSt(boatNo, st);
+    //(this.controls[`course${courseNo}`] as StartingBoatFormControl).setSt(boatNo, st);
+    this.boatsArray.controls[courseNo - 1].setSt(boatNo, st);
+  }
+
+  /**
+   * 初期化処理 
+   * 枠なり、stはnullで初期化する。
+   */
+  initialize() {
+    //bi:boatIndex
+    for (let bi = 1; bi <= 6; bi++) {
+      this.setSt(bi, bi, null);
+    }
   }
 
   toDto() {
     return {
-      course1: this.course1.toDto(), 
-      course2: this.course2.toDto(), 
-      course3: this.course3.toDto(), 
-      course4: this.course4.toDto(), 
-      course5: this.course5.toDto(), 
-      course6: this.course6.toDto()
+      course1: this.boatsArray.controls[0].toDto(), 
+      course2: this.boatsArray.controls[1].toDto(), 
+      course3: this.boatsArray.controls[2].toDto(), 
+      course4: this.boatsArray.controls[3].toDto(),
+      course5: this.boatsArray.controls[4].toDto(), 
+      course6: this.boatsArray.controls[5].toDto(), 
     }    
   }
+}
+
+/**
+ * 進入予想フォームグループ
+ */
+export class ApproachPredictionFormGroup extends StartingFormationFormGroup {
+  /** 
+   * 設定スタートタイミング区分
+   *   0: 未設定
+   *   1: スタート展示タイム
+   *   2: 平均ST
+   *   3: コース別平均ST
+  */
+  stType: number = 0;
 }
 
 /**
@@ -335,6 +455,12 @@ export class ExhibitionTimesFormGroup extends FormGroup implements ToDto<Exhibit
   get boat5(): FormControl<number | null> { return this.controls['boat5'] as FormControl<number | null>; }
   get boat6(): FormControl<number | null> { return this.controls['boat6'] as FormControl<number | null>; }
  
+  get boats(): FormControl[] { 
+    return [
+      this.boat1, this.boat2, this.boat3, this.boat4, this.boat5, this.boat6  
+    ];
+  }
+
   /**
    * 展示タイム設定処理
    * @param boatNo 

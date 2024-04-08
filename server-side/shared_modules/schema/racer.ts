@@ -23,6 +23,7 @@ export interface Racer {
   weight: number;             //体重
   win_rate: number;           //勝率
   win_rate2: number;          //2連対率
+  st: number;                 //平均スタートタイミング
   training_term: number;      //養成期
   birth_place: string;        //出身地
   course_datas: CourseData[]; //コース別データ

@@ -38,6 +38,9 @@ export class RacersModel {
   @Field(() => Float)
   win_rate2: number;
 
+  @Field(() => Float)
+  st: number;
+
   @Field(() => Int)
   training_term: number;
 

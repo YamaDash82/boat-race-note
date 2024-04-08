@@ -120,6 +120,8 @@ const convToRacerSchema = (plainData: string): Racer => {
   const win_rate = convToRate(plainData.substring(48, 52), 4, 2);
   //複勝率
   const win_rate2 = convToRate(plainData.substring(52, 56), 4, 1);
+  //平均スタートタイミング
+  const st = convToRate(plainData.substring(69, 72), 3, 2);
   const training_term = parseInt(plainData.substring(185, 188));
   const birth_place = plainData.substring(400, 403);
 
@@ -229,6 +231,7 @@ const convToRacerSchema = (plainData: string): Racer => {
     weight, 
     win_rate, 
     win_rate2,
+    st,
     training_term,
     birth_place, 
     course_datas: courseNos.map((course, index) => {
