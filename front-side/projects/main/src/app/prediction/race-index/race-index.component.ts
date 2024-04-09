@@ -3,6 +3,9 @@ import { PredictionFormService } from '../prediction-form.service';
 import { RacePlace, RacePlaces } from '@common_modules/constans/race-places';
 import { RaceNos } from '@common_modules/constans/race-numbers';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
+import { MatDialog } from '@angular/material/dialog';
+import { RacerSearchScreenComponent } from './racer-search-screen.component';
+import { RacersModel } from 'projects/main/src/generated/graphql';
 
 @Component({
   selector: 'app-race-index',
@@ -50,6 +53,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
           [boatNo]="boatIndex + 1"
           [racer]="racer.racerInfo"
           [labelVisible]="!boatIndex"
+          (racerClicked)="openRacerSearchScreen($event)"
         ></app-racer-period-result>
       </div>
       <div>
@@ -81,6 +85,7 @@ export class RaceIndexComponent implements OnInit {
   raceNos = RaceNos;
 
   constructor(
+    private dialog: MatDialog, 
     public fg: PredictionFormService, 
   ) {
 
@@ -103,5 +108,17 @@ export class RaceIndexComponent implements OnInit {
    */
   selectRaceNo(raceNo: number) {
     this.fg.raceNo.setValue(raceNo);
+  }
+
+  openRacerSearchScreen(boatNo: number): void {
+    const dialogRef = this.dialog.open(RacerSearchScreenComponent, {
+      data: boatNo
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fg.racers.setRacerInfo(boatNo, result);
+      }
+    });
   }
 }

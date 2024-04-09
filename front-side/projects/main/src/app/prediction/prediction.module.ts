@@ -24,6 +24,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { GeneralModule } from '../general/general.module';
 import { SelectApproachFormationComponent } from './deployment-prediction/select-approach-formation.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { RacerSearchScreenComponent } from './race-index/racer-search-screen.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     ApproachPredictionComponent,
     DeploymentPredictionComponent,
     RaceResultComponent,
-    SelectApproachFormationComponent
+    SelectApproachFormationComponent,
+    RacerSearchScreenComponent
   ],
   imports: [
     CommonModule, 

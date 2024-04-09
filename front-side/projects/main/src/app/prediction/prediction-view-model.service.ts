@@ -102,7 +102,7 @@ export class PredictionViewModelService {
         })
       ).subscribe({
         next: data => resolve(data), 
-        error: err => resolve(err),
+        error: err => reject(err),
       });
     });
   }

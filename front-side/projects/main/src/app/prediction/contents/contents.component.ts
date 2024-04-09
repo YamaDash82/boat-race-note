@@ -72,6 +72,7 @@ export class ContentsComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     //開発時、テストデータのセットをここに集約する。
     this.fg.raceDate.setValue(new ExDate())
+    /*
     //テストデータの表示
     //レース場
     this.fg.racePlaceCd.setValue(10);
@@ -82,6 +83,7 @@ export class ContentsComponent implements OnInit {
     this.fg.setRacer(4, 4826);
     this.fg.setRacer(5, 4640);
     this.fg.setRacer(6, 4488);
+    */
     //this.fg.startExhibition.initialize();
     if (!this.fg.startExhibition.boats[0].value) {
       this.fg.setStartExhibitionSt(1, 1, 0.2);

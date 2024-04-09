@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RacersModel } from 'projects/main/src/generated/graphql';
 
 /**
@@ -40,6 +40,7 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
       <div 
         class="w-[12rem] h-20 flex flex-col justify-around border-b border-r border-slate-500"
         [ngClass]="getBoatColorClass(boatNo)"
+        (click)="racerClick(boatNo)"
       >
         <!--登録番号-->
         <div class="pl-2">
@@ -83,6 +84,7 @@ export class RacerPeriodResultComponent {
   @Input() labelVisible = true;
   @Input() boatNo!: number;
   @Input() racer: RacersModel | null = null;
+  @Output() racerClicked = new EventEmitter<number>();
   
   //コース別情報インデックス
   courseDataIndexes = [0, 1, 2, 3, 4, 5];
@@ -96,5 +98,9 @@ export class RacerPeriodResultComponent {
       "boat-color5": boatNo === 5,
       "boat-color6": boatNo === 6
     }
+  }
+
+  racerClick(boatNo: number) {
+    this.racerClicked.emit(boatNo);
   }
 }
