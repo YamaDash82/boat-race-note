@@ -133,8 +133,13 @@ export class StartTiming {
     //フライング時、接頭にFを表記する。
     if (this._isFlying) stDispValue += "F";
     //スタートタイミングの絶対値を末尾に追加する。
-    stDispValue += `.${Math.abs(this._st * 100)}`;
+    const strSt = `00${Math.abs(this._st * 100)}`.slice(-2);
+    stDispValue += `.${strSt}`;
 
     return stDispValue;
+  }
+
+  get stNumber(): number | null {
+    return this._st;
   }
 }

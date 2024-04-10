@@ -13,6 +13,7 @@ import { ExDateFormControl } from '../common/ex-date-form-control';
 import { ToDto } from '../common/to-dto';
 import { PredictionViewModelService } from './prediction-view-model.service';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
+import { StartTiming } from 'projects/main/src/app/common/utilities';
 
 @Injectable({
   providedIn: 'root'
@@ -309,21 +310,31 @@ export class RacerFormControl extends FormControl<number | null> {
  * スターティングボートフォームコントロール
  * スタートタイミングを扱うフォームコントロール。付随して艇番を保持する。
  */
-export class StartingBoatFormControl extends FormControl<number | null> implements ToDto<StartingBoat> {
+export class StartingBoatFormControl extends FormControl<StartTiming | null> implements ToDto<StartingBoat> {
   private _boatNo: number = 0;
 
   constructor() {
     super(null);
   }
 
+
+  setSt(boatNo: number, st: StartTiming | null): void;
+  setSt(boatNo: number, st: number | null): void;
   /**
    * スタートタイミング設定処理
    * @param boatNo 
    * @param st 
    */
-  setSt(boatNo: number, st: number | null) {
+  setSt(boatNo: number, st: number | StartTiming | null) {
+    if (typeof st === "number") {
+      this.setValue(new StartTiming(st));
+    } else if (st instanceof StartTiming) {
+      this.setValue(st);
+    } else {
+      this.setValue(null);
+    }
+
     this._boatNo = boatNo;
-    this.setValue(st);
   }
 
   get boatNo(): number { return this._boatNo; }
@@ -334,7 +345,7 @@ export class StartingBoatFormControl extends FormControl<number | null> implemen
   toDto() {
     return {
       boat_no: this._boatNo, 
-      st: this.value as number, 
+      st: (this.value as StartTiming).stNumber as number, 
     }
   }
 }

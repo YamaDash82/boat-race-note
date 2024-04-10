@@ -26,10 +26,10 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
               [src]="'/assets/images/boat.png'" 
               alt="ボート" 
               class="w-[15%] h-auto"
-              [style.marginRight]="startPosition(course.value)"
+              [style.marginRight]="startPosition(course.value?.stNumber || 0)"
             >
           </div>
-          <div class="w-40">{{course.value}}</div>
+          <div class="w-40">{{course.value?.displayValue}}</div>
         </div>
       </div>
     </form>
