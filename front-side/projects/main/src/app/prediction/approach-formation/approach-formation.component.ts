@@ -2,6 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PredictionFormService, StartingBoatFormControl, StartingFormationFormGroup } from '../prediction-form.service';
 import { getBoatColorClass } from '../../common/utilities';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material/dialog';
+import { StartTimingInputComponent } from './start-timing-input.component';
+import { StartTiming } from 'projects/main/src/app/common/utilities';
 
 @Component({
   selector: 'app-approach-formation',
@@ -14,14 +17,14 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
         (cdkDropListDropped)="drop($event)"
       >
         <div 
-          *ngFor="let course of startFormationFg.boats" 
+          *ngFor="let course of startFormationFg.boats; let courseIndex = index" 
           class="grow flex items-center starting-boat"
           cdkDrag
         >
           <!--艇番の表示-->
           <div class="h-10 w-16 text-center pt-2" [ngClass]="getBoatColorClass(course.boatNo)">{{course.boatNo}}</div>
           <!--ボートのイメージ-->
-          <div class="ml-32 mr-10 border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
+          <div class="ml-8 mr-40 border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
             <img 
               [src]="'/assets/images/boat.png'" 
               alt="ボート" 
@@ -29,7 +32,12 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
               [style.marginRight]="startPosition(course.value?.stNumber || 0)"
             >
           </div>
-          <div class="w-40">{{course.value?.displayValue}}</div>
+          <div class="w-12">{{course.value?.displayValue}}</div>
+          <div>
+            <button type="button" mat-icon-button (click)="openStInputDialog(courseIndex + 1, course.boatNo)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </form>
@@ -67,6 +75,7 @@ export class ApproachFormationComponent implements OnInit {
 
   constructor(
     //public fg: PredictionFormService, 
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -100,5 +109,15 @@ export class ApproachFormationComponent implements OnInit {
     } else {
       return `${100 * st}%`;
     }
+  }
+
+  openStInputDialog(course: number, boatNo: number) {
+    this.dialog.open<StartTimingInputComponent, undefined, StartTiming>(StartTimingInputComponent).afterClosed().subscribe(result => {
+      console.log(`結果:${JSON.stringify(result)}`);
+      console.log(`確認:${result instanceof StartTiming}`);
+      if (result) {
+        this.startFormationFg.setSt(course, boatNo, result);
+      }
+    });
   }
 }

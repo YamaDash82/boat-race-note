@@ -25,6 +25,7 @@ import { GeneralModule } from '../general/general.module';
 import { SelectApproachFormationComponent } from './deployment-prediction/select-approach-formation.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RacerSearchScreenComponent } from './race-index/racer-search-screen.component';
+import { StartTimingInputComponent } from './approach-formation/start-timing-input.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { RacerSearchScreenComponent } from './race-index/racer-search-screen.com
     DeploymentPredictionComponent,
     RaceResultComponent,
     SelectApproachFormationComponent,
-    RacerSearchScreenComponent
+    RacerSearchScreenComponent,
+    StartTimingInputComponent
   ],
   imports: [
     CommonModule, 

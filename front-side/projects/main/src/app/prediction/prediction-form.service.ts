@@ -394,17 +394,28 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
   get boatsArray(): FormArray<StartingBoatFormControl> { return this.controls['boats'] as FormArray<StartingBoatFormControl>; }
   get boats(): StartingBoatFormControl[] { return this.boatsArray.controls; }
 
+  setSt(courseNo: number, boatNo: number, st: StartTiming | null): void;
+  setSt(courseNo: number, boatNo: number, st: number | null): void;
   /**
    * スタートタイミング設定処理
    * @param courseNo 
    * @param boatNo 
    * @param st 
    */
-  setSt(courseNo: number, boatNo: number, st: number | null) {
+  setSt(courseNo: number, boatNo: number, st: number | StartTiming | null) {
     //1～6以外の値がcourseNoに指定されたとき例外をスローする。
     
     //(this.controls[`course${courseNo}`] as StartingBoatFormControl).setSt(boatNo, st);
-    this.boatsArray.controls[courseNo - 1].setSt(boatNo, st);
+    //以下のコーディングは冗長だが、コンパイルエラー回避のためのコーディングである。
+    if (st === null) {
+      this.boatsArray.controls[courseNo - 1].setSt(boatNo, null);
+    } else if (typeof st === "number") {
+      this.boatsArray.controls[courseNo - 1].setSt(boatNo, st);
+    } else if (st instanceof StartTiming) {
+      this.boatsArray.controls[courseNo - 1].setSt(boatNo, st);
+    } else {
+      throw new Error(`StartingFormationFormGroup#setStメソッドに指定された引数stの型が想定外の型です。`);
+    }
   }
 
   /**
