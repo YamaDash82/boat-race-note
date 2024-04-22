@@ -11,7 +11,8 @@ import { StartTiming } from 'projects/main/src/app/common/utilities';
       class="flex flex-col"
       mat-dialog-content
     >
-
+      <div>小数点以下２桁の数値を入力。フライングはマイナス値を入力する。</div>
+      <input type="number" [formControl]="startTiming">
     </div>
     <div
       class="flex justify-between"
@@ -32,6 +33,9 @@ export class StartTimingInputComponent implements OnInit {
   //フライングフラグ フライング時True
   isFlying = false;
 
+  //仮のスタートタイミング入力用FormControl
+  startTiming = new FormControl<number | null>(null);
+
   constructor(
     public dialogRef: MatDialogRef<StartTimingInputComponent>, 
     @Inject(MAT_DIALOG_DATA) public data: number, 
@@ -47,6 +51,11 @@ export class StartTimingInputComponent implements OnInit {
       data: new StartTiming(0.15)
     });
     */
-   this.dialogRef.close(new StartTiming(0.15));
+    if (this.startTiming.value === null) {
+      this.dialogRef.close(null);
+    } else {
+      const st = new StartTiming(this.startTiming.value);
+      this.dialogRef.close(st);
+    }
   }
 }

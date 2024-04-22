@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PredictionFormService } from '../prediction-form.service';
 import { getBoatColorClass } from '../../common/utilities';
+import { MatDialog } from '@angular/material/dialog';
+import { ExhibitionTimeInputComponent } from './exhibition-time-input.component';
 
 @Component({
   selector: 'app-sailing-exhibition',
@@ -16,7 +18,16 @@ import { getBoatColorClass } from '../../common/utilities';
               [ngClass]="getBoatColoarClass(boatIndex + 1)"
             >{{boatIndex + 1}}</div>
             <!--スタートタイミング-->
-            <div class="ml-10">{{boat.value}}</div>
+            <div class="mx-10">{{boat.value}}</div>
+            <!--ダイアログ起動ボタン-->
+            <div>
+              <button type="button" 
+                mat-icon-button 
+                (click)="openExhibitionTimeInputDialog(boatIndex+1)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
     </form>
@@ -29,6 +40,7 @@ export class SailingExhibitionComponent implements OnInit {
 
   constructor(
     public fg: PredictionFormService, 
+    private dialog: MatDialog, 
   ) { }
 
   ngOnInit(): void {
@@ -42,5 +54,15 @@ export class SailingExhibitionComponent implements OnInit {
       this.fg.setExhibitionTime(5, 6.60);
       this.fg.setExhibitionTime(6, 6.63);
     }
+  }
+
+  openExhibitionTimeInputDialog(boatNo: number) {
+    this.dialog.open<ExhibitionTimeInputComponent, null, number | null>(
+      ExhibitionTimeInputComponent
+    ).afterClosed().subscribe(result => {
+      if (result) {
+        this.fg.exhibitionTimes.setExhibitionTime(boatNo, result);
+      }
+    });
   }
 }

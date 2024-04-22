@@ -10,6 +10,7 @@ import { StartTiming } from 'projects/main/src/app/common/utilities';
   selector: 'app-approach-formation',
   template: `
     <form [formGroup]="startFormationFg" class="h-full w-full flex flex-col p-2">
+      <div>スタート展示</div>
       <!--メインコンテンツ-->
       <div 
         class="grow flex flex-col justify-around starting-boats bg-blue-400 pl-2"
