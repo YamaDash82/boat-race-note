@@ -72,7 +72,7 @@ export class StartTiming {
   constructor(stNumber?: number) { 
     if (typeof stNumber === "number") {
       //桁数チェック
-      if (Math.abs(stNumber * 100).toString().length > 2) throw new Error(`stNumberには小数点以下2桁の数値で入力してください。`);
+      if (Math.floor(Math.abs(stNumber * 100)).toString().length > 2) throw new Error(`stNumberには小数点以下2桁の数値で入力してください。`);
       
       //負の値の時フライングフラグをtrueにする。
       this._isFlying = stNumber < 0;
@@ -99,7 +99,7 @@ export class StartTiming {
       if (st < 0) throw new Error(`引数isFlyingを指定する場合、引数stに負の値は指定できません。`);
 
       //桁数チェック isFlyingが指定されている場合、stは小数点を含まない2桁の整数である。
-      if (Math.abs(st * 100).toString().length > 2) throw new Error(`桁数を超過しています。2桁までの整数をセットしてください。`);
+      if (Math.floor(Math.abs(st * 100)).toString().length > 2) throw new Error(`桁数を超過しています。2桁までの整数をセットしてください。`);
 
       this._isFlying = isFlying;
 
@@ -133,7 +133,7 @@ export class StartTiming {
     //フライング時、接頭にFを表記する。
     if (this._isFlying) stDispValue += "F";
     //スタートタイミングの絶対値を末尾に追加する。
-    const strSt = `00${Math.abs(this._st * 100)}`.slice(-2);
+    const strSt = `00${Math.floor(Math.abs(this._st * 100))}`.slice(-2);
     stDispValue += `.${strSt}`;
 
     return stDispValue;
