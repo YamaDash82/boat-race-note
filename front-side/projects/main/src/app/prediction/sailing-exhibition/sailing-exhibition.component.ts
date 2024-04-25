@@ -18,7 +18,7 @@ import { ExhibitionTimeInputComponent } from './exhibition-time-input.component'
               [ngClass]="getBoatColoarClass(boatIndex + 1)"
             >{{boatIndex + 1}}</div>
             <!--スタートタイミング-->
-            <div class="mx-10">{{boat.value}}</div>
+            <div class="mx-10">{{boat.value | number:'1.2-2' }}</div>
             <!--ダイアログ起動ボタン-->
             <div>
               <button type="button" 
