@@ -69,15 +69,32 @@ export class StartTiming {
    * @param stNumber 小数点以下2桁の数値を指定する。
    */
   constructor(stNumber: number);
-  constructor(stNumber?: number) { 
-    if (typeof stNumber === "number") {
+  /**
+   * スタートタイミング
+   * @param isFlying 
+   * @param stNumber 
+   */
+  constructor(isFlying: boolean, stNumber: number);
+  constructor();
+  constructor(arg1?: boolean | number, arg2?: number) { 
+    if (typeof arg1 === "boolean") {
+      this._isFlying = arg1;
+
+      const cacheSt = arg2 as number;
+
+      if (cacheSt < 0) throw new Error(`引数isFlyingを指定する場合、引数stに負の値は指定できません。`);
+
+      
+      //フライング時負の値になるようにする。
+      this._st = this._isFlying ? -cacheSt : cacheSt;
+    } else if (typeof arg1 === "number") {
       //桁数チェック
-      if (Math.floor(Math.abs(stNumber * 100)).toString().length > 2) throw new Error(`stNumberには小数点以下2桁の数値で入力してください。`);
+      if (Math.floor(Math.abs(arg1 * 100)).toString().length > 2) throw new Error(`stNumberには小数点以下2桁の数値で入力してください。`);
       
       //負の値の時フライングフラグをtrueにする。
-      this._isFlying = stNumber < 0;
+      this._isFlying = arg1 < 0;
 
-      this._st = stNumber;
+      this._st = arg1;
     }
   }
 
@@ -139,7 +156,29 @@ export class StartTiming {
     return stDispValue;
   }
 
-  get stNumber(): number | null {
+  /**
+   * 小数点以下数値文字取得処理
+   * 例) -0.18のとき"18"を返す。
+   * @returns 
+   */
+  getDecimalNumberStr(): string | null {
+    if (this._st === null) return null;
+
+    //数値を文字列化
+    let strSt = this._st.toString(); 
+    //小数点以下の値を取得
+    strSt = strSt.substring(strSt.indexOf(".") + 1);
+    //２桁に調整 0.20のとき、"2"になっているのでこれを"20"にする。
+    strSt = `${strSt}00`.substring(0, 2);
+
+    return strSt;
+  }
+
+  getStFloat(): number | null {
     return this._st;
+  }
+
+  get isFlying(): boolean {
+    return this._isFlying;
   }
 }
