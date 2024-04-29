@@ -9,29 +9,50 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 @Component({
   selector: 'app-racer-search-screen',
   template: `
-    <h1 mat-dialog-title>レーサー検索</h1>
+    <h1 mat-dialog-title>レーサー検索 <span>{{data}}号艇</span></h1>
     <div mat-dialog-content>
-      ナンバーキーとか 選択艇番<span>{{data}}</span>
-    </div>
-    <div>
-      <input type="number" [formControl]="racerNo">
-    </div>
-    <div *ngIf="racerInfo" class="flex">
-      <div>{{racerInfo.name_kanji}}</div>
-      <div>
-        <button 
-          type="button" 
-          mat-button color="primary"
-          (click)="confirmRacer()"
-        >選択</button>
+      <div class="p-1">
+        <input 
+          type="number" 
+          class="appearance-none bg-blue-200 h-10 border-none w-full px-2 rounded-sm"
+          [formControl]="racerNo"
+        >
       </div>
+      <!--検索結果-->
+      <div 
+        class="
+          flex flex-col h-16 border-blue-500 rounded-lg border-2
+          mx-1 px-1 my-2
+        "
+      >
+        <div>
+          検索結果
+        </div>
+        <div *ngIf="racerInfo" class="flex justify-center items-center">
+          <div>{{racerInfo.name_kanji}}</div>
+          <div>
+            <button 
+              type="button" 
+              mat-button color="primary"
+              (click)="confirmRacer()"
+            >選択</button>
+          </div>
+        </div>
+      </div>
+      <app-number-keys
+        (numClick)="numberButtonClicked($event)"
+        (clearClcik)="clearButtonClicked()"
+        (allClearClick)="allClearButtonClicked()"
+      ></app-number-keys>
     </div>
     <div 
       mat-dialog-actions
     >
       <button
-        mat-button
+        mat-flat-button
         matDialogClose
+        color="accent"
+        class="ml-4"
       >
         キャンセル
       </button>
@@ -79,6 +100,47 @@ export class RacerSearchScreenComponent implements OnInit {
         }
       }
     });
+  }
+
+  /**
+   * 数字ボタンクリック時処理
+   * @param numStr 
+   */
+  numberButtonClicked(numStr: string) {
+    let inputNumStr: string = this.racerNo.value === null ? "" : this.racerNo.value.toString()
+    inputNumStr += numStr;
+    this.racerNo.setValue(parseInt(inputNumStr));
+  }
+
+  /**
+   * クリアボタンクリック時処理
+   * 現在の入力値の末尾から１文字消す。
+   */
+  clearButtonClicked() {
+    //現在の入力値
+    let numStrs = this.racerNo.value?.toString() || "";
+
+    if (numStrs.length) {
+      //数値が入力されているとき、末尾を消す。
+      numStrs = numStrs.slice(0, numStrs.length - 1);
+      
+      if (numStrs.length) {
+        //末尾を消して、数値文字が残っているとき、その値をセットする。
+        this.racerNo.setValue(parseInt(numStrs));
+      } else {
+        //０文字になったら、テキストボックスをリセットする。
+        this.racerNo.reset();
+      }
+    } else {
+      //何もしない。
+    }
+  }
+
+  /**
+   * オールクリアボタンクリック時処理
+   */
+  allClearButtonClicked() {
+    this.racerNo.reset();
   }
 
   confirmRacer() {
