@@ -345,7 +345,7 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
   toDto() {
     return {
       boat_no: this._boatNo, 
-      st: (this.value as StartTiming).stNumber as number, 
+      st: (this.value as StartTiming).getStFloat() as number, 
     }
   }
 }

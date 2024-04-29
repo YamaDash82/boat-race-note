@@ -5,6 +5,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { StartTimingInputComponent } from './start-timing-input.component';
 import { StartTiming } from 'projects/main/src/app/common/utilities';
+import { DialogAction, DIALOG_ACTION, DialogResult } from 'projects/main/src/app/common/dialog-result';
 
 @Component({
   selector: 'app-approach-formation',
@@ -25,12 +26,13 @@ import { StartTiming } from 'projects/main/src/app/common/utilities';
           <!--艇番の表示-->
           <div class="h-10 w-16 text-center pt-2" [ngClass]="getBoatColorClass(course.boatNo)">{{course.boatNo}}</div>
           <!--ボートのイメージ-->
-          <div class="ml-8 mr-40 border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
+          <div class="ml-8 mr-40 grow border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
             <img 
               [src]="'/assets/images/boat.png'" 
               alt="ボート" 
               class="w-[15%] h-auto"
-              [style.marginRight]="startPosition(course.value?.stNumber || 0)"
+              [class.invisible]="!course.value"
+              [style.marginRight]="startPosition(course.value?.getStFloat() || 0)"
             >
           </div>
           <div class="w-12">{{course.value?.displayValue}}</div>
@@ -113,11 +115,32 @@ export class ApproachFormationComponent implements OnInit {
   }
 
   openStInputDialog(course: number, boatNo: number) {
-    this.dialog.open<StartTimingInputComponent, undefined, StartTiming>(StartTimingInputComponent).afterClosed().subscribe(result => {
-      console.log(`結果:${JSON.stringify(result)}`);
-      console.log(`確認:${result instanceof StartTiming}`);
-      if (result) {
-        this.startFormationFg.setSt(course, boatNo, result);
+    const currentSt = this.startFormationFg.boats[course - 1].value
+    this.dialog.open<
+      StartTimingInputComponent,       //ダイアログに使用するコンポーネント
+      {
+        course: number, 
+        boatNo: number, 
+        st: StartTiming | null
+      },            //ダイアログに渡す値の型
+      DialogResult<StartTiming | null> //ダイアログから帰ってくる値の型
+    >(
+      StartTimingInputComponent, 
+      { 
+        data: {
+          course: course, 
+          boatNo: boatNo, 
+          st: this.startFormationFg.boats[course - 1].value
+        }
+      }
+    ).afterClosed().subscribe(dialogResult => {
+      
+      if (dialogResult?.dialogAction === DIALOG_ACTION.Decision && dialogResult.value) {
+        //ダイアログでスタートタイミングが入力されたときの処理
+        this.startFormationFg.setSt(course, boatNo, dialogResult.value);
+      } else if (dialogResult?.dialogAction === DIALOG_ACTION.Clear) {
+        //ダイアログでキャンセルボタンがクリックされたときの処理
+        this.startFormationFg.boats[course - 1].reset();
       }
     });
   }
