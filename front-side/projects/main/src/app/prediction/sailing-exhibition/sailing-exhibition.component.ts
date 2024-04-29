@@ -3,6 +3,7 @@ import { PredictionFormService } from '../prediction-form.service';
 import { getBoatColorClass } from '../../common/utilities';
 import { MatDialog } from '@angular/material/dialog';
 import { ExhibitionTimeInputComponent } from './exhibition-time-input.component';
+import { DIALOG_ACTION, DialogAction, DialogResult } from 'projects/main/src/app/common/dialog-result';
 
 @Component({
   selector: 'app-sailing-exhibition',
@@ -17,8 +18,8 @@ import { ExhibitionTimeInputComponent } from './exhibition-time-input.component'
               class="h-10 w-10 text-center pt-2"
               [ngClass]="getBoatColoarClass(boatIndex + 1)"
             >{{boatIndex + 1}}</div>
-            <!--スタートタイミング-->
-            <div class="mx-10">{{boat.value | number:'1.2-2' }}</div>
+            <!--展示タイム-->
+            <div class="mx-10 w-16">{{boat.value | number:'1.2-2' }}</div>
             <!--ダイアログ起動ボタン-->
             <div>
               <button type="button" 
@@ -57,11 +58,28 @@ export class SailingExhibitionComponent implements OnInit {
   }
 
   openExhibitionTimeInputDialog(boatNo: number) {
-    this.dialog.open<ExhibitionTimeInputComponent, null, number | null>(
-      ExhibitionTimeInputComponent
+    this.dialog.open<
+      ExhibitionTimeInputComponent, 
+      {
+        boatNo: number; 
+        exhibitionTime: number | null;
+      } | null, 
+      DialogResult<number | null>
+    >(
+      ExhibitionTimeInputComponent, 
+      {
+        data: {
+          boatNo: boatNo, 
+          exhibitionTime: this.fg.exhibitionTimes.boats[boatNo - 1].value
+        }
+      }
     ).afterClosed().subscribe(result => {
-      if (result) {
-        this.fg.exhibitionTimes.setExhibitionTime(boatNo, result);
+      if (result?.dialogAction === DIALOG_ACTION.Decision) {
+        //ダイアログで展示タイムを入力して確定ボタンが押されたときの処理を行う。
+        this.fg.exhibitionTimes.setExhibitionTime(boatNo, result.value as number);
+      } else if (result?.dialogAction === DIALOG_ACTION.Clear) {
+        //ダイアログでクリアボタンが押されたときの処理を行う。
+        this.fg.exhibitionTimes.boats[boatNo - 1].reset();
       }
     });
   }
