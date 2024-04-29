@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { MatButtonModule } from '@angular/material/button';
+import { NumberKeysComponent } from './number-keys/number-keys.component';
 
 
 @NgModule({
   declarations: [
-    PaginatorComponent
+    PaginatorComponent,
+    NumberKeysComponent,
   ],
   imports: [
     CommonModule,
@@ -14,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
   ],
   exports: [
     PaginatorComponent, 
+    NumberKeysComponent, 
   ]
 })
 export class GeneralModule { }
