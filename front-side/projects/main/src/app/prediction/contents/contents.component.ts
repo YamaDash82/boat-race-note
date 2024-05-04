@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
 import { PredictionFormService } from '../prediction-form.service';
 import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
+import { DeploymentPredictionComponent } from '../deployment-prediction/deployment-prediction.component';
 
 @Component({
   selector: 'app-contents',
@@ -39,14 +41,21 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
       </div>
       <!--サブヘッダー-->
       <div class="h-[5vh] bg-red-300 flex items-center">
+        <!--遷移ボタン-->
         <a 
           *ngFor="let linkButton of linkButtons" 
           mat-flat-button class="block ml-2"
           [routerLink]="linkButton.endPoint"
-         >{{linkButton.caption}}</a>
-         <button type="button" mat-raised-button class="ml-auto mr-2" color="primary">保存</button>
+        >{{linkButton.caption}}</a>
+        <!--登録ボタン-->
+        <button type="button" 
+          mat-raised-button 
+          class="ml-auto mr-2" 
+          color="primary"
+          (click)="saveRacePrediction()"
+        >保存</button>
       </div>
-      <router-outlet></router-outlet>
+      <router-outlet (activate)="onActive($event)"></router-outlet>
     </div>
   `,
   styles: [
@@ -55,6 +64,9 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 export class ContentsComponent implements OnInit {
   racePlaces = RacePlaces;
 
+  //アクティブなコンポーネントへの参照
+  private activeComponent!: Component;
+
   //艇番表示色取得クラス
   getBoatColorClass = getBoatColorClass;
 
@@ -62,28 +74,18 @@ export class ContentsComponent implements OnInit {
     { caption: "展示", endPoint: "exhibition" }, 
     { caption: "進入予想", endPoint: "approach-prediction" }, 
     { caption: "展開予想", endPoint: "deployment-prediction" }, 
-    { caption: "結果", endPoint: "race-result" }, 
+    //{ caption: "結果", endPoint: "race-result" }, 
   ];
 
   constructor(
     public fg: PredictionFormService, 
+    private auth: AuthService, 
   ) { }
 
   async ngOnInit(): Promise<void> {
     //開発時、テストデータのセットをここに集約する。
     this.fg.raceDate.setValue(new ExDate())
-    /*
     //テストデータの表示
-    //レース場
-    this.fg.racePlaceCd.setValue(10);
-    this.fg.raceNo.setValue(7);
-    this.fg.setRacer(1, 4505);
-    this.fg.setRacer(2, 4150);
-    this.fg.setRacer(3, 3445);
-    this.fg.setRacer(4, 4826);
-    this.fg.setRacer(5, 4640);
-    this.fg.setRacer(6, 4488);
-    */
     //this.fg.startExhibition.initialize();
     if (!this.fg.startExhibition.boats[0].value) {
       this.fg.setStartExhibitionSt(1, 1, 0.2);
@@ -104,5 +106,28 @@ export class ContentsComponent implements OnInit {
     if (!racePlaceCd) return null;
 
     return this.racePlaces.find(rp => rp.code === racePlaceCd) as RacePlace;
+  }
+
+  /**
+   * 予想情報登録処理
+   */
+  saveRacePrediction() {
+    if (this.auth.loginUser?.key) {
+      //現在アクティブなコンポーネントが展開予想コンポーネントのとき、入力中の展開予想を保存(FormControlに格納)する。
+      if (this.activeComponent instanceof DeploymentPredictionComponent) {
+        (this.activeComponent as DeploymentPredictionComponent).saveCurrentPrediction();
+      }
+      console.log(`登録:${JSON.stringify(this.fg.toDto(this.auth.loginUser.key), null, 2)}`);
+    }
+  }
+
+  /**
+   * ページ遷移時処理
+   * アクティブなコンポーネントをメンバにセットする。
+   * @param component 
+   */
+  onActive(component: Component) {
+    //アクティブなコンポーネントへの参照を取得する。
+    this.activeComponent = component;
   }
 }
