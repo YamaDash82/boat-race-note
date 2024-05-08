@@ -223,7 +223,6 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
     this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {
       //初期競争水面を描画する。
       this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
-
     });
   }
 

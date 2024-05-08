@@ -73,6 +73,7 @@ export type RacePredictionModel = {
   last_modified_at?: Maybe<Scalars['String']['output']>;
   race_date: Scalars['String']['output'];
   race_grade_cd: Scalars['Int']['output'];
+  race_no: Scalars['Float']['output'];
   race_place_cd: Scalars['Int']['output'];
   race_result?: Maybe<RaceResult>;
   racers: Racers;

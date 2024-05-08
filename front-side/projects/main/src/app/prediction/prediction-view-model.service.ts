@@ -41,6 +41,87 @@ const GET_RACER = gql`
   }
 `;
 
+const GET_RACE_PREDICTION = gql`
+  query GetRacePrediction($key: String!) {
+    racePrediction(key: $key) {
+      key
+      race_date
+      race_place_cd
+      race_no
+      racers {
+        racer1
+        racer2
+        racer3
+        racer4
+        racer5
+        racer6
+      }
+      start_exhibition {
+        course1 {
+          boat_no
+        	st
+        }
+        course2 {
+          boat_no
+        	st
+        }
+        course3 {
+          boat_no
+        	st
+        }
+        course4 {
+          boat_no
+        	st
+        }
+        course5 {
+          boat_no
+        	st
+        }
+        course6 {
+          boat_no
+        	st
+        }
+      }
+      exhibition_times {
+        boat1
+        boat2
+        boat3
+        boat4
+        boat5
+        boat6
+      }
+      approach_predictions { 
+      	course1 {
+          boat_no
+        	st
+        }
+        course2 {
+          boat_no
+        	st
+        }
+        course3 {
+          boat_no
+        	st
+        }
+        course4 {
+          boat_no
+        	st
+        }
+        course5 {
+          boat_no
+        	st
+        }
+        course6 {
+          boat_no
+        	st
+        }
+      }
+      deproyment_predictions
+      last_modified_at    
+    }
+  }
+`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -77,6 +158,24 @@ export class PredictionViewModelService {
     });
     
     return racerInfo;
+  }
+
+  async fetchRacePrediction(racePredictionKey: string): Promise<RacePredictionModel | null> {
+    console.log(`key:${racePredictionKey}`);
+    const racePrediction = await new Promise<RacePredictionModel | null>((resolve, reject) => {
+      this.apollo.watchQuery<{
+        racePrediction: RacePredictionModel
+      }>({
+        query: GET_RACE_PREDICTION, 
+        variables: { key: racePredictionKey }
+      }).valueChanges.subscribe(res => {
+        if (res.errors) return reject(res.errors[0]);
+
+        return resolve(res.data.racePrediction);
+      });
+    });
+    
+    return racePrediction;
   }
 
   /**

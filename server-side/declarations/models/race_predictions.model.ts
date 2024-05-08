@@ -126,6 +126,10 @@ export class RacePredictionModel {
   @Field()
   race_date: string;
 
+  //レース番号
+  @Field()
+  race_no: number;
+
   //開催場
   @Field(() => Int)
   race_place_cd: number;

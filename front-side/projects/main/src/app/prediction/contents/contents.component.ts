@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { PredictionFormService } from '../prediction-form.service';
+import { PredictionViewModelService } from '../prediction-view-model.service';
 import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 import { DeploymentPredictionComponent } from '../deployment-prediction/deployment-prediction.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-contents',
@@ -47,6 +49,8 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
           mat-flat-button class="block ml-2"
           [routerLink]="linkButton.endPoint"
         >{{linkButton.caption}}</a>
+        <!--ロードテスト-->
+        <button type="button" (click)="loadRacePrediction()">テスト</button>
         <!--登録ボタン-->
         <button type="button" 
           mat-raised-button 
@@ -79,6 +83,7 @@ export class ContentsComponent implements OnInit {
 
   constructor(
     public fg: PredictionFormService, 
+    private viewModel: PredictionViewModelService, 
     private auth: AuthService, 
   ) { }
 
@@ -111,13 +116,16 @@ export class ContentsComponent implements OnInit {
   /**
    * 予想情報登録処理
    */
-  saveRacePrediction() {
+  async saveRacePrediction() {
     if (this.auth.loginUser?.key) {
       //現在アクティブなコンポーネントが展開予想コンポーネントのとき、入力中の展開予想を保存(FormControlに格納)する。
       if (this.activeComponent instanceof DeploymentPredictionComponent) {
         (this.activeComponent as DeploymentPredictionComponent).saveCurrentPrediction();
       }
-      console.log(`登録:${JSON.stringify(this.fg.toDto(this.auth.loginUser.key), null, 2)}`);
+
+      const result  = await this.viewModel.saveRacePrediction(this.fg.toDto(this.auth.loginUser.key));
+
+      console.log(`登録結果:${JSON.stringify(result)}`);
     }
   }
 
@@ -129,5 +137,17 @@ export class ContentsComponent implements OnInit {
   onActive(component: Component) {
     //アクティブなコンポーネントへの参照を取得する。
     this.activeComponent = component;
+  }
+
+  async loadRacePrediction() {
+    const racePrediction = await this.viewModel.fetchRacePrediction('jiihzm01731x');
+
+    console.log(`確認:${JSON.stringify(racePrediction, null, 2)}`);
+
+    racePrediction?.deproyment_predictions?.forEach(data => {
+      this.fg.deploymentPredictions.push(new FormControl<string | null>(data));
+    });
+
+    this.fg.deploymentPredictionIndex = 0
   }
 }

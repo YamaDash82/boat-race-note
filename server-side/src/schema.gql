@@ -86,6 +86,7 @@ type RacePredictionModel {
   key: ID
   user_key: String!
   race_date: String!
+  race_no: Float!
   race_place_cd: Int!
   race_grade_cd: Int!
   racers: Racers!

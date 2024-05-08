@@ -206,6 +206,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       user_key: userKey, 
       race_date: this.raceDate.dateStrValue as string, 
       race_place_cd: this.racePlaceCd.value as number, 
+      race_no: this.raceNo.value as number,
       race_grade_cd: this.raceGradeCd.value as number, 
       racers: this.racers.toDto(), 
       start_exhibition: this.startExhibition.toDto(), 
