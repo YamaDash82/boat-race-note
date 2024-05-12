@@ -11,9 +11,7 @@ import { RacePredictionDto } from '@common_modules/data-transfer/race-prediction
 import { environment } from '../../environments/environment.development';
 import { catchError, throwError } from 'rxjs';
 
-const GET_RACER = gql`
-  query GetRacer($key: String!) {
-    racer(key: $key) {
+const RACER_FIELDS = `
       racer_no
       name_kanji
       name_kana
@@ -37,6 +35,42 @@ const GET_RACER = gql`
         place5_count
         place6_count
       }
+`; 
+
+const GET_RACER = gql`
+  query GetRacer($key: String!) {
+    racer(key: $key) {
+      ${RACER_FIELDS}
+    }
+  }
+`;
+
+const GET_PARTICIPATING_RACERS = gql`
+  query GetParticipatingRacers(
+    $key1: String!
+    $key2: String! 
+    $key3: String! 
+    $key4: String! 
+    $key5: String! 
+    $key6: String!
+  ) {
+    racer1: racer (key: $key1) {
+      ${RACER_FIELDS}
+    }
+    racer2: racer (key: $key2) {
+      ${RACER_FIELDS}
+    }
+    racer3: racer (key: $key3) {
+      ${RACER_FIELDS}
+    }
+    racer4: racer (key: $key4) {
+      ${RACER_FIELDS}
+    }
+    racer5: racer (key: $key5) {
+      ${RACER_FIELDS}
+    }
+    racer6: racer (key: $key6) {
+      ${RACER_FIELDS}
     }
   }
 `;
@@ -158,6 +192,62 @@ export class PredictionViewModelService {
     });
     
     return racerInfo;
+  }
+
+  async fetchParticipatingRacers(
+    raceDate: ExDate, 
+    racerNo1: number, 
+    racerNo2: number,
+    racerNo3: number,
+    racerNo4: number,
+    racerNo5: number,
+    racerNo6: number,
+  ): Promise<{
+      racer1: RacersModel, 
+      racer2: RacersModel, 
+      racer3: RacersModel, 
+      racer4: RacersModel, 
+      racer5: RacersModel, 
+      racer6: RacersModel, 
+    } | null> {
+    const racerKeys = [racerNo1, racerNo2, racerNo3, racerNo4, racerNo5, racerNo6].map(racerNo => {
+      const raceYear = raceDate.getFullYear();
+      //前期後期 1月から6月は前期で1、7月から12月は後期で2をセットする。
+      const term = raceDate.getMonth() <= 6 ? 1 : 2;
+      return `${raceYear}-${term}-${racerNo}`;
+    });
+
+    return new Promise<{
+      racer1: RacersModel, 
+      racer2: RacersModel, 
+      racer3: RacersModel, 
+      racer4: RacersModel, 
+      racer5: RacersModel, 
+      racer6: RacersModel, 
+    } | null>((resolve, reject) => {
+      this.apollo.watchQuery<{
+        racer1: RacersModel, 
+        racer2: RacersModel, 
+        racer3: RacersModel, 
+        racer4: RacersModel, 
+        racer5: RacersModel, 
+        racer6: RacersModel, 
+      }>({
+        query: GET_PARTICIPATING_RACERS, 
+        variables: {
+          key1: racerKeys[0], 
+          key2: racerKeys[1], 
+          key3: racerKeys[2], 
+          key4: racerKeys[3], 
+          key5: racerKeys[4], 
+          key6: racerKeys[5], 
+        }
+      }).valueChanges.subscribe(res => {
+        if (res.errors) return reject(res.errors[0]);
+
+        return resolve(res.data);
+      })
+    });
   }
 
   async fetchRacePrediction(racePredictionKey: string): Promise<RacePredictionModel | null> {

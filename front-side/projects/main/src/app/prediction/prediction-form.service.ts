@@ -217,6 +217,68 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       is_won: this.isWon.value, 
     };
   }
+
+  async setModel(model: RacePredictionModel) {
+    this.key.setValue(model.key as string);
+    this.raceDate.setValue(model.race_date);
+    //レーサー
+    /*
+    this.setRacer(1, model.racers.racer1);
+    this.setRacer(2, model.racers.racer2);
+    this.setRacer(3, model.racers.racer3);
+    this.setRacer(4, model.racers.racer4);
+    this.setRacer(5, model.racers.racer5);
+    this.setRacer(6, model.racers.racer6);
+    */
+    const racerInfos = await this.viewModel.fetchParticipatingRacers(
+      this.raceDate.date as ExDate, 
+      model.racers.racer1, 
+      model.racers.racer2, 
+      model.racers.racer3, 
+      model.racers.racer4, 
+      model.racers.racer5, 
+      model.racers.racer6, 
+    );
+    console.log(`取得データ:${JSON.stringify(racerInfos, null, 2)}`);
+    this.racers.racer1.setRacerInfo(racerInfos?.racer1 as RacersModel);
+    this.racers.racer2.setRacerInfo(racerInfos?.racer2 as RacersModel);
+    this.racers.racer3.setRacerInfo(racerInfos?.racer3 as RacersModel);
+    this.racers.racer4.setRacerInfo(racerInfos?.racer4 as RacersModel);
+    this.racers.racer5.setRacerInfo(racerInfos?.racer5 as RacersModel);
+    this.racers.racer6.setRacerInfo(racerInfos?.racer6 as RacersModel);
+    //スタート展示
+    if (model.start_exhibition) { 
+      this.startExhibition.setModel(model.start_exhibition);
+    }
+    //展示タイム
+    if (model.exhibition_times) {
+      this.exhibitionTimes.setModel(model.exhibition_times);
+    }
+    //進入予想
+    if (model?.approach_predictions?.length) {
+      model.approach_predictions?.forEach(approachPrediction => {
+        //(注意)展示ST、平均ST、コース別平均STの別のセットはまだ未実装。
+
+        const fg = new ApproachPredictionFormGroup();
+        fg.setModel(approachPrediction);
+
+        this.approachPredictions.push(fg);
+      });
+
+      this.approachPredictionIndex = model.approach_predictions.length - 1;
+    }
+
+    //展開予想
+    if (model.deproyment_predictions?.length) {
+      model.deproyment_predictions.forEach(deploymentPrediction => {
+        const formControl = new FormControl<string | null>(deploymentPrediction);
+
+        this.deploymentPredictions.push(formControl);
+      });
+
+      this.deploymentPredictionIndex = model.deproyment_predictions.length - 1;
+    }
+  }
 }
 
 /**
@@ -318,7 +380,6 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
     super(null);
   }
 
-
   setSt(boatNo: number, st: StartTiming | null): void;
   setSt(boatNo: number, st: number | null): void;
   /**
@@ -348,6 +409,10 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
       boat_no: this._boatNo, 
       st: (this.value as StartTiming).getStFloat() as number, 
     }
+  }
+
+  setModel(model: StartingBoat) {
+    this.setSt(model.boat_no, model.st);
   }
 }
 
@@ -440,6 +505,15 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
       course6: this.boatsArray.controls[5].toDto(), 
     }    
   }
+
+  setModel(model: StartingFormation) {
+    this.setSt(1, model.course1.boat_no, model.course1.st);
+    this.setSt(2, model.course2.boat_no, model.course2.st);
+    this.setSt(3, model.course3.boat_no, model.course3.st);
+    this.setSt(4, model.course4.boat_no, model.course4.st);
+    this.setSt(5, model.course5.boat_no, model.course5.st);
+    this.setSt(6, model.course6.boat_no, model.course6.st);
+  }
 }
 
 /**
@@ -503,6 +577,15 @@ export class ExhibitionTimesFormGroup extends FormGroup implements ToDto<Exhibit
       boat6: this.boat6.value, 
     }
   }  
+
+  setModel(model: ExhibitionTimes) {
+    this.setExhibitionTime(1, model.boat1 || null);
+    this.setExhibitionTime(2, model.boat1 || null);
+    this.setExhibitionTime(3, model.boat1 || null);
+    this.setExhibitionTime(4, model.boat1 || null);
+    this.setExhibitionTime(5, model.boat1 || null);
+    this.setExhibitionTime(6, model.boat1 || null);
+  }
 }
 
 /**

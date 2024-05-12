@@ -139,15 +139,12 @@ export class ContentsComponent implements OnInit {
     this.activeComponent = component;
   }
 
+  //テスト用
   async loadRacePrediction() {
     const racePrediction = await this.viewModel.fetchRacePrediction('jiihzm01731x');
 
-    console.log(`確認:${JSON.stringify(racePrediction, null, 2)}`);
-
-    racePrediction?.deproyment_predictions?.forEach(data => {
-      this.fg.deploymentPredictions.push(new FormControl<string | null>(data));
-    });
-
-    this.fg.deploymentPredictionIndex = 0
+    if (racePrediction) {
+      this.fg.setModel(racePrediction);
+    }
   }
 }
