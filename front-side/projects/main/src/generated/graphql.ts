@@ -17,6 +17,17 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type ApproachPrediction = {
+  __typename?: 'ApproachPrediction';
+  course1: StartingBoat;
+  course2: StartingBoat;
+  course3: StartingBoat;
+  course4: StartingBoat;
+  course5: StartingBoat;
+  course6: StartingBoat;
+  st_type: Scalars['Int']['output'];
+};
+
 export type CourseData = {
   __typename?: 'CourseData';
   approch_count: Scalars['Int']['output'];
@@ -65,7 +76,7 @@ export type QueryUserArgs = {
 
 export type RacePredictionModel = {
   __typename?: 'RacePredictionModel';
-  approach_predictions?: Maybe<Array<StartingFormation>>;
+  approach_predictions?: Maybe<Array<ApproachPrediction>>;
   deproyment_predictions?: Maybe<Array<Scalars['String']['output']>>;
   exhibition_times: ExhibitionTimes;
   is_won?: Maybe<Scalars['Boolean']['output']>;

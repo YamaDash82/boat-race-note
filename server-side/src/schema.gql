@@ -58,6 +58,16 @@ type StartingFormation {
   course6: StartingBoat!
 }
 
+type ApproachPrediction {
+  course1: StartingBoat!
+  course2: StartingBoat!
+  course3: StartingBoat!
+  course4: StartingBoat!
+  course5: StartingBoat!
+  course6: StartingBoat!
+  st_type: Int!
+}
+
 type Racers {
   racer1: Int!
   racer2: Int!
@@ -92,7 +102,7 @@ type RacePredictionModel {
   racers: Racers!
   start_exhibition: StartingFormation
   exhibition_times: ExhibitionTimes!
-  approach_predictions: [StartingFormation!]
+  approach_predictions: [ApproachPrediction!]
   deproyment_predictions: [String!]
   race_result: RaceResult
   is_won: Boolean

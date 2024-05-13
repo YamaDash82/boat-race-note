@@ -249,7 +249,7 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
 
     dialogRef.afterClosed().subscribe(result => {
       if (typeof result.data === "number") {
-        this.deploymentPredictionCanvas.drawStartigBoats(this.fg.approachPredictions.controls[result.data].toDto());
+        this.deploymentPredictionCanvas.drawStartigBoats(this.fg.approachPredictions.controls[result.data].toDto() as StartingFormation);
       }
     });
   }

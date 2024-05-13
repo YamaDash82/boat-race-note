@@ -3,6 +3,7 @@ import { FormGroup, FormControl, FormArray, Validators } from '@angular/forms';
 import { 
   StartingBoat, 
   StartingFormation, 
+  ApproachPrediction, 
   RacersModel, 
   RacePredictionModel, 
   Racers, 
@@ -220,16 +221,13 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
 
   async setModel(model: RacePredictionModel) {
     this.key.setValue(model.key as string);
+    //開催日
     this.raceDate.setValue(model.race_date);
+    //開催場
+    this.racePlaceCd.setValue(model.race_place_cd);
+    //レース番号
+    this.raceNo.setValue(model.race_no);
     //レーサー
-    /*
-    this.setRacer(1, model.racers.racer1);
-    this.setRacer(2, model.racers.racer2);
-    this.setRacer(3, model.racers.racer3);
-    this.setRacer(4, model.racers.racer4);
-    this.setRacer(5, model.racers.racer5);
-    this.setRacer(6, model.racers.racer6);
-    */
     const racerInfos = await this.viewModel.fetchParticipatingRacers(
       this.raceDate.date as ExDate, 
       model.racers.racer1, 
@@ -239,7 +237,6 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       model.racers.racer5, 
       model.racers.racer6, 
     );
-    console.log(`取得データ:${JSON.stringify(racerInfos, null, 2)}`);
     this.racers.racer1.setRacerInfo(racerInfos?.racer1 as RacersModel);
     this.racers.racer2.setRacerInfo(racerInfos?.racer2 as RacersModel);
     this.racers.racer3.setRacerInfo(racerInfos?.racer3 as RacersModel);
@@ -258,7 +255,6 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     if (model?.approach_predictions?.length) {
       model.approach_predictions?.forEach(approachPrediction => {
         //(注意)展示ST、平均ST、コース別平均STの別のセットはまだ未実装。
-
         const fg = new ApproachPredictionFormGroup();
         fg.setModel(approachPrediction);
 
@@ -424,14 +420,6 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
 export class StartingFormationFormGroup extends FormGroup implements ToDto<StartingFormation> {
   constructor() {
     super({
-      /*
-      course1: new StartingBoatFormControl(), 
-      course2: new StartingBoatFormControl(), 
-      course3: new StartingBoatFormControl(), 
-      course4: new StartingBoatFormControl(), 
-      course5: new StartingBoatFormControl(), 
-      course6: new StartingBoatFormControl(), 
-      */
       boats: new FormArray<StartingBoatFormControl>([
         new StartingBoatFormControl(), 
         new StartingBoatFormControl(), 
@@ -442,21 +430,10 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
       ])
     });
 
-    //開発中、挙動が固まったら以下は削除することになると思う。
+    //初期化処理
     this.initialize();
   }
 
-  /*
-  get course1(): StartingBoatFormControl { return this.controls['course1'] as StartingBoatFormControl; }
-  get course2(): StartingBoatFormControl { return this.controls['course2'] as StartingBoatFormControl; }
-  get course3(): StartingBoatFormControl { return this.controls['course3'] as StartingBoatFormControl; }
-  get course4(): StartingBoatFormControl { return this.controls['course4'] as StartingBoatFormControl; }
-  get course5(): StartingBoatFormControl { return this.controls['course5'] as StartingBoatFormControl; }
-  get course6(): StartingBoatFormControl { return this.controls['course6'] as StartingBoatFormControl; }
-  get courses(): StartingBoatFormControl[] {
-    return [ this.course1, this.course2, this.course3, this.course4, this.course5, this.course6 ];
-  }
-  */
   get boatsArray(): FormArray<StartingBoatFormControl> { return this.controls['boats'] as FormArray<StartingBoatFormControl>; }
   get boats(): StartingBoatFormControl[] { return this.boatsArray.controls; }
 
@@ -506,7 +483,7 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
     }    
   }
 
-  setModel(model: StartingFormation) {
+  setModel(model: StartingFormation | ApproachPrediction) {
     this.setSt(1, model.course1.boat_no, model.course1.st);
     this.setSt(2, model.course2.boat_no, model.course2.st);
     this.setSt(3, model.course3.boat_no, model.course3.st);
@@ -528,6 +505,19 @@ export class ApproachPredictionFormGroup extends StartingFormationFormGroup {
    *   3: コース別平均ST
   */
   stType: number = 0;
+
+  override toDto(): ApproachPrediction {
+    return {
+      st_type: this.stType, 
+      ...super.toDto()
+    };
+  }
+
+  override setModel(model: ApproachPrediction) {
+    super.setModel(model as StartingFormation);
+
+    this.stType = model.st_type;
+  }
 }
 
 /**

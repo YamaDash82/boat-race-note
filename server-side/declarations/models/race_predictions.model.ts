@@ -1,5 +1,4 @@
 import { Field, Int, Float, ID, ObjectType, GraphQLISODateTime } from '@nestjs/graphql';
-import { GraphQLJSON } from 'graphql-type-json';
 
 /**
  * スターティングボート
@@ -35,6 +34,15 @@ export class StartingFormation {
 
   @Field(() => StartingBoat)
   course6: StartingBoat
+}
+
+/**
+ * 進入予想
+ */
+@ObjectType()
+export class ApproachPrediction extends StartingFormation {
+  @Field(() => Int)
+  st_type: number;
 }
 
 /**
@@ -151,8 +159,8 @@ export class RacePredictionModel {
   exhibition_times: ExhibitionTimes;
 
   //進入予想
-  @Field(()=> [StartingFormation], { nullable: true })
-  approach_predictions: StartingFormation[];
+  @Field(()=> [ApproachPrediction], { nullable: true })
+  approach_predictions: ApproachPrediction[];
 
   //展開予想
   @Field(() => [String], { nullable: true })
@@ -173,22 +181,3 @@ export class RacePredictionModel {
   @Field(() => String, { nullable: true })
   last_modified_at: string;
 }
-
-/*
-//スターティングボート
-export interface StartingBoat {
-  boat_no: number;
-  st: number;
-}
-
-//進入体系
-export interface StartingFormation {
-  course1: StartingBoat;
-  course2: StartingBoat;
-  course3: StartingBoat;
-  course4: StartingBoat;
-  course5: StartingBoat;
-  course6: StartingBoat;
-}
-*/
-

@@ -125,6 +125,7 @@ const GET_RACE_PREDICTION = gql`
         boat6
       }
       approach_predictions { 
+        st_type
       	course1 {
           boat_no
         	st
