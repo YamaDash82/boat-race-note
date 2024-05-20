@@ -51,6 +51,7 @@ import { FormControl } from '@angular/forms';
         >{{linkButton.caption}}</a>
         <!--ロードテスト-->
         <button type="button" (click)="loadRacePrediction()">テスト</button>
+        <button type="button" (click)="fg.reset()">リセット</button>
         <!--登録ボタン-->
         <button type="button" 
           mat-raised-button 

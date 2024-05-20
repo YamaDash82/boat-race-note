@@ -275,6 +275,17 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       this.deploymentPredictionIndex = model.deproyment_predictions.length - 1;
     }
   }
+
+  override reset() {
+    this.approachPredictions.clear();
+    this.currentApproachPredictionIndex = null;
+    this.deploymentPredictions.clear();
+    this.currentDeploymentPredictionIndex = null;
+
+    super.reset();
+
+    this.initialize();
+  }
 }
 
 /**
@@ -363,6 +374,12 @@ export class RacerFormControl extends FormControl<number | null> {
   get racerInfo(): RacersModel | null {
     return this._racerInfo;
   }
+
+  override reset() {
+    super.reset();
+
+    this._racerInfo = null;
+  }
 }
 
 /**
@@ -409,6 +426,12 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
 
   setModel(model: StartingBoat) {
     this.setSt(model.boat_no, model.st);
+  }
+
+  override reset() {
+    super.reset();
+
+    this._boatNo = 0;
   }
 }
 
@@ -491,6 +514,12 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
     this.setSt(5, model.course5.boat_no, model.course5.st);
     this.setSt(6, model.course6.boat_no, model.course6.st);
   }
+
+  override reset() {
+    super.reset();
+
+    this.initialize();
+  }
 }
 
 /**
@@ -517,6 +546,12 @@ export class ApproachPredictionFormGroup extends StartingFormationFormGroup {
     super.setModel(model as StartingFormation);
 
     this.stType = model.st_type;
+  }
+
+  override reset() {
+    super.reset();
+
+    this.stType = 0;
   }
 }
 
