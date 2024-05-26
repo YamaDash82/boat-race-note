@@ -113,5 +113,5 @@ type Query {
   racer(key: String!): RacersModel
   user(key: String!): UsersModel!
   racePrediction(key: String!): RacePredictionModel!
-  racePradictions(user_key: String!, date_from: String, date_to: String, race_place_cd: Float): [RacePredictionModel!]
+  racePredictions(user_key: String!, date_from: String, date_to: String, race_place_cd: Int): [RacePredictionModel!]
 }
