@@ -13,6 +13,11 @@ import { FormControl } from '@angular/forms';
   template: `
     <div class="h-full w-full">
       <div class="h-[5vh] bg-red-400 flex items-center">
+        <!--戻るボタン-->
+        <a href="#"
+          mat-icon-button
+          routerLink="/prediction"
+        ><mat-icon>arrow_back</mat-icon></a>
         <!--レース情報編集ボタン-->
         <a
           type="button"
