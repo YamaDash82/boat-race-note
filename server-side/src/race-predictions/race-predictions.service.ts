@@ -41,4 +41,30 @@ export class RacePredictionsService {
 
     return found as any;
   }
+
+  async find(
+    userKey: string,
+    dateFrom?: string, 
+    dateTo?: string, 
+    racePlaceCd?: number, 
+  ): Promise<RacePredictionModel[]> {
+    //パラメータオブジェクトの作成
+    //ユーザーキーの指定は必須である。
+    const params = { 'user_key': userKey };
+    //抽出開始日
+    if (dateFrom) {
+      params['race_date?gte'] = dateFrom;
+    }
+    //抽出終了日
+    if (dateTo) { 
+      params['race_date?lte'] = dateTo;
+    }
+    //開催場
+    if (racePlaceCd) {
+      params['race_place_cd'] = racePlaceCd;
+    }
+    const response = await this.racePredictionsBase.fetch(params);
+
+    return response.items as any as RacePredictionModel[];
+  }
 }

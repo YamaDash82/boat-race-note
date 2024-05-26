@@ -27,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RacerSearchScreenComponent } from './race-index/racer-search-screen.component';
 import { StartTimingInputComponent } from './approach-formation/start-timing-input.component';
 import { ExhibitionTimeInputComponent } from './sailing-exhibition/exhibition-time-input.component';
+import { PredictionTopComponent } from './prediction-top/prediction-top.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { ExhibitionTimeInputComponent } from './sailing-exhibition/exhibition-ti
     SelectApproachFormationComponent,
     RacerSearchScreenComponent,
     StartTimingInputComponent,
-    ExhibitionTimeInputComponent
+    ExhibitionTimeInputComponent,
+    PredictionTopComponent
   ],
   imports: [
     CommonModule, 
