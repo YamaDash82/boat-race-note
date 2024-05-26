@@ -56,9 +56,6 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
           (racerClicked)="openRacerSearchScreen($event)"
         ></app-racer-period-result>
       </div>
-      <div>
-        {{ fg.value | json }}
-      </div>
       <div class="mt-auto">
         <a 
           mat-raised-button  
