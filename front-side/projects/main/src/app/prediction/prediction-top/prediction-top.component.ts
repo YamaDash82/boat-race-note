@@ -6,10 +6,20 @@ import { RacePredictionModel } from 'projects/main/src/generated/graphql';
 @Component({
   selector: 'app-prediction-top',
   template: `
-  <h1>トップ</h1>
+    <h1>トップ</h1>
     <div class="flex flex-col">
+      <div>
+        <a href="#"
+          mat-icon-button
+          routerLink="/prediction/new-prediction/race-index"
+        >
+          <mat-icon>add</mat-icon>
+        </a>
+      </div>
       <div *ngFor="let prediction of racePredictions">
-        <div>key:{{prediction.key}}</div>
+        <div>
+          <a [routerLink]="[prediction.key, 'contents']">key:{{prediction.key}}</a>
+        </div>
         <div>開催日:{{prediction.race_date}}</div>
         <div>開催場:{{prediction.race_place_cd}}</div>
         <div>レース番号:{{prediction.race_no}}</div>

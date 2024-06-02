@@ -60,7 +60,7 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
         <a 
           mat-raised-button  
           class="ml-auto"
-          routerLink="/prediction/contents/exhibition"
+          [routerLink]="['..', 'contents', 'exhibition']"
         >確定</a>
       </div>
     </form>
@@ -89,10 +89,6 @@ export class RaceIndexComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    //入力ダイアログの開発時用。不要になったら消す。
-    const dialogRef = this.dialog.open(RacerSearchScreenComponent, {
-      data: 1
-    });
   }
 
   /**

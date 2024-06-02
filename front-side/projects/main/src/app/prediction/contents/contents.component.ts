@@ -6,7 +6,6 @@ import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 import { DeploymentPredictionComponent } from '../deployment-prediction/deployment-prediction.component';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-contents',
@@ -22,7 +21,7 @@ import { FormControl } from '@angular/forms';
         <a
           type="button"
           mat-icon-button
-          routerLink="/prediction/race-index"
+          [routerLink]="['..', 'race-index']"
         ><mat-icon>edit</mat-icon></a>
         <!--開催日-->
         <div class="flex flex-col mr-2 w-[10rem]">
@@ -94,18 +93,6 @@ export class ContentsComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
-    //開発時、テストデータのセットをここに集約する。
-    this.fg.raceDate.setValue(new ExDate())
-    //テストデータの表示
-    //this.fg.startExhibition.initialize();
-    if (!this.fg.startExhibition.boats[0].value) {
-      this.fg.setStartExhibitionSt(1, 1, 0.2);
-      this.fg.setStartExhibitionSt(2, 2, 0.13);
-      this.fg.setStartExhibitionSt(3, 3, -0.05);
-      this.fg.setStartExhibitionSt(4, 4, 0.19);
-      this.fg.setStartExhibitionSt(5, 5, 0.04);
-      this.fg.setStartExhibitionSt(6, 6, 0.09);
-    }
   }
 
   /**

@@ -45,16 +45,6 @@ export class SailingExhibitionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    //テストデータの設定
-    //不要になったら消す。
-    if (!this.fg.exhibitionTimes.boat1.value) {
-      this.fg.setExhibitionTime(1, 6.62);
-      this.fg.setExhibitionTime(2, 6.70);
-      this.fg.setExhibitionTime(3, 6.69);
-      this.fg.setExhibitionTime(4, 6.67);
-      this.fg.setExhibitionTime(5, 6.60);
-      this.fg.setExhibitionTime(6, 6.63);
-    }
   }
 
   openExhibitionTimeInputDialog(boatNo: number) {
