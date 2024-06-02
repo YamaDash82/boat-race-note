@@ -10,6 +10,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 import { RacePredictionDto } from '@common_modules/data-transfer/race-prediction';
 import { environment } from '../../environments/environment.development';
 import { catchError, throwError } from 'rxjs';
+import { RacePlaces } from '@common_modules/constans/race-places';
 
 const RACER_FIELDS = `
       racer_no
@@ -310,14 +311,14 @@ export class PredictionViewModelService {
       date_to?: ExDate, 
       race_place_cd?: number,
     }
-  ): Promise<RacePredictionModel[] | null> { 
+  ): Promise<(RacePredictionModel & { race_place_name: string })[] | null> { 
     const variables_ = {
           user_key: params.user_key, 
           date_from: params.date_from || null, 
           date_to: params.date_to || null,
           race_place_cd: params.race_place_cd || null, 
         };
-    console.log(`パラメータ確認:${JSON.stringify(variables_, null, 2)}`); // { "user_key": "hogehoge" }
+
     const racePredictions = await new Promise<RacePredictionModel[] | null>((resolve, reject) => {
       this.apollo.watchQuery<{
         racePredictions: RacePredictionModel[]
@@ -325,8 +326,8 @@ export class PredictionViewModelService {
         query: GET_RACE_PREDICTIONS, 
         variables: {
           user_key: params.user_key, 
-          date_from: params.date_from || null, 
-          date_to: params.date_to || null,
+          date_from: params.date_from?.getYYYYMMDD() || null, 
+          date_to: params.date_to?.getYYYYMMDD() || null,
           race_place_cd: params.race_place_cd || null, 
         }
       }).valueChanges.subscribe(res => {
@@ -338,9 +339,18 @@ export class PredictionViewModelService {
       })
     });
 
-    console.log(`取得データ返す:${JSON.stringify(racePredictions)}`);
-    return racePredictions;
+    if (racePredictions) {
+      //データが取得できた場合、開催場名を付与する。
+      return racePredictions?.map(racePrediction => {
+        const racePlaceName = { race_place_name: RacePlaces.find(racePlace => racePlace.code === racePrediction.race_place_cd)?.name || "" };
+
+        return { ...racePrediction, ...racePlaceName };
+      });
+    } else {
+      return null;
+    }
   }
+
   /**
    * レース予想情報登録処理
    * 処理成功時サーバーサイドから、レース予想情報のキーと、最終更新日時(Date.prototype.getTime()から取得される値の文字列)が返される。
