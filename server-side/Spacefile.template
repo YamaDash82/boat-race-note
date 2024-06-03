@@ -1,3 +1,4 @@
+
 # Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
 v: 0
 micros:
@@ -5,7 +6,7 @@ micros:
     src: ./
     engine: nodejs16
     include:
-    #  - app
+      - app
       - dist
     run: node dist/main.js
     commands: 
@@ -13,3 +14,9 @@ micros:
     dev: npm run start:dev
     primary: true
     public: true
+    presets:
+      env:
+        - name: JWT_SECRET
+          description: "暗号化キー"
+          # 暗号化キーを下に設定する。
+          default: ""

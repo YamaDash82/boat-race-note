@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { RacePredictionsModule } from './race-predictions/race-predictions.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -18,6 +19,9 @@ import { RacePredictionsModule } from './race-predictions/race-predictions.modul
       driver: ApolloDriver, 
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'), 
     }), 
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../app'),
+    }),
     ConfigModule.forRoot(), 
     ConfigurationModule, 
     DetaModule, 

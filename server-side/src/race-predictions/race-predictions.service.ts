@@ -28,12 +28,16 @@ export class RacePredictionsService {
     //Detaが対応している桁数、GraphQLが対応している桁数を超過しているため。
     detail.last_modified_at = lastModifiedAt.toString();
 
-    const res = key ?
-      await this.racePredictionsBase.put(detail as any, key)
-      :
-      await this.racePredictionsBase.put(detail as any);
+    try {
+      const res = key ?
+        await this.racePredictionsBase.put(detail as any, key)
+        :
+        await this.racePredictionsBase.put(detail as any);
     
-    return { key: res.key as string, lastModifiedAt };
+      return { key: res.key as string, lastModifiedAt };
+    } catch(err) {
+      throw err;
+    }
   }
 
   async findOne(key: string): Promise<RacePredictionModel> {

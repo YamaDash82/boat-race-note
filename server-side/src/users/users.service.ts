@@ -2,7 +2,7 @@ import { Injectable, ForbiddenException, BadRequestException, UnauthorizedExcept
 import { UsersModel, UserPayload } from 'declarations/models/users.model';
 import { DetaBaseService } from 'src/deta/deta-base.service';
 import { passwordConfig } from 'shared_modules/utilities/password';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt-ts';
 
 @Injectable()
 export class UsersService {

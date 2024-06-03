@@ -21,6 +21,11 @@ module.exports = {
         'commonjs2 @apollo/subgraph/dist/directives',
       'ts-morph': 'commonjs2 ts-morph', 
       'class-transformer/storage': 'commonjs2 class-transformer/storage', 
+      'mock-aws-s3': 'commonjs2 mock-aws-s3',
+      'aws-sdk': 'commonjs2 aws-sdk', 
+      'nock': 'commonjs2 nock',
+      'node-gyp': 'commonjs2 node-gyp',
+      'bcrypt': 'commonjs2 bcrypt'
     },
   ],
   optimization: {
