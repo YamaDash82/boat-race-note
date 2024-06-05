@@ -492,7 +492,6 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
   ): Promise<fabric.Image> {
     return new Promise<fabric.Image>((resolve, reject) => {
       try {
-
         fabric.Image.fromURL(`/assets/images/boat${boatNo}.svg`, img => {
           //サイズ指定をここで行う。画像のサイズを指定したサイズに拡大縮小する。
           img.scaleToWidth(width);

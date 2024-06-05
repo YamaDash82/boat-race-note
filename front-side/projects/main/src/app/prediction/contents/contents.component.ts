@@ -4,7 +4,6 @@ import { PredictionFormService } from '../prediction-form.service';
 import { PredictionViewModelService } from '../prediction-view-model.service';
 import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
-import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 import { DeploymentPredictionComponent } from '../deployment-prediction/deployment-prediction.component';
 
 @Component({
@@ -53,9 +52,6 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
           mat-flat-button class="block ml-2"
           [routerLink]="linkButton.endPoint"
         >{{linkButton.caption}}</a>
-        <!--ロードテスト-->
-        <button type="button" (click)="loadRacePrediction()">テスト</button>
-        <button type="button" (click)="fg.reset()">リセット</button>
         <!--登録ボタン-->
         <button type="button" 
           mat-raised-button 
@@ -117,8 +113,6 @@ export class ContentsComponent implements OnInit {
       }
 
       const result  = await this.viewModel.saveRacePrediction(this.fg.toDto(this.auth.loginUser.key));
-
-      console.log(`登録結果:${JSON.stringify(result)}`);
     }
   }
 
@@ -130,14 +124,5 @@ export class ContentsComponent implements OnInit {
   onActive(component: Component) {
     //アクティブなコンポーネントへの参照を取得する。
     this.activeComponent = component;
-  }
-
-  //テスト用
-  async loadRacePrediction() {
-    const racePrediction = await this.viewModel.fetchRacePrediction('jiihzm01731x');
-
-    if (racePrediction) {
-      this.fg.setModel(racePrediction);
-    }
   }
 }

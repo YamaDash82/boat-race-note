@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { throwError, map, catchError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UsersModel } from '../../generated/graphql';
-import { environment } from '../../environments/environment';
+import { environment } from 'projects/main/src/environments/environment';
 import { UserDto } from '@common_modules/data-transfer/user';
 import { Subject } from 'rxjs';
 

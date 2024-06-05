@@ -8,7 +8,7 @@ import {
 } from '../../generated/graphql';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 import { RacePredictionDto } from '@common_modules/data-transfer/race-prediction';
-import { environment } from '../../environments/environment.development';
+import { environment } from 'projects/main/src/environments/environment';
 import { catchError, throwError } from 'rxjs';
 import { RacePlaces } from '@common_modules/constans/race-places';
 
