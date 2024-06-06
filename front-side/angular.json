@@ -27,13 +27,16 @@
             "tsConfig": "projects/main/tsconfig.app.json",
             "assets": [
               "projects/main/src/favicon.ico",
-              "projects/main/src/assets"
+              "projects/main/src/assets",
+              "projects/main/src/manifest.webmanifest"
             ],
             "styles": [
               "projects/main/src/custom-theme.scss",
               "projects/main/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "serviceWorker": true,
+            "ngswConfigPath": "projects/main/ngsw-config.json"
           },
           "configurations": {
             "production": {
@@ -99,7 +102,8 @@
             "tsConfig": "projects/main/tsconfig.spec.json",
             "assets": [
               "projects/main/src/favicon.ico",
-              "projects/main/src/assets"
+              "projects/main/src/assets",
+              "projects/main/src/manifest.webmanifest"
             ],
             "styles": [
               "projects/main/src/styles.css"
