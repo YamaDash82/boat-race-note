@@ -11,10 +11,10 @@ import { DialogAction, DIALOG_ACTION, DialogResult } from 'projects/main/src/app
   selector: 'app-approach-formation',
   template: `
     <form [formGroup]="startFormationFg" class="h-full w-full flex flex-col p-2">
-      <div>スタート展示</div>
+      <div class="text-6xl">スタート展示</div>
       <!--メインコンテンツ-->
       <div 
-        class="grow flex flex-col justify-around starting-boats bg-blue-400 pl-2"
+        class="grow flex flex-col justify-around starting-boats bg-blue-400 pl-2 text-6xl"
         cdkDropList
         (cdkDropListDropped)="drop($event)"
       >
@@ -24,9 +24,9 @@ import { DialogAction, DIALOG_ACTION, DialogResult } from 'projects/main/src/app
           cdkDrag
         >
           <!--艇番の表示-->
-          <div class="h-10 w-16 text-center pt-2" [ngClass]="getBoatColorClass(course.boatNo)">{{course.boatNo}}</div>
+          <div class="h-20 w-20 text-center pt-4" [ngClass]="getBoatColorClass(course.boatNo)">{{course.boatNo}}</div>
           <!--ボートのイメージ-->
-          <div class="ml-8 mr-40 grow border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
+          <div class="ml-10 mr-[30rem] grow border-r-blue-500 border-l-blue-500 border-r border-l h-full flex flex-col justify-center items-end">
             <img 
               [src]="'/assets/images/boat.png'" 
               alt="ボート" 
@@ -35,7 +35,7 @@ import { DialogAction, DIALOG_ACTION, DialogResult } from 'projects/main/src/app
               [style.marginRight]="startPosition(course.value?.getStFloat() || 0)"
             >
           </div>
-          <div class="w-12">{{course.value?.displayValue}}</div>
+          <div class="w-40">{{course.value?.displayValue}}</div>
           <div>
             <button type="button" mat-icon-button (click)="openStInputDialog(courseIndex + 1, course.boatNo)">
               <mat-icon>edit</mat-icon>

@@ -5,7 +5,7 @@ import { UsersModel } from '../generated/graphql';
 @Component({
   selector: 'app-root',
   template: `
-    <header class="h-[5vh] w-full bg-red-500 flex justify-between">
+    <header class="h-[5vh] w-full bg-red-500 flex justify-between items-center text-4xl">
       <div>{{title}}</div>
       <div>{{loginUser?.key}}</div>
     </header>

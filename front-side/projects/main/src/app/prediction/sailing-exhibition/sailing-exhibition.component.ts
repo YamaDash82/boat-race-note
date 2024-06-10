@@ -8,18 +8,18 @@ import { DIALOG_ACTION, DialogAction, DialogResult } from 'projects/main/src/app
 @Component({
   selector: 'app-sailing-exhibition',
   template: `
-    <form class="h-full w-full flex flex-col p-2">
+    <form class="h-full w-full flex flex-col p-2 text-6xl">
       <div>展示航走</div>
       <!--メインコンテンツ-->
       <div *ngFor="let boat of fg.exhibitionTimes.boats;index as boatIndex;" class="grow flex flex-col justify-around">
         <div class="flex items-center">
             <!--艇番の表示-->
             <div 
-              class="h-10 w-10 text-center pt-2"
+              class="h-20 w-20 text-center pt-4"
               [ngClass]="getBoatColoarClass(boatIndex + 1)"
             >{{boatIndex + 1}}</div>
             <!--展示タイム-->
-            <div class="mx-10 w-16">{{boat.value | number:'1.2-2' }}</div>
+            <div class="mx-20 w-32">{{boat.value | number:'1.2-2' }}</div>
             <!--ダイアログ起動ボタン-->
             <div>
               <button type="button" 

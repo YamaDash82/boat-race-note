@@ -23,17 +23,17 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
           [routerLink]="['..', 'race-index']"
         ><mat-icon>edit</mat-icon></a>
         <!--開催日-->
-        <div class="flex flex-col mr-2 w-[10rem]">
+        <div class="flex flex-col mr-4 w-48">
           <div>開催日</div>
           <div>{{fg.raceDate.dateStrValue}}</div>
         </div>
         <!--レース場-->
-        <div class="flex flex-col mr-2 w-[6rem]">
+        <div class="flex flex-col mr-4 w-36">
           <div>開催場</div>
           <div>{{findRacePlace(fg.racePlaceCd.value)?.name}}</div>
         </div>
         <!--レース番号-->
-        <div class="mr-2 w-[4rem]">{{fg.raceNo.value}}<span *ngIf="fg.raceNo">R</span></div>
+        <div class="mr-8 w-16">{{fg.raceNo.value}}<span *ngIf="fg.raceNo">R</span></div>
         <!--出走レーサー-->
         <div 
           *ngFor="let racer of fg.racers.items; index as boatIndex;" 
@@ -49,13 +49,13 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
         <!--遷移ボタン-->
         <a 
           *ngFor="let linkButton of linkButtons" 
-          mat-flat-button class="block ml-2"
+          class="block ml-2"
           [routerLink]="linkButton.endPoint"
         >{{linkButton.caption}}</a>
         <!--登録ボタン-->
         <button type="button" 
           mat-raised-button 
-          class="ml-auto mr-2" 
+          class="ml-auto mr-2 h-1" 
           color="primary"
           (click)="saveRacePrediction()"
         >保存</button>

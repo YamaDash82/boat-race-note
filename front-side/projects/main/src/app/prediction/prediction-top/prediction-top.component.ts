@@ -7,7 +7,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 @Component({
   selector: 'app-prediction-top',
   template: `
-    <div class="flex flex-col w-full h-full">
+    <div class="flex flex-col w-full h-full text-4xl">
       <!--サブヘッダー-->
       <div>
         <a href="#"
@@ -20,15 +20,15 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
       <!--直近のレース記録一覧-->
       <div class="grow overflow-y-auto m-2 border-2 border-red-500 rounded">
         <!--リストのヘッダ-->
-        <div class="bg-red-500 text-white pl-2 h-8 flex items-center"><div>直近の予想記録({{filterFromDate.getYYYYMMDD()}}〜{{filterToDate.getYYYYMMDD()}})</div></div>
+        <div class="bg-red-500 text-white pl-2 h-20 flex items-center"><div>直近の予想記録({{filterFromDate.getYYYYMMDD()}}〜{{filterToDate.getYYYYMMDD()}})</div></div>
         <a *ngFor="let prediction of racePredictions" 
-          class="flex items-center border-b border-red-500 h-8 px-2" 
+          class="flex items-center border-b border-red-500 h-32 px-2" 
           [routerLink]="[prediction.key, 'contents', 'exhibition']"
         >
           <!--開催日-->
           <div class="mr-4">{{prediction.race_date}}</div>
           <!--開催場-->
-          <div class="w-16 mr-1">{{prediction.race_place_name}}</div>
+          <div class="w-32 mr-1">{{prediction.race_place_name}}</div>
           <!--レース番号-->
           <div class="w-20">{{prediction.race_no}}R</div>
         </a>
