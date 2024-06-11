@@ -49,6 +49,7 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
         <!--遷移ボタン-->
         <a 
           *ngFor="let linkButton of linkButtons" 
+          mat-raised-button
           class="block ml-2"
           [routerLink]="linkButton.endPoint"
         >{{linkButton.caption}}</a>

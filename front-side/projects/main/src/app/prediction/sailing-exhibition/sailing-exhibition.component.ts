@@ -8,7 +8,7 @@ import { DIALOG_ACTION, DialogAction, DialogResult } from 'projects/main/src/app
 @Component({
   selector: 'app-sailing-exhibition',
   template: `
-    <form class="h-full w-full flex flex-col p-2 text-6xl">
+    <form class="h-full w-full flex flex-col p-2 text-4xl">
       <div>展示航走</div>
       <!--メインコンテンツ-->
       <div *ngFor="let boat of fg.exhibitionTimes.boats;index as boatIndex;" class="grow flex flex-col justify-around">
