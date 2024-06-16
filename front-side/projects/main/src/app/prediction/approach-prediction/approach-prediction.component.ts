@@ -59,12 +59,12 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
           <div class="flex">
             <!--<div>枠</div>-->
             <div class="ml-4 w-16 text-center bg-blue-600 text-white">平均ST</div>
-            <div class="w-96 bg-blue-600 text-white text-center">コース別データ(上段:平均ST/下段:平均ｽﾀｰﾄ順)</div>
+            <div class="grow bg-blue-600 text-white text-center">コース別データ(上段:平均ST/下段:平均ｽﾀｰﾄ順)</div>
           </div>
           <!--内容-->
           <div
             *ngFor="let boat of currentApproachPrediction.boats; index as boatIndex"
-            class="flex grow border-b border-blue-500"
+            class="flex grow border-b border-blue-500 text-2xl"
           >
             <!--枠番-->
             <div 
@@ -74,13 +74,13 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
               <div class="grow">{{boat.boatNo}}</div>
             </div>
             <!--平均ST-->
-            <div class="w-16 border-x border-blue-500 text-center flex items-center">
+            <div class="w-24 border-x border-blue-500 text-center flex items-center">
               <div class="grow">{{getRacerInfo(boat.boatNo).st}}</div>
             </div>
             <!--コース別データ-->
             <div 
               *ngFor="let courseIndex of courseDataIndexes"
-              class="flex flex-col w-16 border-r border-blue-500 text-center justify-around"
+              class="flex flex-col w-24 border-r border-blue-500 text-center justify-around"
             >
               <!--コース別平均ST-->
               <div [class.hight-light]="courseIndex===boatIndex">{{getRacerInfo(boat.boatNo).course_datas[courseIndex].st | number : '1.2' }}</div>

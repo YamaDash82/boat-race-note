@@ -57,8 +57,7 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
         
         <!--登録ボタン-->
         <button type="button" 
-          mat-raised-button 
-          class="ml-auto mr-2 h-1" 
+          class="ml-auto mr-2 text-2xl w-24 h-4/5 bg-blue-700 text-white rounded-lg" 
           color="primary"
           (click)="saveRacePrediction()"
         >保存</button>
