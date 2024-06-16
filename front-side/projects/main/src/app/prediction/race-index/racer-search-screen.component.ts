@@ -11,24 +11,25 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
   template: `
     <h1 mat-dialog-title>レーサー検索 <span>{{data}}号艇</span></h1>
     <div mat-dialog-content>
-      <div class="p-1">
+      <div class="p-1 text-4xl">
         <input 
           type="number" 
-          class="appearance-none bg-blue-200 h-10 border-none w-full px-2 rounded-sm"
+          class="appearance-none bg-blue-200 h-16 border-none w-full px-2 rounded-sm"
+          inputmode="none"
           [formControl]="racerNo"
         >
       </div>
       <!--検索結果-->
       <div 
         class="
-          flex flex-col h-16 border-blue-500 rounded-lg border-2
+          flex flex-col h-32 border-blue-500 rounded-lg border-2
           mx-1 px-1 my-2
         "
       >
         <div>
           検索結果
         </div>
-        <div *ngIf="racerInfo" class="flex justify-center items-center">
+        <div *ngIf="racerInfo" class="flex justify-center items-center text-4xl">
           <div>{{racerInfo.name_kanji}}</div>
           <div>
             <button 

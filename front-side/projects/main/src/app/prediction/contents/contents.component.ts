@@ -45,14 +45,16 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
         </div>
       </div>
       <!--サブヘッダー-->
-      <div class="h-[5vh] bg-red-300 flex items-center">
+      <div class="h-[5vh] bg-red-300 flex items-center align-middle pl-64">
         <!--遷移ボタン-->
-        <a 
-          *ngFor="let linkButton of linkButtons" 
-          mat-raised-button
-          class="block ml-2"
-          [routerLink]="linkButton.endPoint"
-        >{{linkButton.caption}}</a>
+        <div *ngFor="let linkButton of linkButtons" class="flex h-full justify-center items-center bg-red-500 mr-1 rounded-t-lg">
+          <a 
+            class="block text-2xl w-32 text-center"
+            routerLinkActive="text-white"
+            [routerLink]="linkButton.endPoint"
+          >{{linkButton.caption}}</a>
+        </div>
+        
         <!--登録ボタン-->
         <button type="button" 
           mat-raised-button 

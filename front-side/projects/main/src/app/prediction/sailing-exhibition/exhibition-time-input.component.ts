@@ -35,6 +35,7 @@ import { DIALOG_ACTION, DialogAction, DialogResult } from 'projects/main/src/app
         <!--数値-->
         <input type="text" 
           [formControl]="exhibitionTimeDecimalStr"
+          inputmode="none"
           class="appearance-none bg-blue-200 h-10 border-none w-20 rounded-sm text-xl pl-2 grow"
         >
       </div>

@@ -31,6 +31,7 @@ import { DIALOG_ACTION, DialogAction, DialogResult } from 'projects/main/src/app
         <input type="text" 
           [formControl]="startTiming"
           class="appearance-none bg-blue-200 h-10 border-none w-40 px-2 rounded-sm"
+          inputmode="none"
         >
       </div>
       <!--入力パッド-->

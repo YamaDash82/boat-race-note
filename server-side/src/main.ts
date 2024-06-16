@@ -6,10 +6,13 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, {
     cors: devMode ? { 
+      /*
       origin: [
         'http://localhost:4200', 
         'http://localhost:9876', 
       ],
+      */
+      origin: true, 
     } : undefined,  
   });
   const port = process.env.PORT || 3000;

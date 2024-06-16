@@ -5,10 +5,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
   template: `
     <div clas="flex flex-col">
       <div *ngFor="let buttons of numberButtons" class="flex">
-        <div *ngFor="let button of buttons" class="h-16 p-1">
+        <div *ngFor="let button of buttons" class="h-32 p-1">
           <button 
             type="button"
-            class="appearance-none h-full w-20 text-4xl rounded-sm text-white"
+            class="appearance-none h-full w-32 text-8xl rounded-sm text-white"
             [class.bg-slate-500]="button.buttonType===1"
             [class.bg-rose-400]="button.buttonType!==1"
             (click)="someKeyClick(button.buttonType, button.caption)"
