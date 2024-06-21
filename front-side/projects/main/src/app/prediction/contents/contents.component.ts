@@ -108,13 +108,20 @@ export class ContentsComponent implements OnInit {
    * 予想情報登録処理
    */
   async saveRacePrediction() {
+    console.log(`登録クリック`);
     if (this.auth.loginUser?.key) {
       //現在アクティブなコンポーネントが展開予想コンポーネントのとき、入力中の展開予想を保存(FormControlに格納)する。
       if (this.activeComponent instanceof DeploymentPredictionComponent) {
         (this.activeComponent as DeploymentPredictionComponent).saveCurrentPrediction();
       }
 
-      const result  = await this.viewModel.saveRacePrediction(this.fg.toDto(this.auth.loginUser.key));
+      try {
+        const result  = await this.viewModel.saveRacePrediction(this.fg.toDto(this.auth.loginUser.key));
+        console.log(`登録完了`);
+      } catch(err) {
+        console.log(`エラー:${err}`);
+      }
+
     }
   }
 

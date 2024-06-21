@@ -8,8 +8,8 @@ export class StartingBoat {
   @Field(() => Int)
   boat_no: number;
 
-  @Field(() => Float)
-  st: number;
+  @Field(() => Float, { nullable: true })
+  st: number | null;
 }
 
 /**
@@ -17,22 +17,22 @@ export class StartingBoat {
  */
 @ObjectType()
 export class StartingFormation {
-  @Field(() => StartingBoat)
+  @Field(() => StartingBoat, { nullable: true })
   course1: StartingBoat
 
-  @Field(() => StartingBoat)
+  @Field(() => StartingBoat, { nullable: true })
   course2: StartingBoat
 
-  @Field(() => StartingBoat)
+  @Field(() => StartingBoat, { nullable: true })
   course3: StartingBoat
 
-  @Field(() => StartingBoat)
+  @Field(() => StartingBoat, { nullable: true })
   course4: StartingBoat
 
-  @Field(() => StartingBoat)
+  @Field(() => StartingBoat, { nullable: true })
   course5: StartingBoat
 
-  @Field(() => StartingBoat)
+  @Field(() => StartingBoat, { nullable: true })
   course6: StartingBoat
 }
 

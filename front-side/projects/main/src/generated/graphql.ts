@@ -19,12 +19,12 @@ export type Scalars = {
 
 export type ApproachPrediction = {
   __typename?: 'ApproachPrediction';
-  course1: StartingBoat;
-  course2: StartingBoat;
-  course3: StartingBoat;
-  course4: StartingBoat;
-  course5: StartingBoat;
-  course6: StartingBoat;
+  course1?: Maybe<StartingBoat>;
+  course2?: Maybe<StartingBoat>;
+  course3?: Maybe<StartingBoat>;
+  course4?: Maybe<StartingBoat>;
+  course5?: Maybe<StartingBoat>;
+  course6?: Maybe<StartingBoat>;
   st_type: Scalars['Int']['output'];
 };
 
@@ -55,6 +55,7 @@ export type ExhibitionTimes = {
 export type Query = {
   __typename?: 'Query';
   racePrediction: RacePredictionModel;
+  racePredictions?: Maybe<Array<RacePredictionModel>>;
   racer?: Maybe<RacersModel>;
   user: UsersModel;
 };
@@ -62,6 +63,14 @@ export type Query = {
 
 export type QueryRacePredictionArgs = {
   key: Scalars['String']['input'];
+};
+
+
+export type QueryRacePredictionsArgs = {
+  date_from?: InputMaybe<Scalars['String']['input']>;
+  date_to?: InputMaybe<Scalars['String']['input']>;
+  race_place_cd?: InputMaybe<Scalars['Int']['input']>;
+  user_key: Scalars['String']['input'];
 };
 
 
@@ -131,17 +140,17 @@ export type RacersModel = {
 export type StartingBoat = {
   __typename?: 'StartingBoat';
   boat_no: Scalars['Int']['output'];
-  st: Scalars['Float']['output'];
+  st?: Maybe<Scalars['Float']['output']>;
 };
 
 export type StartingFormation = {
   __typename?: 'StartingFormation';
-  course1: StartingBoat;
-  course2: StartingBoat;
-  course3: StartingBoat;
-  course4: StartingBoat;
-  course5: StartingBoat;
-  course6: StartingBoat;
+  course1?: Maybe<StartingBoat>;
+  course2?: Maybe<StartingBoat>;
+  course3?: Maybe<StartingBoat>;
+  course4?: Maybe<StartingBoat>;
+  course5?: Maybe<StartingBoat>;
+  course6?: Maybe<StartingBoat>;
 };
 
 export type UsersModel = {

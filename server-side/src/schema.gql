@@ -46,25 +46,25 @@ scalar DateTime
 
 type StartingBoat {
   boat_no: Int!
-  st: Float!
+  st: Float
 }
 
 type StartingFormation {
-  course1: StartingBoat!
-  course2: StartingBoat!
-  course3: StartingBoat!
-  course4: StartingBoat!
-  course5: StartingBoat!
-  course6: StartingBoat!
+  course1: StartingBoat
+  course2: StartingBoat
+  course3: StartingBoat
+  course4: StartingBoat
+  course5: StartingBoat
+  course6: StartingBoat
 }
 
 type ApproachPrediction {
-  course1: StartingBoat!
-  course2: StartingBoat!
-  course3: StartingBoat!
-  course4: StartingBoat!
-  course5: StartingBoat!
-  course6: StartingBoat!
+  course1: StartingBoat
+  course2: StartingBoat
+  course3: StartingBoat
+  course4: StartingBoat
+  course5: StartingBoat
+  course6: StartingBoat
   st_type: Int!
 }
 

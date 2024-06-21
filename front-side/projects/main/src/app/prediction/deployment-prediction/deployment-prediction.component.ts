@@ -459,6 +459,7 @@ export class DeploymentPredictionCanvas extends fabric.Canvas {
     ];
 
     startingBoatas.forEach(async (boat, course) => {
+      if (!boat) return;
       //スタート位置
       const startPosition = startLine - (baseStartWidth * (boat.st || 1));
 

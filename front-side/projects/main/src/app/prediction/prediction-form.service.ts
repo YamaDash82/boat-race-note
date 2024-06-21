@@ -420,12 +420,12 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
   toDto() {
     return {
       boat_no: this._boatNo, 
-      st: (this.value as StartTiming).getStFloat() as number, 
+      st: this.value?.getStFloat(), 
     }
   }
 
   setModel(model: StartingBoat) {
-    this.setSt(model.boat_no, model.st);
+    this.setSt(model.boat_no, model?.st || null);
   }
 
   override reset() {
@@ -440,7 +440,7 @@ export class StartingBoatFormControl extends FormControl<StartTiming | null> imp
  * 保存形式は { course1: { boatNo: nunber, st: numnber}, course2: { ... }, ... }とする。
  * Formで扱うときは、StartingBoatFormControlの配列として扱う。
  */
-export class StartingFormationFormGroup extends FormGroup implements ToDto<StartingFormation> {
+export class StartingFormationFormGroup extends FormGroup implements ToDto<StartingFormation | ApproachPrediction> {
   constructor() {
     super({
       boats: new FormArray<StartingBoatFormControl>([
@@ -507,12 +507,20 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
   }
 
   setModel(model: StartingFormation | ApproachPrediction) {
-    this.setSt(1, model.course1.boat_no, model.course1.st);
-    this.setSt(2, model.course2.boat_no, model.course2.st);
-    this.setSt(3, model.course3.boat_no, model.course3.st);
-    this.setSt(4, model.course4.boat_no, model.course4.st);
-    this.setSt(5, model.course5.boat_no, model.course5.st);
-    this.setSt(6, model.course6.boat_no, model.course6.st);
+    //コースごとにロードする。
+    [ 
+      model.course1, 
+      model.course2, 
+      model.course3, 
+      model.course4, 
+      model.course5, 
+      model.course6 
+    ].forEach((course, index) => {
+      if (!course) return;
+
+      const courseNo = index + 1;
+      this.setSt(courseNo, course.boat_no, course?.st || null);
+    });
   }
 
   override reset() {
@@ -525,7 +533,7 @@ export class StartingFormationFormGroup extends FormGroup implements ToDto<Start
 /**
  * 進入予想フォームグループ
  */
-export class ApproachPredictionFormGroup extends StartingFormationFormGroup {
+export class ApproachPredictionFormGroup extends StartingFormationFormGroup implements ToDto<StartingFormation | ApproachPrediction> {
   /** 
    * 設定スタートタイミング区分
    *   0: 未設定
@@ -535,7 +543,7 @@ export class ApproachPredictionFormGroup extends StartingFormationFormGroup {
   */
   stType: number = 0;
 
-  override toDto(): ApproachPrediction {
+  override toDto() {
     return {
       st_type: this.stType, 
       ...super.toDto()
