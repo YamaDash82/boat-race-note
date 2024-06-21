@@ -18,7 +18,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver, 
       //autoSchemaFile: join(process.cwd(), 'src/schema.gql'), //detaにデプロイする場合、デプロイ先でファイル出力できない？下の記述を用いる。インメモリにGraphQLスキーマを持つ。
-      autoSchemaFile: true
+      autoSchemaFile: (() => {
+        //開発環境時、schema.gqlを出力するように、実行環境時、スキーマをメモリに持つように(autoSchemaFileにtrueを格納するように)する。
+        const devMode = (process.env.DEV_MODE || "") === "1";
+        return devMode ? join(process.cwd(), 'src/schema.gql') : true;
+      })()
     }), 
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../app'),
