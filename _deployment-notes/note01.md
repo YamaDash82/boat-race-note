@@ -6,8 +6,44 @@
     - [ ] 日付入力。mat-form-fieldの使用をやめよう。datepickerは使用する。  
     - [ ] レース場について、mat-buttonの使用をやめよう。
     - [ ] レース番号について、mat-buttonの使用をやめよう。  
-- [ ] 登録時のエラー対応  
+- [x] 登録時のエラー対応  
 - [ ] 進入予想で、クリア時の不具合 艇番もろともクリアされてしまう。  
+- [x] 展開予想登録後、ロードするとキャッシュからロードされている!?いやそんなことはないと思う。しかし、リロードしないと変更登録した分が反映しない。
+    【原因】
+    apollo-angularのキャッシュ機能が原因だった。  
+    [ApolloAngular公式](https://the-guild.dev/graphql/apollo-angular/docs/data/queries)  
+    コード修正例
+    修正前
+    ```typescript
+    this.apollo.watchQuery<{
+      racePrediction: RacePredictionModel
+    }>({
+      query: GET_RACE_PREDICTION, 
+      variables: { key: racePredictionKey }, 
+    }).valueChanges.subscribe(res => {
+      if (res.errors) return reject(res.errors[0]);
+
+      return resolve(res.data.racePrediction);
+    });
+    ```
+    修正後  
+    ```typescript
+    this.apollo.query<{
+      racePrediction: RacePredictionModel
+    }>({
+      query: GET_RACE_PREDICTION, 
+      variables: { key: racePredictionKey }, 
+      fetchPolicy: 'no-cache'
+    }).subscribe(res => {
+      if (res.errors) return reject(res.errors[0]);
+
+      return resolve(res.data.racePrediction);
+    });
+    ```
+    ポイント  
+    `fetchPolicy: 'no-cache'`の設定を追加。  
+    直接は関係ないが、watchQueryメソッドから、queryメソッドの使用に変更。  
+
 ### 展開予想  
 - [x] 画面サイズ変更検知時、画面再変更が停止してから一定時間後にイベントを発火させる。  
 - [x] 画面サイズ変更後、展開予想図が入力されていれば、再描画する。  

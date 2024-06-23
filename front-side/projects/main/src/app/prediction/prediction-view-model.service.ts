@@ -205,12 +205,13 @@ export class PredictionViewModelService {
       const term = raceDate.getMonth() <= 6 ? 1 : 2;
       const racerKey = `${raceYear}-${term}-${racerNo}`;
 
-      this.apollo.watchQuery<{
+      this.apollo.query<{
         racer: RacersModel
       }>({
         query: GET_RACER, 
-        variables: { key: racerKey }
-      }).valueChanges.subscribe(res => {
+        variables: { key: racerKey }, 
+        fetchPolicy: 'no-cache'
+      }).subscribe(res => {
         if (res.errors) return reject(res.errors[0]);
 
         return resolve(res.data.racer);
@@ -251,7 +252,7 @@ export class PredictionViewModelService {
       racer5: RacersModel, 
       racer6: RacersModel, 
     } | null>((resolve, reject) => {
-      this.apollo.watchQuery<{
+      this.apollo.query<{
         racer1: RacersModel, 
         racer2: RacersModel, 
         racer3: RacersModel, 
@@ -267,8 +268,9 @@ export class PredictionViewModelService {
           key4: racerKeys[3], 
           key5: racerKeys[4], 
           key6: racerKeys[5], 
-        }
-      }).valueChanges.subscribe(res => {
+        },
+        fetchPolicy: 'no-cache'
+      }).subscribe(res => {
         if (res.errors) return reject(res.errors[0]);
 
         return resolve(res.data);
@@ -284,12 +286,13 @@ export class PredictionViewModelService {
   async fetchRacePrediction(racePredictionKey: string): Promise<RacePredictionModel | null> {
     console.log(`key:${racePredictionKey}`);
     const racePrediction = await new Promise<RacePredictionModel | null>((resolve, reject) => {
-      this.apollo.watchQuery<{
+      this.apollo.query<{
         racePrediction: RacePredictionModel
       }>({
         query: GET_RACE_PREDICTION, 
-        variables: { key: racePredictionKey }
-      }).valueChanges.subscribe(res => {
+        variables: { key: racePredictionKey }, 
+        fetchPolicy: 'no-cache'
+      }).subscribe(res => {
         if (res.errors) return reject(res.errors[0]);
 
         return resolve(res.data.racePrediction);
@@ -320,7 +323,7 @@ export class PredictionViewModelService {
         };
 
     const racePredictions = await new Promise<RacePredictionModel[] | null>((resolve, reject) => {
-      this.apollo.watchQuery<{
+      this.apollo.query<{
         racePredictions: RacePredictionModel[]
       }>({
         query: GET_RACE_PREDICTIONS, 
@@ -329,8 +332,9 @@ export class PredictionViewModelService {
           date_from: params.date_from?.getYYYYMMDD() || null, 
           date_to: params.date_to?.getYYYYMMDD() || null,
           race_place_cd: params.race_place_cd || null, 
-        }
-      }).valueChanges.subscribe(res => {
+        },
+        fetchPolicy: 'no-cache'
+      }).subscribe(res => {
         if (res.errors) {
           return reject(res.errors[0]);
         }
