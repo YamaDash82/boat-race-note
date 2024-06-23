@@ -15,63 +15,80 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
       class="w-full h-full p-2 flex flex-col"
     >
       <!--開催日-->
-      <div>
-        <mat-form-field>
-          <mat-label>開催日</mat-label>
-          <input matInput [matDatepicker]="picker" [formControl]="fg.raceDate">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <div class="flex items-center mb-2">
+        <div class="text-2xl flex items-center border border-red-500 rounded-lg">
+          <div 
+            class="vertical-label h-24 pt-2 px-2 bg-red-500 text-white"  
+          >開催日</div>
+          <input 
+            [matDatepicker]="picker" 
+            [formControl]="fg.raceDate"
+            class="bg-opacity-0 bg-gray-400 w-40 pl-5"
+            id="race-date"
+          >
+          <mat-datepicker-toggle  [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+        </div>
       </div>
       <!--開催場-->
-      <div class="flex justify-arround flex-wrap">
-        <div *ngFor="let racePlace of racePlaces">
-          <button 
-            mat-stroked-button 
-            class="race-place-button"
-            (click)="selectRacePlace(racePlace.code)"
-            [class.selected]="racePlace.code===fg.racePlaceCd.value"
-          >
-            {{racePlace.name}}
-          </button>  
+      <div class="flex mb-2">
+        <div class="flex justify-arround flex-wrap border border-red-500 rounded-lg text-2xl">
+          <div class="vertical-label bg-red-500 text-white pt-4 px-2">開催場</div>
+          <div *ngFor="let racePlace of racePlaces" class="my-2">
+            <button 
+              class="race-place-button mx-2 h-24 w-10 text-center pr-1 rounded-lg border border-slate-500"
+              (click)="selectRacePlace(racePlace.code)"
+              [class.selected]="racePlace.code===fg.racePlaceCd.value"
+            >
+              {{racePlace.name}}
+            </button>  
+          </div>
         </div>
       </div>
       <!--レース番号-->
-      <div class="flex">
-        <div *ngFor="let raceNo of raceNos">
-          <button 
-            mat-stroked-button
-            (click)="selectRaceNo(raceNo)"
-            [class.selected]="raceNo===fg.raceNo.value"
-          >{{raceNo}}</button>
+      <div class="flex mb-2">
+        <div class="flex justify-arround flex-wrap border border-red-500 rounded-lg text-2xl">
+          <div class="vertical-label bg-red-500 text-white pt-4 px-2">レース</div>
+          <div *ngFor="let raceNo of raceNos" class="my-2">
+            <button 
+              class="race-no-button text-2xl mx-2 h-24 w-10 text-center pr-1 rounded-lg border border-slate-500"
+              (click)="selectRaceNo(raceNo)"
+              [class.selected]="raceNo===fg.raceNo.value"
+            >{{raceNo}}</button>
+          </div>
         </div>
       </div>
       <!--出場レーサー-->
-      <div>
-        <app-racer-period-result 
-          *ngFor="let racer of fg.racers.items; let boatIndex = index"
-          [boatNo]="boatIndex + 1"
-          [racer]="racer.racerInfo"
-          [labelVisible]="!boatIndex"
-          (racerClicked)="openRacerSearchScreen($event)"
-        ></app-racer-period-result>
-      </div>
-      <div class="mt-auto">
+      <div class="flex mt-auto">
+        <div>
+          <app-racer-period-result 
+            *ngFor="let racer of fg.racers.items; let boatIndex = index"
+            [boatNo]="boatIndex + 1"
+            [racer]="racer.racerInfo"
+            [labelVisible]="!boatIndex"
+            (racerClicked)="openRacerSearchScreen($event)"
+          ></app-racer-period-result>
+        </div>
         <a 
-          mat-raised-button  
-          class="ml-auto"
+          class="block mt-auto ml-auto bg-blue-700 w-24 h-16 pt-4 text-2xl mx-2 text-center text-white rounded-lg"
           [routerLink]="['..', 'contents', 'exhibition']"
         >確定</a>
       </div>
     </form>
   `,
   styles: [`
+    .vertical-label {
+      writing-mode: vertical-rl;
+    }
     .race-place-button {
       display: block;
       writing-mode: vertical-rl;
-      height: 4rem;
+    }
+    .race-no-button {
+      display: block;
     }
     .selected {
+      color: white;
       background-color: royalblue;
       font-weight: bold;
     }

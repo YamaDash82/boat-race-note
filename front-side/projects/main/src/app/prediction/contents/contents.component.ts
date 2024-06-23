@@ -76,8 +76,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
           </div>
           <!--登録ボタン-->
           <button type="button" 
-            class="mx-2 text-2xl w-24 h-4/5 bg-blue-700 text-white rounded-lg shadow-2xl" 
-            color="primary"
+            class="mx-2 text-2xl w-24 h-[95%] bg-blue-700 text-white rounded-lg shadow-2xl" 
             (click)="saveRacePrediction()"
           >保存</button>
         </div>

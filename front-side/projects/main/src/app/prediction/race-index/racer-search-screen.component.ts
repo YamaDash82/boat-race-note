@@ -13,7 +13,6 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
     <div mat-dialog-content>
       <div class="p-1 text-4xl">
         <input 
-          type="number" 
           class="appearance-none bg-blue-200 h-16 border-none w-full px-2 rounded-sm"
           inputmode="none"
           [formControl]="racerNo"
