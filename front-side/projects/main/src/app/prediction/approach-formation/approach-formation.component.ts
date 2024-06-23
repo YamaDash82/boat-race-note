@@ -140,7 +140,7 @@ export class ApproachFormationComponent implements OnInit {
         this.startFormationFg.setSt(course, boatNo, dialogResult.value);
       } else if (dialogResult?.dialogAction === DIALOG_ACTION.Clear) {
         //ダイアログでキャンセルボタンがクリックされたときの処理
-        this.startFormationFg.boats[course - 1].reset();
+        this.startFormationFg.boats[course - 1].setSt(boatNo, null);
       }
     });
   }
