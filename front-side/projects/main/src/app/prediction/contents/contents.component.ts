@@ -5,6 +5,7 @@ import { PredictionViewModelService } from '../prediction-view-model.service';
 import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
 import { DeploymentPredictionComponent } from '../deployment-prediction/deployment-prediction.component';
+import { ExDate } from '@yamadash82/yamadash-ex-primitive';
 
 @Component({
   selector: 'app-contents',
@@ -55,12 +56,31 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
           >{{linkButton.caption}}</a>
         </div>
         
-        <!--登録ボタン-->
-        <button type="button" 
-          class="ml-auto mr-2 text-2xl w-24 h-4/5 bg-blue-700 text-white rounded-lg" 
-          color="primary"
-          (click)="saveRacePrediction()"
-        >保存</button>
+        <div class="ml-auto flex h-full items-center">
+          <div 
+            *ngIf="errorMessage"
+            class="text-xl text-red-800"
+            >
+            {{errorMessage}}
+          </div>
+          <!--最終更新日時表示-->
+          <div 
+            class="text-xl"
+            *ngIf="fg.lastModifiedAt.value"
+          >
+            <span 
+              class="text-blue-800"
+              *ngIf="saveSucceedNotice"
+            >登録完了</span>
+            更新日時:{{fg.lastModifiedAt.value.getYYYYMMDD_HHMMSS()}}
+          </div>
+          <!--登録ボタン-->
+          <button type="button" 
+            class="mx-2 text-2xl w-24 h-4/5 bg-blue-700 text-white rounded-lg shadow-2xl" 
+            color="primary"
+            (click)="saveRacePrediction()"
+          >保存</button>
+        </div>
       </div>
       <router-outlet (activate)="onActive($event)"></router-outlet>
     </div>
@@ -70,9 +90,13 @@ import { DeploymentPredictionComponent } from '../deployment-prediction/deployme
 })
 export class ContentsComponent implements OnInit {
   racePlaces = RacePlaces;
-
+  //登録処理完了後、一定の時間trueになる。
+  //登録完了通知用に使用する。  
+  saveSucceedNotice = false;
   //アクティブなコンポーネントへの参照
   private activeComponent!: Component;
+  //エラーメッセージ
+  errorMessage = "";
 
   //艇番表示色取得クラス
   getBoatColorClass = getBoatColorClass;
@@ -108,7 +132,6 @@ export class ContentsComponent implements OnInit {
    * 予想情報登録処理
    */
   async saveRacePrediction() {
-    console.log(`登録クリック`);
     if (this.auth.loginUser?.key) {
       //現在アクティブなコンポーネントが展開予想コンポーネントのとき、入力中の展開予想を保存(FormControlに格納)する。
       if (this.activeComponent instanceof DeploymentPredictionComponent) {
@@ -117,11 +140,16 @@ export class ContentsComponent implements OnInit {
 
       try {
         const result  = await this.viewModel.saveRacePrediction(this.fg.toDto(this.auth.loginUser.key));
-        console.log(`登録完了`);
+        this.fg.lastModifiedAt.setValue(new ExDate(result.lastModifiedAt));
+        //登録完了後、一定時間、登録完了メッセージを表示する。
+        this.saveSucceedNotice = true;
+        setTimeout(() => {
+          this.saveSucceedNotice = false;
+        }, 2000)
       } catch(err) {
         console.log(`エラー:${err}`);
+        this.errorMessage = `登録処理中にエラー発生が発生しました。${err}`
       }
-
     }
   }
 

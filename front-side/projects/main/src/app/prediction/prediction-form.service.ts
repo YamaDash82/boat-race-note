@@ -38,7 +38,8 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
       approachPredictions: new FormArray<ApproachPredictionFormGroup>([]), 
       deploymentPredictions: new FormArray<FormControl<string | null>>([]),
       raceResult: new RaceResultFormGroup(),
-      isWon: new FormControl<null | boolean>(null)
+      isWon: new FormControl<null | boolean>(null),
+      lastModifiedAt: new FormControl<ExDate | null>(null)
     });
   }
 
@@ -54,6 +55,7 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
   get deploymentPredictions(): FormArray<FormControl<string | null>> { return this.controls['deploymentPredictions'] as FormArray<FormControl<string | null>>; }
   get raceResult(): RaceResultFormGroup { return this.controls['raceResult'] as RaceResultFormGroup; }
   get isWon(): FormControl<null | boolean> { return this.controls['isWon'] as FormControl<boolean | null>; }
+  get lastModifiedAt(): FormControl<ExDate | null> { return this.controls['lastModifiedAt'] as FormControl<ExDate | null>; }
 
   /**
    * カレント進入予想インデックスゲッター
@@ -274,6 +276,10 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
 
       this.deploymentPredictionIndex = model.deproyment_predictions.length - 1;
     }
+
+    //最終更新日時  
+    console.log(`最終更新日時:${model.last_modified_at}`)
+    this.lastModifiedAt.setValue(model.last_modified_at ? new ExDate(parseInt(model.last_modified_at)) : null);
   }
 
   override reset() {
