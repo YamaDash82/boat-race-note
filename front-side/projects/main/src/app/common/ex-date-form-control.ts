@@ -30,7 +30,6 @@ export class ExDateFormControl extends FormControl<string | ExDate | null> {
         this._date = value;
       } else {
         const settingDate = new ExDate(value);
-
         if (Number.isNaN(settingDate.getTime())) throw new Error(`代入値:${value}は日付として認識できません。`);
 
         this._date = settingDate;
@@ -39,6 +38,6 @@ export class ExDateFormControl extends FormControl<string | ExDate | null> {
       this._date = null;
     }
 
-    super.setValue(value, option);
+    super.setValue(this._date, option);
   }
 }

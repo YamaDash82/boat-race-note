@@ -284,7 +284,6 @@ export class PredictionViewModelService {
    * @returns 
    */
   async fetchRacePrediction(racePredictionKey: string): Promise<RacePredictionModel | null> {
-    console.log(`key:${racePredictionKey}`);
     const racePrediction = await new Promise<RacePredictionModel | null>((resolve, reject) => {
       this.apollo.query<{
         racePrediction: RacePredictionModel
