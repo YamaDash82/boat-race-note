@@ -11,7 +11,7 @@ import { DialogAction, DIALOG_ACTION, DialogResult } from 'projects/main/src/app
   selector: 'app-approach-formation',
   template: `
     <form [formGroup]="startFormationFg" class="h-full w-full flex flex-col p-2">
-      <div class="text-4xl">スタート展示</div>
+      <div class="text-4xl" *ngIf="caption">{{caption}}</div>
       <!--メインコンテンツ-->
       <div 
         class="grow flex flex-col justify-around starting-boats bg-blue-400 pl-2 text-4xl"
@@ -67,6 +67,11 @@ import { DialogAction, DIALOG_ACTION, DialogResult } from 'projects/main/src/app
   `]
 })
 export class ApproachFormationComponent implements OnInit {
+  //コンポーネントの表題
+  //このコンポーネントはスタート展示タイム入力、進入予想入力、展開予想のスタート描画時の選択ダイアログで共用する。
+  //現時点でスタート展示タイム入力画面でのみ、"スタート展示"と表題を表示する。外部から指定するようにする。
+  @Input() caption = "";
+
   //進入体系フォームグループ
   @Input() startFormationFg!: StartingFormationFormGroup;
 

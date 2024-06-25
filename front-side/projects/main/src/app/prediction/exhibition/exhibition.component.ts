@@ -5,7 +5,11 @@ import { PredictionFormService } from '../prediction-form.service';
   selector: 'app-exhibition',
   template: `
     <div class="h-[80vh] w-full flex">
-      <app-approach-formation [startFormationFg]="fg.startExhibition" class="w-[70%]"></app-approach-formation>
+      <app-approach-formation 
+        [startFormationFg]="fg.startExhibition" 
+        class="w-[70%]"
+        caption="スタート展示"
+      ></app-approach-formation>
       <app-sailing-exhibition class="w-[30%]"></app-sailing-exhibition>
     </div>
   `,
