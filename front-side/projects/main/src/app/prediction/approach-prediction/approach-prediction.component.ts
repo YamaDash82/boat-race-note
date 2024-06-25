@@ -26,19 +26,25 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
       <!--参考データ選択部(スタート展示/平均ST/コース別平均ST)-->
       <div class="flex">
         <!--スタート展示タイム設定処理-->
-        <button type="button" mat-flat-button class="mr-2"
+        <button 
+          type="button" 
+          class="ml-2 mr-2 border text-2xl p-2 rounded-lg bg-red"
           (click)="setStartExhibitionTime()"
-          [color]="currentApproachPrediction?.stType===1 ? 'primary' : ''"
+          [class.selected-st-type]="currentApproachPrediction?.stType===1"
         >スタート展示</button>
         <!--平均ST設定処理-->
-        <button type="button" mat-flat-button class="mr-2"
+        <button 
+          type="button" 
+          class="mr-2 border text-2xl p-2 rounded-lg"
           (click)="setAvgTime()"
-          [color]="currentApproachPrediction?.stType===2 ? 'primary' : ''"
+          [class.selected-st-type]="currentApproachPrediction?.stType===2"
         >平均ST</button>
         <!--コース別平均ST設定処理-->
-        <button type="button" mat-flat-button class="mr-2"
+        <button 
+          type="button" 
+          class="mr-2 border text-2xl p-2 rounded-lg"
           (click)="setCourseAvgTime()"
-          [color]="currentApproachPrediction?.stType===3 ? 'primary' : ''"
+          [class.selected-st-type]="currentApproachPrediction?.stType===3"
         >コース別平均ST</button>
       </div>
       <div class="grow flex">
@@ -96,6 +102,12 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
     .hight-light {
       color: red;
       font-weight: bold;
+    }
+    .selected-st-type {
+      color: white;
+      --tw-bg-opacity: 1; 
+      background-color: rgb(239 68 68 / var(--tw-bg-opacity));
+      border-color: rgb(239 68 68 / var(--tw-bg-opacity));
     }
   `]
 })
