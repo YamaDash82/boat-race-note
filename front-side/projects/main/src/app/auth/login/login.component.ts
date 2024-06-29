@@ -36,6 +36,13 @@ import { Router } from '@angular/router';
           (click)="login()"
         >ログイン</button>
       </div>
+      <div class="w-2/3 text-2xl mt-5 text-right">
+        <button 
+          class="text-blue-700"
+          (click)="transToAppendUser()"
+          type="button"
+        >アカウント登録画面はこちら</button>
+      </div>
     </form>
   `,
   styles: []
@@ -60,6 +67,13 @@ export class LoginComponent {
     } catch(err) {
       this.errorMessage = err instanceof Error ? err.message : 'ログイン処理中にエラーが発生しました。';
     }
+  }
+
+  /**
+   * アカウント登録画面遷移
+   */
+  transToAppendUser() {
+    this.router.navigate(['auth', 'append-user']);
   }
 }
 

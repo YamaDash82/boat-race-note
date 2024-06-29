@@ -46,6 +46,13 @@ import { Router } from '@angular/router';
           (click)="register()"
         >登録</button>
       </div>
+      <div class="w-2/3 mt-5 text-right text-2xl">
+        <button
+          class="text-blue-700"
+          (click)="transToLogin()"
+          type="button"
+        >すでにアカウントをお持ちの方はこちら(ログイン画面)</button>
+      </div>
     </form>
   `,
   styles: []
@@ -81,6 +88,13 @@ export class AppendUserComponent {
     } catch(err) {
       this.errorMessage = err instanceof Error ? err.message : `新規ユーザー登録処理中にエラーが発生しました。`;
     }
+  }
+
+  /**
+   * ログイン画面遷移処理
+   */
+  transToLogin() {
+    this.router.navigate(['auth', 'login']);
   }
 }
 

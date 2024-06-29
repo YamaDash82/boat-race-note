@@ -8,13 +8,6 @@ import { PredictionTopComponent } from './prediction/prediction-top/prediction-t
 import { racePredictionResolver } from './resolvers/race-prediction.resolver';
 
 const routes: Routes = [
-  /*
-  { 
-    path: 'prediction', 
-    children: predictionRoutes, 
-    canActivate: [ authGuard ],
-  }, 
-  */
   {
     path: 'prediction',
     children: [

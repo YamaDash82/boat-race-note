@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { UsersModel } from '../generated/graphql';
 import { SwUpdate } from '@angular/service-worker';
@@ -7,8 +8,27 @@ import { SwUpdate } from '@angular/service-worker';
   selector: 'app-root',
   template: `
     <header class="h-[5vh] w-full bg-red-500 flex justify-between items-center text-4xl">
-      <div>ボートレース予想</div>
-      <div>{{loginUser?.key}}</div>
+      <div class="ml-2">ボートレース予想</div>
+      <div class="mr-2 flex items-center" *ngIf="loginUser">
+        <button
+          type="button"
+          mat-icon-button
+          [matMenuTriggerFor]="accountMenu"
+        >
+          <mat-icon>person</mat-icon>
+        </button>
+        <mat-menu #accountMenu="matMenu">
+          <button 
+            type="button"
+            mat-menu-item
+            (click)="logout()"
+          >
+            <mat-icon>logout</mat-icon>
+            <span class="text-2xl">ログアウト</span>
+          </button>
+        </mat-menu>
+        <div>{{loginUser.key}}</div>
+      </div>
     </header>
     <main class="h-[90vh] w-full bg-slate-300">
       <router-outlet></router-outlet>
@@ -25,17 +45,27 @@ export class AppComponent implements OnInit {
   constructor(
     private swUpdate: SwUpdate, 
     private auth: AuthService, 
+    private router: Router, 
   ) { }
 
   async ngOnInit(): Promise<void> {
-    //新しいバージョンのリリースをチェックする。
-    if (await this.swUpdate.checkForUpdate()) { 
-      //新しいバージョンがあればリロードする。
-      document.location.reload();
+    try {
+      //新しいバージョンのリリースをチェックする。
+      if (await this.swUpdate.checkForUpdate()) { 
+        //新しいバージョンがあればリロードする。
+        document.location.reload();
+      }
+    } catch(err) {
+      console.error(`新しいバージョンチェック処理中にエラー発生。${err instanceof Error ? err.message : ''}`);
     }
 
     this.auth.loginStateChange$.subscribe(user => {
       this.loginUser = user;
     });
+  }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['auth', 'login']);
   }
 }

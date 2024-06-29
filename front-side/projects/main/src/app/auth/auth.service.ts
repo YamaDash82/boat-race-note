@@ -22,6 +22,10 @@ export class AuthService {
   private decodedToken: DecodedToken | null = null;
   private _loginUser: UsersModel | null = null;
 
+  //ログイン状態変更検知
+  private loginStateChange = new Subject<UsersModel | null>();
+  loginStateChange$ = this.loginStateChange.asObservable();
+
   constructor(
     private http: HttpClient, 
   ) { 
@@ -38,10 +42,8 @@ export class AuthService {
    */
   async login(key: string, password: string): Promise<void> {
     const token = await new Promise<string>((resolve, reject) => {
-      console.log(`rootUrl:${environment.rootUrl}`);
       this.http.post<{ access_token: string }>(`${environment.rootUrl}/auth/login`, { key, password }).pipe(
         catchError((err: HttpErrorResponse) => {
-          console.log(`サービス${err.error.message}`);
           return throwError(() => new Error(err.error.message));
         }), 
         map(token => token.access_token), 
@@ -108,7 +110,6 @@ export class AuthService {
       });
       //有効期限を延長した新しいトークンを保存し、trueを返す。
       this.saveToken(token);
-    
       return true;
     } catch(err) {
       //未認証状態なのでfalseを返す。
@@ -163,12 +164,10 @@ export class AuthService {
   logout() {
     this.decodedToken = null;
     this._loginUser = null;
+    localStorage.removeItem('auth_meta');
+    localStorage.removeItem('auth_tkn');
 
     //ログイン状態の変更をストリームに流す。
     this.loginStateChange.next(this._loginUser);
   }
-
-  //ログイン状態変更検知
-  private loginStateChange = new Subject<UsersModel | null>();
-  loginStateChange$ = this.loginStateChange.asObservable();
 }
