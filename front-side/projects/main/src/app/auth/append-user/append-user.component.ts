@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   template: `
     <form 
       submit="return false;"
-      class="h-full w-full flex flex-col items-center"
+      class="h-full w-full flex flex-col items-center text-4xl"
       [formGroup]="fg"
     >
       <div class="w-2/3 mt-20">
