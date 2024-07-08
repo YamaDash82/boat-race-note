@@ -9,7 +9,7 @@ import { SwUpdate } from '@angular/service-worker';
   template: `
     <header class="h-[5vh] w-full bg-red-500 flex justify-between items-center text-4xl">
       <div class="ml-2">ボートレース予想</div>
-      <div class="mr-2 flex items-center" *ngIf="loginUser">
+      <div class="mr-2 flex items-center" *ngIf="loginUser; else notLogin">
         <button
           type="button"
           mat-icon-button
@@ -29,6 +29,18 @@ import { SwUpdate } from '@angular/service-worker';
         </mat-menu>
         <div>{{loginUser.key}}</div>
       </div>
+      <ng-template #notLogin>
+        <div
+          class="ml-auto text-xl text-slate-600"
+        >
+          未ログイン状態です。ログインすると、予想情報を保存できるようになります。
+        </div>
+        <a href="#" 
+          class="mr-2"
+          routerLink="/auth/login"
+          mat-icon-butto
+        ><mat-icon>login</mat-icon></a>
+      </ng-template>
     </header>
     <main class="h-[90vh] w-full bg-slate-300">
       <router-outlet></router-outlet>

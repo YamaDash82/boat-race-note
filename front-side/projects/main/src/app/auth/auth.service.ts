@@ -112,6 +112,7 @@ export class AuthService {
       this.saveToken(token);
       return true;
     } catch(err) {
+      console.log(`CheckAuth`)
       //未認証状態なのでfalseを返す。
       return false;
     }

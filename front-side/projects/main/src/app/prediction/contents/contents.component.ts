@@ -6,6 +6,7 @@ import { RacePlaces, RacePlace } from '@common_modules/constans/race-places';
 import { getBoatColorClass } from '../../common/utilities';
 import { DeploymentPredictionComponent } from '../deployment-prediction/deployment-prediction.component';
 import { ExDate } from '@yamadash82/yamadash-ex-primitive';
+import { UsersModel } from 'projects/main/src/generated/graphql';
 
 @Component({
   selector: 'app-contents',
@@ -14,6 +15,7 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
       <div class="h-[5vh] bg-red-400 flex items-center">
         <!--戻るボタン-->
         <a href="#"
+          *ngIf="loginUser"
           mat-icon-button
           routerLink="/prediction"
         ><mat-icon>arrow_back</mat-icon></a>
@@ -56,7 +58,10 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
           >{{linkButton.caption}}</a>
         </div>
         
-        <div class="ml-auto flex h-full items-center">
+        <div 
+          *ngIf="loginUser"
+          class="ml-auto flex h-full items-center"
+        >
           <div 
             *ngIf="errorMessage"
             class="text-xl text-red-800"
@@ -88,6 +93,9 @@ import { ExDate } from '@yamadash82/yamadash-ex-primitive';
   ]
 })
 export class ContentsComponent implements OnInit {
+  //ログインユーザー  
+  loginUser: UsersModel | null = null;
+
   racePlaces = RacePlaces;
   //登録処理完了後、一定の時間trueになる。
   //登録完了通知用に使用する。  
@@ -114,6 +122,8 @@ export class ContentsComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    //ログインユーザーを取得する。未ログイン時、nullが格納される。  
+    this.loginUser = this.auth.loginUser;
   }
 
   /**

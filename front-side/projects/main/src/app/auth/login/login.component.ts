@@ -43,6 +43,13 @@ import { Router } from '@angular/router';
           type="button"
         >アカウント登録画面はこちら</button>
       </div>
+      <div class="w-2/3 text-2xl mt-5 text-right">
+        <button 
+          class="text-blue-700"
+          (click)="transToPrediction()"
+          type="button"
+        >ログインせずに使用する</button>
+      </div>
     </form>
   `,
   styles: []
@@ -74,6 +81,10 @@ export class LoginComponent {
    */
   transToAppendUser() {
     this.router.navigate(['auth', 'append-user']);
+  }
+
+  transToPrediction() {
+    this.router.navigate(['']);
   }
 }
 

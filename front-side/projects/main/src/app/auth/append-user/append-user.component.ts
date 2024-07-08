@@ -53,6 +53,13 @@ import { Router } from '@angular/router';
           type="button"
         >すでにアカウントをお持ちの方はこちら(ログイン画面)</button>
       </div>
+      <div class="w-2/3 mt-5 text-right text-2xl">
+        <button
+          class="text-blue-700"
+          (click)="transToPrediction()"
+          type="button"
+        >ログインせずに使用する</button>
+      </div>
     </form>
   `,
   styles: []
@@ -95,6 +102,10 @@ export class AppendUserComponent {
    */
   transToLogin() {
     this.router.navigate(['auth', 'login']);
+  }
+
+  transToPrediction() {
+    this.router.navigate(['']);
   }
 }
 

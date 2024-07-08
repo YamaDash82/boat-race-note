@@ -19,11 +19,19 @@ const routes: Routes = [
       { 
         path: ':prediction-key', 
         children: predictionRoutes,
-        resolve: [ racePredictionResolver ]
+        resolve: [ racePredictionResolver ],
+        //認証ガード
+        canActivate: [ authGuard ], 
       }, 
-      { path: '', component: PredictionTopComponent },
+      { 
+        path: '', 
+        component: PredictionTopComponent, 
+        //認証ガード
+        canActivate: [ authGuard ], 
+      },
     ],
-    canActivate: [ authGuard ],
+    //未ログインでも使用できるように、ここにガードは設定しない。
+    //canActivate: [ authGuard ],
   },
   { 
     path: 'auth', 

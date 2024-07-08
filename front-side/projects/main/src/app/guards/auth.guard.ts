@@ -9,5 +9,6 @@ export const authGuard: CanActivateFn = async (route, state) => {
   if (await authService.checkAuthenticated()) {
     return true;
   }
-  return router.navigate(['/auth/login']);
+  //未ログイン時は、新規予想入力画面に遷移する。ただし、登録はできない。  
+  return router.navigate(['/prediction/new-prediction/contents/exhibition']);
 };
