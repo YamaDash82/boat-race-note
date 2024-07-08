@@ -48,9 +48,9 @@ import { SelectApproachFormationComponent } from './select-approach-formation.co
           >
             <!--スリット描画-->
             <div>
-              <button type="button"
-                class="w-full mb-3"
-                mat-flat-button
+              <button 
+                type="button"
+                class="w-full h-16 mb-3 text-2xl rounded-xl bg-blue-700 text-white"
                 (click)="openApproachFormationSelector()"
               >
                 ST描画
@@ -69,12 +69,11 @@ import { SelectApproachFormationComponent } from './select-approach-formation.co
             <!--ボート削除ボタン-->
             <div>
               <button 
-                class="w-full mt-3"
+                class="w-full h-16 text-2xl rounded-xl bg-pink-700 text-white mt-3"
                 type="button"
-                mat-flat-button
                 (click)="removeBoat($event)"
               >
-                削除
+                艇削除
               </button>
             </div>
           </div>

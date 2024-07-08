@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'app-paginator',
   template: `
-    <div class="flex items-center">
+    <div class="flex items-center text-2xl">
       <button 
         mat-button
         type="button" 
