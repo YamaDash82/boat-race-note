@@ -193,8 +193,36 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
    * 進入予想削除処理
    * @param index 
    */
-  deleteApproachPrediction(index: number) {
+  removeApproachPredictionAt(index: number) {
     this.approachPredictions.removeAt(index);
+    //削除後のカレント進入予想インデックスを調整する。
+    if (this.approachPredictions.length) {
+      //削除したインデックスが先頭以外で、配列に要素がある場合、インデックスをデクリメントする。
+      if (index && this.currentApproachPredictionIndex) {
+        this.currentApproachPredictionIndex--;
+      }
+    } else {
+      //要素がない場合、カレント進入予想インデックスをnullにする。
+      this.currentApproachPredictionIndex = null;
+    }
+  }
+
+  /**
+   * 展開予想削除処理
+   * @param index 
+   */
+  removeDeploymentPredictionAt(index: number) {
+    this.deploymentPredictions.removeAt(index);
+    //削除後のカレント展開予想インデックスを調整する。
+    if (this.deploymentPredictions.length) {
+      //削除したインデックスが先頭以外で、配列に要素がある場合、インデックスをデクリメントする。
+      if (index && this.currentDeploymentPredictionIndex) {
+        this.currentDeploymentPredictionIndex--;
+      }
+    } else {
+      //要素がない場合、カレント展開予想インデックスをnullにする。
+      this.currentDeploymentPredictionIndex = null;
+    }
   }
 
   /**
@@ -278,7 +306,6 @@ export class PredictionFormService extends FormGroup implements ToDto<RacePredic
     }
 
     //最終更新日時  
-    console.log(`最終更新日時:${model.last_modified_at}`)
     this.lastModifiedAt.setValue(model.last_modified_at ? new ExDate(parseInt(model.last_modified_at)) : null);
   }
 

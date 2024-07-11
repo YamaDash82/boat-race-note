@@ -26,6 +26,11 @@ import { SelectApproachFormationComponent } from './select-approach-formation.co
           (moved)="pageMoved($event)"
           (beforeMove)="saveCurrentPrediction()"
         ></app-paginator>
+        <button type="button" mat-icon-button
+          (click)="deletePrediction()"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
         <button 
           (click)="buttonCotainerVisilbe=!buttonCotainerVisilbe"
           class="ml-auto"
@@ -198,6 +203,18 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
   }
 
   /**
+   * 展開予想削除処理
+   */
+  deletePrediction() {
+    if (this.fg.deploymentPredictionIndex !== null) {
+      //展開予想削除
+      this.fg.removeDeploymentPredictionAt(this.fg.deploymentPredictionIndex);
+      //ページャー調整処理
+      this.paginator.adjust();
+    }
+  }
+
+  /**
    * カレント展開予想保存処理
    * ページャーによるページ移動時、当コンポーネント破棄時に編集中の展開予想を保存することを想定している。
    */
@@ -218,11 +235,16 @@ export class DeploymentPredictionComponent implements OnInit, AfterViewChecked, 
 
     //一旦キャンバスをクリアする。
     this.deploymentPredictionCanvas.clear();
-    //ロードする。
-    this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {
-      //初期競争水面を描画する。
-      this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
-    });
+    
+    //移動後のインデックスに値(展開予想情報)があるとき、その値をロードする。
+    //ページ削除後のページ移動時処理では、ロードする予想除法がないケースがある。
+    if (movedValue.data) {
+      //ロードする。
+      this.deploymentPredictionCanvas.loadFromJSON(this.fg.deploymentPredictions.controls[this.fg.deploymentPredictionIndex].value || {}, () => {
+        //初期競争水面を描画する。
+        this.deploymentPredictionCanvas.drawInitialRacingPool(this.canvasSize.width, this.canvasSize.height);
+      });
+    }
   }
 
   /**

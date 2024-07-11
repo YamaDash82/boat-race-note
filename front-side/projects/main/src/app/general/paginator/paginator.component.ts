@@ -170,4 +170,22 @@ export class PaginatorComponent {
       data: this.items[this.currentIndex]
     });
   }
+
+  /**
+   * 調整処理 
+   */
+  adjust() {
+    if (!this.items.length) {
+      //集合体に要素がなければ、カレントインデックスを-1にする。
+      this.currentIndex = -1;
+    } else if ((this.currentIndex + 1) >= this.items.length) {
+      //カレントインデックスが集合体の要素を超えている場合、集合体の末を指すインデックスにする。
+      this.currentIndex = (this.items.length - 1);
+    }
+
+    this.moved.emit({
+      index: this.currentIndex, 
+      data: this.items[this.currentIndex] //要素がなければundefinedが返されることを期待。
+    });
+  }
 }

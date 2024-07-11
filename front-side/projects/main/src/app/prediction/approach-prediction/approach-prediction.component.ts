@@ -22,6 +22,11 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
           (moved)="pageMoved($event)"
           class="my-2"
         ></app-paginator>
+        <button type="button" mat-icon-button
+          (click)="deleteItem()"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
       <!--参考データ選択部(スタート展示/平均ST/コース別平均ST)-->
       <div class="flex">
@@ -156,6 +161,19 @@ export class ApproachPredictionComponent implements OnInit {
     this.fg.appendApproachPrediction();
     //ページ末尾の追加した進入予想を取得する。
     this.paginator.moveLast();
+  }
+
+  /**
+   * 進入予想削除処理
+   * @param index 
+   */
+  deleteItem() {
+    if (this.fg.approachPredictionIndex !== null) {
+      //進入予想削除
+      this.fg.removeApproachPredictionAt(this.fg.approachPredictionIndex);
+      //ページャー調整処理
+      this.paginator.adjust();
+    }
   }
 
   /**
