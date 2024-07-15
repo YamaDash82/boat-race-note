@@ -48,3 +48,10 @@ body {
   background-color: #2db200;
   color: #ffffff;
 }
+
+/* レスポンシブデザイン対応 */
+@media screen and (hover: hover){
+  body {
+    font-size: 16px;
+  }
+}
