@@ -202,7 +202,9 @@ export class PredictionViewModelService {
     const racerInfo = await new Promise<RacersModel | null>((resolve, reject) => {
       const raceYear = raceDate.getFullYear();
       //前期後期 1月から6月は前期で1、7月から12月は後期で2をセットする。
-      const term = raceDate.getMonth() <= 6 ? 1 : 2;
+      //getMonth()の値。1月は0である。
+      const term = (raceDate.getMonth() + 1) <= 6 ? 1 : 2;
+      console.log(`term:${term}, getMonth:${raceDate.getMonth()}`);
       const racerKey = `${raceYear}-${term}-${racerNo}`;
 
       this.apollo.query<{
