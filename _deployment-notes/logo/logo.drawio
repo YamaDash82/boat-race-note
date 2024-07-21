@@ -1,0 +1,22 @@
+<mxfile host="65bd71144e">
+    <diagram id="xzbQihaTlFYf7ZneiLG7" name="ページ1">
+        <mxGraphModel dx="1006" dy="596" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;strokeWidth=4;strokeColor=#b85450;fillColor=#f8cecc;" parent="1" vertex="1">
+                    <mxGeometry x="2" y="2" width="320" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeColor=#666666;strokeWidth=4;" parent="1" vertex="1">
+                    <mxGeometry x="157" y="12" width="10" height="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#666666;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="22" y="32" width="280" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="&lt;font face=&quot;Verdana&quot; style=&quot;font-size: 130px;&quot;&gt;舟板&lt;/font&gt;" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="22" y="32" width="280" height="170" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
