@@ -3,12 +3,16 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth/auth.service';
 import { UsersModel } from '../generated/graphql';
 import { SwUpdate } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   template: `
     <header class="h-[5vh] w-full bg-red-500 flex justify-between items-center text-4xl">
-      <div class="ml-2">ボートレース予想</div>
+      <div class="ml-2">
+        <span class="mx-2">ボートレース予想</span>
+        <span class="text-2xl">{{appVersion}}</span>
+      </div>
       <div class="mr-2 flex items-center" *ngIf="loginUser; else notLogin">
         <button
           type="button"
@@ -53,6 +57,7 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class AppComponent implements OnInit {
   loginUser: UsersModel | null = null;
+  appVersion = environment.appVersion;
 
   constructor(
     private swUpdate: SwUpdate, 

@@ -28,7 +28,8 @@
         "/app/server-side/shared_modules/*"
       ]
     },
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true, 
+    "resolveJsonModule": true 
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
