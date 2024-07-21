@@ -9,9 +9,9 @@ import { environment } from '../environments/environment';
   selector: 'app-root',
   template: `
     <header class="h-[5vh] w-full bg-red-500 flex justify-between items-center text-4xl">
-      <div class="ml-2">
-        <span class="mx-2">ボートレース予想</span>
-        <span class="text-2xl">{{appVersion}}</span>
+      <div class="ml-2 flex items-end">
+        <img src="./assets/images/logo.png" alt="ロゴ" class="inline-block h-[4vh] mr-2">
+        <span class="block text-2xl">{{appVersion}}</span>
       </div>
       <div class="mr-2 flex items-center" *ngIf="loginUser; else notLogin">
         <button
