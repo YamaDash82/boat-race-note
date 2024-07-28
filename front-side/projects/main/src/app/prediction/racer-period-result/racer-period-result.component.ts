@@ -9,36 +9,36 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
   selector: 'app-racer-period-result',
   template: `
     <!--ラベル-->
-    <div *ngIf="labelVisible" class="flex text-center">
-      <div class="w-[2rem] h-14 pt-3 border-y border-l border-r border-slate-500 bg-blue-600 text-white">
+    <div *ngIf="labelVisible" class="flex text-center header">
+      <div class="w-[4rem] h-14 pt-3 border-y border-l border-r border-slate-500 bg-blue-600 text-white">
         枠
       </div>
-      <div class="w-[12rem] h-14 pt-3 border-y border-r border-slate-500 bg-blue-600 text-white">レーサー</div>
-      <div class="w-[4rem] h-14 pt-3 border-y border-r border-slate-500 bg-blue-600 text-white">平均ST</div>
-      <div class="w-[4rem] h-14 flex flex-col justify-around border-y border-r border-slate-500 bg-blue-600 text-white">
+      <div class="w-[24rem] h-14 pt-3 border-y border-r border-slate-500 bg-blue-600 text-white">レーサー</div>
+      <div class="w-[8rem] h-14 pt-3 border-y border-r border-slate-500 bg-blue-600 text-white">平均ST</div>
+      <div class="w-[8rem] h-14 flex flex-col justify-around border-y border-r border-slate-500 bg-blue-600 text-white">
         <div>勝率</div>
         <div>二連率</div>
       </div>
       <!--コース別成績-->
       <div *ngFor="let c of courseDataIndexes" class="bg-blue-600 text-white">
-        <div class="w-[6rem] flex flex-col justify-around h-14 border-y border-r border-slate-500">
+        <div class="w-[10rem] flex flex-col justify-around h-14 border-y border-r border-slate-500">
           <div>{{c+1}}コース</div>
           <div>ST/二連率</div>
         </div>
       </div>
     </div>
     <!--内容-->
-    <div class="flex items-center">
+    <div class="flex items-center content">
       <!--艇番-->
       <div 
-        class="w-[2rem] h-20 border-l border-b border-r border-slate-500 flex flex-col justify-center items-center" 
+        class="w-[4rem] h-20 border-l border-b border-r border-slate-500 flex flex-col justify-center items-center" 
         [ngClass]="getBoatColorClass(boatNo)"
       >
         <div>{{boatNo}}</div>
       </div>
       <!--レーサー-->
       <div 
-        class="w-[12rem] h-20 flex flex-col justify-around border-b border-r border-slate-500"
+        class="w-[24rem] h-20 flex flex-col justify-around border-b border-r border-slate-500"
         [ngClass]="getBoatColorClass(boatNo)"
         (click)="racerClick(boatNo)"
       >
@@ -58,18 +58,18 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
         </div>
       </div>
       <!--平均ST-->
-      <div class="w-[4rem] h-20 flex items-center justify-center border-b border-r border-slate-500">
+      <div class="w-[8rem] h-20 flex items-center justify-center border-b border-r border-slate-500">
         <div>
           {{racer?.st | number: '1.2' }}
         </div>
       </div>
       <!--勝率/二連対率-->
-      <div class="w-[4rem] h-20 flex flex-col justify-around items-center border-b border-r border-slate-500">
+      <div class="w-[8rem] h-20 flex flex-col justify-around items-center border-b border-r border-slate-500">
         <div>{{racer?.win_rate  | number: '1.2' }}</div>
         <div>{{racer?.win_rate2 | number: '1.1' }}</div>
       </div>
       <!--コース別情報-->
-      <div *ngFor="let c of courseDataIndexes" class="w-[6rem] h-20 flex flex-col justify-around items-center border-b border-r border-slate-500">
+      <div *ngFor="let c of courseDataIndexes" class="w-[10rem] h-20 flex flex-col justify-around items-center border-b border-r border-slate-500">
         <!--コース別平均ST-->
         <div>{{racer?.course_datas?.[c]?.st | number: '1.2' }}</div>
         <!--コース別二連対率-->
@@ -77,15 +77,29 @@ import { RacersModel } from 'projects/main/src/generated/graphql';
       </div>
     </div>
   `,
-  styles: [
-  ]
+  styles: [`
+    /* レスポンシブデザイン対応 */
+    @media screen and (hover: hover){
+      .header,.content {
+        font-size: 12px;
+      }
+
+      .h-14 {
+        height: 6rem;
+      }
+
+      .h-20 {
+        height: 10rem;
+      }
+    }
+  `]
 })
 export class RacerPeriodResultComponent {
   @Input() labelVisible = true;
   @Input() boatNo!: number;
   @Input() racer: RacersModel | null = null;
   @Output() racerClicked = new EventEmitter<number>();
-  
+
   //コース別情報インデックス
   courseDataIndexes = [0, 1, 2, 3, 4, 5];
 
